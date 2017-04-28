@@ -1,0 +1,7 @@
+[package]
+name = "rusoto-rds"
+version = "0.1.0"
+authors = ["Matthew Mayer <matthewkmayer@gmail.com>"]
+
+[dependencies]
+rusoto = {version = "0.24", features = ["rds"]}
