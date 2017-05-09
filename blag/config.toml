@@ -1,0 +1,3 @@
+baseURL = "https://matthewkmayer.github.io/blag"
+languageCode = "en-us"
+title = "My New Hugo Site"
