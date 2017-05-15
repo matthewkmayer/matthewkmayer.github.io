@@ -17,11 +17,12 @@
       <pubDate>Sun, 14 May 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/</guid>
-      <description>Prerequisites Default VPC (for publically accessibly RDS instances), AWS access keys in some fashion, Rust nightly.
-Switch to Rust nightly: rustup default nightly.
-Rocket site Follows the guide at https://rocket.rs/ . Rocket is why nightly Rust is required: Rusoto and Diesel work on stable Rust.
-Creating a Postgres RDS instance See rusoto-rds/src/main.rs for the full code.
-In the rusoto-rds directory, run cargo run to create a new database and wait for it to be available.</description>
+      <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s tie some great Rust crates together!  In this walkthrough, we&amp;rsquo;ll use &lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt; to create a Postgres RDS database instance,
+&lt;a href=&#34;https://github.com/SergioBenitez/Rocket&#34;&gt;Rocket.rs&lt;/a&gt; to make a web server and &lt;a href=&#34;https://github.com/diesel-rs/diesel&#34;&gt;Diesel&lt;/a&gt; to talk to the database on AWS to make a proof of concept hit counter.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>
