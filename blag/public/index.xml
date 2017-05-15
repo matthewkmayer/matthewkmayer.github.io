@@ -24,14 +24,5 @@ Creating a Postgres RDS instance See rusoto-rds/src/main.rs for the full code.
 In the rusoto-rds directory, run cargo run to create a new database and wait for it to be available.</description>
     </item>
     
-    <item>
-      <title>good to great</title>
-      <link>https://matthewkmayer.github.io/blag/public/post/good-to-great/</link>
-      <pubDate>Tue, 09 May 2017 13:08:19 -0700</pubDate>
-      
-      <guid>https://matthewkmayer.github.io/blag/public/post/good-to-great/</guid>
-      <description></description>
-    </item>
-    
   </channel>
 </rss>
