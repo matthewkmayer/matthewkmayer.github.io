@@ -1,0 +1,3 @@
+[submodule "blag/themes/liquorice"]
+	path = blag/themes/liquorice
+	url = git@github.com:eliasson/liquorice.git
