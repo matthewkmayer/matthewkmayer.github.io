@@ -6,10 +6,23 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 09 May 2017 13:08:19 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 14 May 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rusoto RDS walkthrough</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/</link>
+      <pubDate>Sun, 14 May 2017 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/</guid>
+      <description>Prerequisites Default VPC (for publically accessibly RDS instances), AWS access keys in some fashion, Rust nightly.
+Switch to Rust nightly: rustup default nightly.
+Rocket site Follows the guide at https://rocket.rs/ . Rocket is why nightly Rust is required: Rusoto and Diesel work on stable Rust.
+Creating a Postgres RDS instance See rusoto-rds/src/main.rs for the full code.
+In the rusoto-rds directory, run cargo run to create a new database and wait for it to be available.</description>
+    </item>
     
     <item>
       <title>good to great</title>

@@ -1,0 +1,11 @@
+[package]
+name = "rusoto-rocket"
+version = "0.1.0"
+authors = ["Matthew Mayer <matthewkmayer@gmail.com>"]
+
+[dependencies]
+rocket = "0.2.6"
+rocket_codegen = "0.2.6"
+diesel = { version = "0.11.0", features = ["postgres"] }
+diesel_codegen = { version = "0.11.0", features = ["postgres"] }
+dotenv = "0.8.0"
