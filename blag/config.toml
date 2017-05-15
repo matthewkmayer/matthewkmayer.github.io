@@ -1,3 +1,5 @@
-baseURL = "https://matthewkmayer.github.io/blag"
+baseURL = "https://matthewkmayer.github.io/blag/public"
 languageCode = "en-us"
-title = "My New Hugo Site"
+title = "Matthew Mayer's tech blog"
+[params]
+    author = "Matthew Mayer"
