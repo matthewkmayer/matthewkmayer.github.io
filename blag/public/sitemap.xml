@@ -2,29 +2,29 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://matthewkmayer.github.io/blag/post/good-to-great/</loc>
+    <loc>https://matthewkmayer.github.io/blag/public/post/good-to-great/</loc>
     <lastmod>2017-05-09T13:08:19-07:00</lastmod>
   </url>
   
   <url>
-    <loc>https://matthewkmayer.github.io/blag/categories/</loc>
+    <loc>https://matthewkmayer.github.io/blag/public/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://matthewkmayer.github.io/blag/</loc>
-    <lastmod>2017-05-09T13:08:19-07:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://matthewkmayer.github.io/blag/post/</loc>
+    <loc>https://matthewkmayer.github.io/blag/public/</loc>
     <lastmod>2017-05-09T13:08:19-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://matthewkmayer.github.io/blag/tags/</loc>
+    <loc>https://matthewkmayer.github.io/blag/public/post/</loc>
+    <lastmod>2017-05-09T13:08:19-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://matthewkmayer.github.io/blag/public/tags/</loc>
     <priority>0</priority>
   </url>
   

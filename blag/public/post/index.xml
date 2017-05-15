@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on My New Hugo Site</title>
-    <link>https://matthewkmayer.github.io/blag/post/</link>
+    <link>https://matthewkmayer.github.io/blag/public/post/</link>
     <description>Recent content in Posts on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 09 May 2017 13:08:19 -0700</lastBuildDate>
     
-	<atom:link href="https://matthewkmayer.github.io/blag/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>good to great</title>
-      <link>https://matthewkmayer.github.io/blag/post/good-to-great/</link>
+      <link>https://matthewkmayer.github.io/blag/public/post/good-to-great/</link>
       <pubDate>Tue, 09 May 2017 13:08:19 -0700</pubDate>
       
-      <guid>https://matthewkmayer.github.io/blag/post/good-to-great/</guid>
+      <guid>https://matthewkmayer.github.io/blag/public/post/good-to-great/</guid>
       <description></description>
     </item>
     
