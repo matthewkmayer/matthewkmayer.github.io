@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>My New Hugo Site</title>
+    <title>Matthew Mayer&#39;s tech blog</title>
     <link>https://matthewkmayer.github.io/blag/public/</link>
-    <description>Recent content on My New Hugo Site</description>
+    <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 09 May 2017 13:08:19 -0700</lastBuildDate>
