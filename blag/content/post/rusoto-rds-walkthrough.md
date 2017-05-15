@@ -4,8 +4,6 @@ draft = false
 title = "Rusoto RDS walkthrough"
 +++
 
-## Overview
-
 Let's tie some great Rust crates together!  In this walkthrough, we'll use [Rusoto](https://github.com/rusoto/rusoto) to create a Postgres RDS database instance,
 [Rocket.rs](https://github.com/SergioBenitez/Rocket) to make a web server and [Diesel](https://github.com/diesel-rs/diesel) to talk to the database on AWS to make a proof of concept hit counter.
 

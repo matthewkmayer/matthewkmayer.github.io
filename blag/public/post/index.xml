@@ -17,9 +17,7 @@
       <pubDate>Sun, 14 May 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/</guid>
-      <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
-
-&lt;p&gt;Let&amp;rsquo;s tie some great Rust crates together!  In this walkthrough, we&amp;rsquo;ll use &lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt; to create a Postgres RDS database instance,
+      <description>&lt;p&gt;Let&amp;rsquo;s tie some great Rust crates together!  In this walkthrough, we&amp;rsquo;ll use &lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt; to create a Postgres RDS database instance,
 &lt;a href=&#34;https://github.com/SergioBenitez/Rocket&#34;&gt;Rocket.rs&lt;/a&gt; to make a web server and &lt;a href=&#34;https://github.com/diesel-rs/diesel&#34;&gt;Diesel&lt;/a&gt; to talk to the database on AWS to make a proof of concept hit counter.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
