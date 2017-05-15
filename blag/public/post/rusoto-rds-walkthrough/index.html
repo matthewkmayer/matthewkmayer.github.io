@@ -5,7 +5,7 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
-        <title>good to great &middot; Matthew Mayer&#39;s tech blog</title>
+        <title>Rusoto RDS walkthrough &middot; Matthew Mayer&#39;s tech blog</title>
         <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
         <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/libraries/normalize.3.0.1.css" />
         <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/css/liquorice.css" />
@@ -49,17 +49,100 @@
             <div class="sixteen columns">
                 <article class="li-article">
                     <header class="li-article-header">
-                        <h1 class="li-article-title">good to great</h1>
+                        <h1 class="li-article-title">Rusoto RDS walkthrough</h1>
                         <span class="li-article-taxonomies">
                             
 
                             
                         </span>
                         
-                        <time class="li-article-date">Tuesday, May 9, 2017</time>
+                        <time class="li-article-date">Sunday, May 14, 2017</time>
                     </header>
                     <section>
                         
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>Default VPC (for publically accessibly RDS instances), AWS access keys in some fashion, Rust nightly.</p>
+
+<p>Switch to Rust nightly:  <code>rustup default nightly</code>.</p>
+
+<h2 id="rocket-site">Rocket site</h2>
+
+<p>Follows the guide at <a href="https://rocket.rs/">https://rocket.rs/</a> .  Rocket is why nightly Rust is required: Rusoto and Diesel work on stable Rust.</p>
+
+<h2 id="creating-a-postgres-rds-instance">Creating a Postgres RDS instance</h2>
+
+<p>See <a href="rusoto-rds/src/main.rs">rusoto-rds/src/main.rs</a> for the full code.</p>
+
+<p>In the <code>rusoto-rds</code> directory, run <code>cargo run</code> to create a new database and wait for it to be available.
+Once the endpoint is available, put that in the <code>.env</code> file in <code>rusoto-rocket</code>.</p>
+
+<p>Example:</p>
+
+<p><code>DATABASE_URL=postgres://masteruser:TotallySecurePassword501@localhost/rusoto_rocket</code></p>
+
+<p>The code will:</p>
+
+<ul>
+<li>Create a new database</li>
+<li>Wait for it to be created</li>
+<li>Extract the endpoint to use with Diesel</li>
+</ul>
+
+<h2 id="security-groups">Security groups</h2>
+
+<p>Using the AWS Console, add a new rule to the security group the RDS instance is using.  Allow inbound traffic on port 5432
+from your IP address.</p>
+
+<h2 id="diesel-basics">Diesel basics</h2>
+
+<p>Install with <code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
+
+<p>Set up <code>.env</code> to have the connection string from the new RDS instance, including username and password:</p>
+
+<p><code>DATABASE_URL=postgres://postgres:TotallySecurePassword501@localhost/rusoto_rocket</code></p>
+
+<p>The up and down files have been populated in this sample.</p>
+
+<p>Up file:</p>
+
+<pre><code class="language-SQL">CREATE TABLE hits (
+    id SERIAL PRIMARY KEY,
+    hits_so_far SERIAL NOT NULL
+)
+</code></pre>
+
+<p>Down file:</p>
+
+<pre><code class="language-SQL">DROP TABLE hits
+</code></pre>
+
+<p>In the <code>rusoto-rocket</code> directory, run <code>diesel setup</code>.  This will connect to RDS and create the database with the required schema.</p>
+
+<p>If the command times out, ensure your security groups allow inbound access from your IP address.</p>
+
+<h2 id="connecting-it-all">Connecting it all</h2>
+
+<p>Run <code>cargo run</code> in <code>rusoto-rocket</code> directory.  This will spin up a Rocket webserver on <a href="http://localhost:8000">http://localhost:8000</a>.
+Visit that page to see the hit counter.  Refresh the page and see it increment by one for every page visit.
+The data is stored in the RDS instance on AWS. 🎉</p>
+
+<h2 id="cleaning-up">Cleaning up</h2>
+
+<p>To ensure the database doesn&rsquo;t keep running and potentially run up AWS bills, log in to the AWS Console and delete the
+RDS DB instance.</p>
+
+<h2 id="demo-vs-longer-term-infrastructure">Demo vs longer term infrastructure</h2>
+
+<ul>
+<li>Use Cloudformation via Troposphere.</li>
+<li>Deploy via CodeDeploy, ElasticBeanstalk, Elastic Container Service instead of SCP.</li>
+</ul>
+
+<p>Testing notes:
+<code>docker run --name postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:alpine</code></p>
+
                     </section>
                 </article>
             </div>
@@ -76,15 +159,15 @@
             <div class="eight columns">
                 <div class="li-pagination-previous">
                     
-                        Later article<br />
-                        <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/"> Rusoto RDS walkthrough</a>
+                        &nbsp;
                     
                 </div>
             </div>
             <div class="eight columns">
                 <div class="li-pagination-next">
                     
-                        &nbsp;
+                        Older article<br />
+                        <a href="https://matthewkmayer.github.io/blag/public/post/good-to-great/"> good to great</a>
                     
                 </div>
             </div>
