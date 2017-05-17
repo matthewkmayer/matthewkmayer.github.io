@@ -1,3 +1,6 @@
 [submodule "blag/themes/liquorice"]
 	path = blag/themes/liquorice
 	url = https://github.com/matthewkmayer/liquorice.git
+[submodule "myfork"]
+	path = blag/themes/liquorice
+	url = git@github.com:matthewkmayer/liquorice.git
