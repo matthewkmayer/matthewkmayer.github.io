@@ -11,9 +11,45 @@ Let's tie some great Rust crates together!  In this walkthrough, we'll use [Ruso
 
 ## Prerequisites
 
-Default VPC (for publically accessibly RDS instances), AWS access keys in some fashion, Rust nightly.
+### Rocket
 
-Switch to Rust nightly:  `rustup default nightly`.
+Starting with the Rocket web site, we'll need to use Rust nightly.  This walkthrough uses `rustc 1.18.0-nightly (036983201 2017-04-26)`.  To switch to that nightly release, run `rustup default nightly-2017-04-26`.  The output of that command should look like this:
+
+```bash
+info: syncing channel updates for 'nightly-2017-04-26-x86_64-apple-darwin'
+info: downloading component 'rustc'
+ 42.3 MiB /  42.3 MiB (100 %) 1014.4 KiB/s ETA:   0 s                
+info: downloading component 'rust-std'
+ 58.2 MiB /  58.2 MiB (100 %)   1.4 MiB/s ETA:   0 s                
+info: downloading component 'cargo'
+  3.6 MiB /   3.6 MiB (100 %)   1.1 MiB/s ETA:   0 s                
+info: downloading component 'rust-docs'
+ 11.5 MiB /  11.5 MiB (100 %)   1.1 MiB/s ETA:   0 s                
+info: installing component 'rustc'
+info: installing component 'rust-std'
+info: installing component 'cargo'
+info: installing component 'rust-docs'
+info: default toolchain set to 'nightly-2017-04-26-x86_64-apple-darwin'
+
+  nightly-2017-04-26-x86_64-apple-darwin installed - rustc 1.18.0-nightly (2b4c91158 2017-04-25)
+```
+
+Verify `rustc` is using the right version:
+
+```bash
+$ rustc --version
+rustc 1.18.0-nightly (2b4c91158 2017-04-25)
+```
+
+### Diesel
+
+To set up Diesel, we'll need to [install Postgres](https://wiki.postgresql.org/wiki/Detailed_installation_guides) to get the required libraries for Diesel CLI.  The Postgres service doesn't have to be running for this walkthrough.
+
+Then install the Diesel CLI tool with the Postgres extensions: `cargo install diesel_cli --features "postgres" --no-default-features`.
+
+### Rusoto
+
+For the AWS portions of this walkthrough, ensure AWS access keys are available either in environment variables or AWS credentials file.
 
 ## Rocket site
 
