@@ -348,6 +348,27 @@ CREATE TABLE hits (
 DROP TABLE hits
 ```
 
+The [schema file](https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/schema.rs) infers the schema via the database:
+
+```rust
+infer_schema!("dotenv:DATABASE_URL");
+```
+
+The ORM models we use are in the [models file](https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/models.rs):
+
+```rust
+use schema::hits;
+
+#[derive(Queryable, Insertable, Debug)]
+#[table_name="hits"]
+pub struct Hit {
+    pub id: i32,
+    pub hits_so_far: i32,
+}
+```
+
+We use the type `Hit` to describe our hit counter.  It `derive`s Queryable, Insertable and Debug, in the table `hits`.  There's an `id` field which we gloss over by using a constant and the `hits_so_far` field where we store the number of hits the site has seen.
+
 In the `rusoto-rocket` directory, run `diesel setup`.  This will connect to RDS and create the database with the required schema.
 
 If the command times out, ensure your security groups allow inbound access from your IP address.
@@ -369,5 +390,6 @@ RDS DB instance.
 * Use Cloudformation via Troposphere.
 * Deploy via CodeDeploy, ElasticBeanstalk, Elastic Container Service instead of SCP.
 
-Testing notes:
-`docker run --name postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:alpine`
+## Rusoto homework
+
+Instead of going through the AWS Console, we can modify the security groups to allow ingress from our IP address using Rusoto.  Find the database's security group and `allow` inbound traffic from your IP address.  Security groups are under [EC2 in Rusoto](https://rusoto.github.io/rusoto/rusoto_ec2/struct.CreateSecurityGroupRequest.html).
