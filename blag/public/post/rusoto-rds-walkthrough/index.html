@@ -64,51 +64,195 @@
 
 <p></p>
 
+<h2 id="walkthrough-overview">Walkthrough overview</h2>
+
+<p>There are two projects in this walkthrough.  First is <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds">rusoto-rds</a>.  This creates the Amazon Web Services (AWS) Relational Database Service (RDS) instance and should be run first.</p>
+
+<p>The second is <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket">rusoto-rocket</a>.  This is the Rocket web service sample.  It uses Diesel and Rocket to have a web site that connects to the RDS instance created in <code>rusoto-rds</code> and demonstrates a hit counter.</p>
+
 <h2 id="prerequisites">Prerequisites</h2>
 
-<p>Default VPC (for publically accessibly RDS instances), AWS access keys in some fashion, Rust nightly.</p>
+<h4 id="rocket">Rocket</h4>
 
-<p>Switch to Rust nightly:  <code>rustup default nightly</code>.</p>
+<p>Starting with the Rocket web site, we&rsquo;ll need to use Rust nightly.  This walkthrough uses <code>rustc 1.18.0-nightly (036983201 2017-04-26)</code>.  To switch to that nightly release, run <code>rustup default nightly-2017-04-26</code>.  The output of that command should look like this:</p>
 
-<h2 id="rocket-site">Rocket site</h2>
+<pre><code class="language-bash">info: syncing channel updates for 'nightly-2017-04-26-x86_64-apple-darwin'
+info: downloading component 'rustc'
+ 42.3 MiB /  42.3 MiB (100 %) 1014.4 KiB/s ETA:   0 s                
+info: downloading component 'rust-std'
+ 58.2 MiB /  58.2 MiB (100 %)   1.4 MiB/s ETA:   0 s                
+info: downloading component 'cargo'
+  3.6 MiB /   3.6 MiB (100 %)   1.1 MiB/s ETA:   0 s                
+info: downloading component 'rust-docs'
+ 11.5 MiB /  11.5 MiB (100 %)   1.1 MiB/s ETA:   0 s                
+info: installing component 'rustc'
+info: installing component 'rust-std'
+info: installing component 'cargo'
+info: installing component 'rust-docs'
+info: default toolchain set to 'nightly-2017-04-26-x86_64-apple-darwin'
 
-<p>Follows the guide at <a href="https://rocket.rs/">https://rocket.rs/</a> .  Rocket is why nightly Rust is required: Rusoto and Diesel work on stable Rust.</p>
+  nightly-2017-04-26-x86_64-apple-darwin installed - rustc 1.18.0-nightly (2b4c91158 2017-04-25)
+</code></pre>
+
+<p>Verify <code>rustc</code> is using the right version:</p>
+
+<pre><code class="language-bash">$ rustc --version
+rustc 1.18.0-nightly (2b4c91158 2017-04-25)
+</code></pre>
+
+<h4 id="diesel">Diesel</h4>
+
+<p>To set up Diesel, we&rsquo;ll need to <a href="https://wiki.postgresql.org/wiki/Detailed_installation_guides">install Postgres</a> to get the required libraries for Diesel CLI.  The Postgres service doesn&rsquo;t have to be running for this walkthrough.</p>
+
+<p>Then install the Diesel CLI tool with the Postgres extensions:</p>
+
+<p><code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
+
+<h4 id="rusoto">Rusoto</h4>
+
+<p>For the AWS portions of this walkthrough, ensure AWS access keys are available either in environment variables or AWS credentials file.</p>
 
 <h2 id="creating-a-postgres-rds-instance">Creating a Postgres RDS instance</h2>
 
-<p>See <a href="rusoto-rds/src/main.rs">rusoto-rds/src/main.rs</a> for the full code.</p>
+<p>See <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rds/src/main.rs">rusoto-rds/src/main.rs</a> for the full code.  We&rsquo;ll be using <a href="https://github.com/rusoto/rusoto/">Rusoto</a> 0.24.0, the latest release as of writing this post.</p>
 
-<p>In the <code>rusoto-rds</code> directory, run <code>cargo run</code> to create a new database and wait for it to be available.
-Once the endpoint is available, put that in the <code>.env</code> file in <code>rusoto-rocket</code>.</p>
+<p>The meat of the program is this:</p>
 
-<p>Example:</p>
+<pre><code class="language-rust">let database_instance_name = &quot;rusototester2&quot;;
+let credentials = DefaultCredentialsProvider::new().unwrap();
+
+// Security groups in the default VPC will need modification to let you access this from the internet:
+
+let rds_client = RdsClient::new(default_tls_client().unwrap(), credentials, Region::UsEast1);
+let create_db_instance_request = CreateDBInstanceMessage {
+    allocated_storage: Some(5),
+    backup_retention_period: Some(0),
+    db_instance_identifier: database_instance_name.to_string(),
+    db_instance_class: &quot;db.t2.micro&quot;.to_string(),
+    // name and login details should match `.env` in rusoto-rocket
+    master_user_password: Some(&quot;TotallySecurePassword501&quot;.to_string()),
+    master_username: Some(&quot;masteruser&quot;.to_string()),
+    db_name: Some(&quot;rusotodb&quot;.to_string()),
+    engine: &quot;postgres&quot;.to_string(),
+    multi_az: Some(false),
+    ..Default::default()
+};
+
+println!(&quot;Going to make the database instance.&quot;);
+let db_creation_result = rds_client.create_db_instance(&amp;create_db_instance_request).unwrap();
+println!(&quot;Created! \n\n{:?}&quot;, db_creation_result);
+
+// The endpoint isn't available until the DB is created, let's wait for it:
+let describe_instances_request = DescribeDBInstancesMessage {
+    db_instance_identifier: Some(database_instance_name.to_string()),
+    ..Default::default()
+};
+
+let endpoint : rusoto::rds::Endpoint;
+let ten_seconds = time::Duration::from_millis(10000);
+loop {
+    match rds_client.describe_db_instances(&amp;describe_instances_request).unwrap().db_instances.unwrap()[0].endpoint {
+        Some(ref endpoint_result) =&gt; {
+            endpoint = endpoint_result.clone();
+            break;
+        },
+        None =&gt; {
+            println!(&quot;Waiting for db to be available...&quot;);
+            thread::sleep(ten_seconds);
+            continue;
+        },
+    };
+}
+</code></pre>
+
+<p>A lot to unravel.</p>
+
+<p>The first thing we do is create an AWS credential object:</p>
+
+<pre><code class="language-rust">let credentials = DefaultCredentialsProvider::new().unwrap();
+</code></pre>
+
+<p>This creates a Rusoto credential chain.  It will source credentials according to <a href="https://github.com/rusoto/rusoto/blob/master/AWS-CREDENTIALS.md">AWS best practices</a>.</p>
+
+<pre><code class="language-rust">let rds_client = RdsClient::new(default_tls_client().unwrap(), credentials, Region::UsEast1);
+let create_db_instance_request = CreateDBInstanceMessage {
+    allocated_storage: Some(5),
+    backup_retention_period: Some(0),
+    db_instance_identifier: database_instance_name.to_string(),
+    db_instance_class: &quot;db.t2.micro&quot;.to_string(),
+    // name and login details should match `.env` in rusoto-rocket
+    master_user_password: Some(&quot;TotallySecurePassword501&quot;.to_string()),
+    master_username: Some(&quot;masteruser&quot;.to_string()),
+    db_name: Some(&quot;rusotodb&quot;.to_string()),
+    engine: &quot;postgres&quot;.to_string(),
+    multi_az: Some(false),
+    ..Default::default()
+};
+</code></pre>
+
+<p>This code creates a Rusoto client for AWS RDS.  Then it makes a new <code>CreateDBInstanceMessage</code>, as specified by the AWS RDS API definition.  We set database storage/disk size, disable backups, use a <code>t2.micro</code> size and we set our username, password and database name, along with setting it to a single availability zone (AZ) since this is a non-production database.  We wrap it up by telling Rusoto to use defaults for the rest of the request.</p>
+
+<p>Finally, we execute the request to create the RDS instance:</p>
+
+<pre><code class="language-rust">let db_creation_result = rds_client.create_db_instance(&amp;create_db_instance_request).unwrap();
+</code></pre>
+
+<p>Since creating the database can take a few minutes, we poll AWS for its status:</p>
+
+<pre><code class="language-rust">let describe_instances_request = DescribeDBInstancesMessage {
+    db_instance_identifier: Some(database_instance_name.to_string()),
+    ..Default::default()
+};
+</code></pre>
+
+<pre><code class="language-rust">let endpoint : rusoto::rds::Endpoint;
+let ten_seconds = time::Duration::from_millis(10000);
+loop {
+    match rds_client.describe_db_instances(&amp;describe_instances_request).unwrap().db_instances.unwrap()[0].endpoint {
+        Some(ref endpoint_result) =&gt; {
+            endpoint = endpoint_result.clone();
+            break;
+        },
+        None =&gt; {
+            println!(&quot;Waiting for db to be available...&quot;);
+            thread::sleep(ten_seconds);
+            continue;
+        },
+    };
+}
+</code></pre>
+
+<p>This code waits for the instance to become available by checking for the RDS instance by name.</p>
+
+<pre><code class="language-rust">let endpoint_address = endpoint.address.unwrap();
+let endpoint_port = endpoint.port.unwrap();
+println!(&quot;\n\nendpoint: {:?}&quot;, format!(&quot;{}:{}&quot;, endpoint_address, endpoint_port));
+</code></pre>
+
+<p>When the database is available, we extract the connection string and print it.  Since the DNS name AWS creates for the RDS instance is unique, we&rsquo;ll put that in the <code>.env</code> file in <code>rusoto-rocket</code>.</p>
+
+<p>Example of <code>.env</code>, using <code>localhost</code> instead of the RDS DNS name:</p>
 
 <p><code>DATABASE_URL=postgres://masteruser:TotallySecurePassword501@localhost/rusoto_rocket</code></p>
 
-<p>The code will:</p>
-
-<ul>
-<li>Create a new database</li>
-<li>Wait for it to be created</li>
-<li>Extract the endpoint to use with Diesel</li>
-</ul>
+<p>Now, to create the database: in the <code>rusoto-rds</code> directory, run <code>cargo run</code> to create a new database and wait for it to be available. Populate <code>.env</code> DNS name the with the output of <code>rusoto-rds</code>, replacing <code>localhost</code> in this example.</p>
 
 <h2 id="security-groups">Security groups</h2>
 
 <p>Using the AWS Console, add a new rule to the security group the RDS instance is using.  Allow inbound traffic on port 5432
-from your IP address.</p>
+from your IP address.  If the following <code>diesel</code> commands time out, double check you can reach the instance.  A common gotcha is security groups blocking ingress.</p>
 
-<h2 id="diesel-basics">Diesel basics</h2>
+<h2 id="diesel-1">Diesel</h2>
 
-<p>Install with <code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
+<p>We&rsquo;ve already installed the Diesel CLI with <code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
 
-<p>Set up <code>.env</code> to have the connection string from the new RDS instance, including username and password:</p>
+<p>Ensure the <code>.env</code> file in <code>rusoto-rocket</code> has the connection string from the new RDS instance, including username and password:</p>
 
 <p><code>DATABASE_URL=postgres://postgres:TotallySecurePassword501@localhost/rusoto_rocket</code></p>
 
-<p>The up and down files have been populated in this sample.</p>
+<p>The up and down files have been populated in this sample.  They are available at <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter">https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter</a> .</p>
 
-<p>Up file:</p>
+<p><a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter/up.sql">Up file</a>:</p>
 
 <pre><code class="language-SQL">CREATE TABLE hits (
     id SERIAL PRIMARY KEY,
@@ -116,14 +260,157 @@ from your IP address.</p>
 )
 </code></pre>
 
-<p>Down file:</p>
+<p><a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter/down.sql">Down file</a>:</p>
 
 <pre><code class="language-SQL">DROP TABLE hits
 </code></pre>
 
+<p>The <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/schema.rs">schema file</a> infers the schema via the database:</p>
+
+<pre><code class="language-rust">infer_schema!(&quot;dotenv:DATABASE_URL&quot;);
+</code></pre>
+
+<p>The ORM models we use are in the <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/models.rs">models file</a>:</p>
+
+<pre><code class="language-rust">use schema::hits;
+
+#[derive(Queryable, Insertable, Debug)]
+#[table_name=&quot;hits&quot;]
+pub struct Hit {
+    pub id: i32,
+    pub hits_so_far: i32,
+}
+</code></pre>
+
+<p>We use the type <code>Hit</code> to describe our hit counter.  It <code>derive</code>s Queryable, Insertable and Debug, in the table <code>hits</code>.  There&rsquo;s an <code>id</code> field which we gloss over by using a constant and the <code>hits_so_far</code> field where we store the number of hits the site has seen.  Except <code>Debug</code>, the <code>derive</code> fields are used by Diesel.</p>
+
 <p>In the <code>rusoto-rocket</code> directory, run <code>diesel setup</code>.  This will connect to RDS and create the database with the required schema.</p>
 
 <p>If the command times out, ensure your security groups allow inbound access from your IP address.</p>
+
+<h2 id="making-the-rocket-site">Making the Rocket site</h2>
+
+<p>This sample site follows the guide at <a href="https://rocket.rs/">https://rocket.rs/</a> .  Rocket is why nightly Rust is required: Rusoto and Diesel work on stable Rust.</p>
+
+<p>The source code for the Rocket site is located <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket">on Github</a>.</p>
+
+<p>The <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/Cargo.toml">Cargo.toml</a> brings in the following dependencies:</p>
+
+<pre><code class="language-toml">[dependencies]
+rocket = &quot;0.2.6&quot;
+rocket_codegen = &quot;0.2.6&quot;
+diesel = { version = &quot;0.11.0&quot;, features = [&quot;postgres&quot;] }
+diesel_codegen = { version = &quot;0.11.0&quot;, features = [&quot;postgres&quot;] }
+dotenv = &quot;0.8.0&quot;
+</code></pre>
+
+<p>We&rsquo;re using Rocket 0.2.6 along with its codegen library, Diesel 0.11.0 with Postgres with its codegen library and dotenv for supplying configuration to Diesel.</p>
+
+<p>In the <code>bin/main</code> directory we have the entirety of the Rocket site:</p>
+
+<pre><code class="language-rust">#![feature(plugin)]
+#![plugin(rocket_codegen)]
+
+extern crate diesel;
+extern crate dotenv;
+extern crate rocket;
+extern crate rusoto_rocket;
+
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
+use self::rusoto_rocket::*;
+use self::rusoto_rocket::models::*;
+
+#[get(&quot;/&quot;)]
+fn index() -&gt; String {
+    use rusoto_rocket::schema::hits::dsl::*;
+    // we should have connection made outside this handler:
+    let connection = establish_connection();
+    let hits_from_db = hits.filter(id.eq(1)).limit(1).load::&lt;Hit&gt;(&amp;connection).expect(&quot;Couldn't load hits, yo.&quot;);
+    // increment hits:
+    let hits_weve_seen = hits_from_db.first().unwrap().hits_so_far;
+    increment_hit(&amp;connection, 1, hits_weve_seen + 1);
+    format!(&quot;Hello, world!  Hits: {:?}&quot;, hits_weve_seen).to_string()
+}
+
+fn main() {
+    let connection = establish_connection();
+    create_hit(&amp;connection, 1);
+    rocket::ignite().mount(&quot;/&quot;, routes![index]).launch();
+}
+
+pub fn increment_hit(conn: &amp;PgConnection, id: i32, new_hits: i32) {
+    use schema::hits;
+    use rusoto_rocket::schema::hits::dsl::hits as myhits;
+
+    let result = diesel::update(myhits.find(id))
+        .set(hits::hits_so_far.eq(new_hits))
+        .execute(conn);
+
+    match result {
+        Ok(_) =&gt; (),
+        Err(e) =&gt; println!(&quot;Couldn't update hit counter: {}&quot;, e),
+    };
+}
+</code></pre>
+
+<p>That&rsquo;s a lot to take in!  Let&rsquo;s break it down:</p>
+
+<pre><code class="language-rust">#![feature(plugin)]
+#![plugin(rocket_codegen)]
+
+extern crate diesel;
+extern crate dotenv;
+extern crate rocket;
+extern crate rusoto_rocket;
+
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
+use self::rusoto_rocket::*;
+use self::rusoto_rocket::models::*;
+</code></pre>
+
+<p>We enable Rust plugins and the Rocket codegen plugin.  Then we bring in the required crates: <code>diesel</code> for database access, <code>dotenv</code> for configuration, <code>rocket</code> for the site and code for this walkthrough, <code>rusoto_rocket</code>.  We <code>use</code> the required modules: <code>diesel</code> boilerplate, Postgres libraries and our <code>rusoto_rocket</code> code and database models.</p>
+
+<pre><code class="language-rust">#[get(&quot;/&quot;)]
+fn index() -&gt; String {
+    use rusoto_rocket::schema::hits::dsl::*;
+    // we should have connection made outside this handler:
+    let connection = establish_connection();
+    let hits_from_db = hits.filter(id.eq(1)).limit(1).load::&lt;Hit&gt;(&amp;connection).expect(&quot;Couldn't load hits, yo.&quot;);
+    // increment hits:
+    let hits_weve_seen = hits_from_db.first().unwrap().hits_so_far;
+    increment_hit(&amp;connection, 1, hits_weve_seen + 1);
+    format!(&quot;Hello, world!  Hits: {:?}&quot;, hits_weve_seen).to_string()
+}
+
+fn main() {
+    let connection = establish_connection();
+    create_hit(&amp;connection, 1);
+    rocket::ignite().mount(&quot;/&quot;, routes![index]).launch();
+}
+</code></pre>
+
+<p>Starting with <code>main</code>, we establish a connection to the database.  Then we create our first <code>hit</code> record with an <code>id</code> of <code>1</code>.  Then we call <code>rocket::ignite().mount(&quot;/&quot;, routes![index]).launch();</code> to bind our Rocket site to <code>/</code> with the <code>index</code> route as the only route.</p>
+
+<p>The <code>index</code> route is defined by the <code>fn index()</code> function and the <code>#[get(&quot;/&quot;)]</code> tells Rocket to map it to the root URL: no path required for that endpoint.</p>
+
+<pre><code class="language-rust">pub fn increment_hit(conn: &amp;PgConnection, id: i32, new_hits: i32) {
+    use schema::hits;
+    use rusoto_rocket::schema::hits::dsl::hits as myhits;
+
+    let result = diesel::update(myhits.find(id))
+        .set(hits::hits_so_far.eq(new_hits))
+        .execute(conn);
+
+    match result {
+        Ok(_) =&gt; (),
+        Err(e) =&gt; println!(&quot;Couldn't update hit counter: {}&quot;, e),
+    };
+}
+</code></pre>
+
+<p>Finally, our <code>increment_hit</code> function: this uses Diesel to update the database record.  We reference the required schema item, rename the Diesel DSL <code>hits</code> as <code>myhits</code> and run an update.  The actual integer increment happens in the <code>index</code> function.  More on this in the Diesel section.</p>
 
 <h2 id="connecting-it-all">Connecting it all</h2>
 
@@ -138,13 +425,17 @@ RDS DB instance.</p>
 
 <h2 id="demo-vs-longer-term-infrastructure">Demo vs longer term infrastructure</h2>
 
+<p>As a demo, there&rsquo;s a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addresses when making a real service:</p>
+
 <ul>
-<li>Use Cloudformation via Troposphere.</li>
-<li>Deploy via CodeDeploy, ElasticBeanstalk, Elastic Container Service instead of SCP.</li>
+<li>Lots of <code>unwrap()</code> in this sample code.  Check for errors instead of that.</li>
+<li>Deploys of a real site should use <a href="https://aws.amazon.com/cloudformation/">Cloudformation</a> via <a href="https://github.com/cloudtools/troposphere">Troposphere</a> for infrastructure, such as the RDS instance.</li>
+<li>To deploy an actual Rocket site, use <a href="https://aws.amazon.com/codedeploy/">CodeDeploy</a>, <a href="https://aws.amazon.com/elasticbeanstalk/">ElasticBeanstalk</a> or <a href="https://aws.amazon.com/ecs/">Elastic Container Service</a> instead of copying files to an AWS EC2 instance.</li>
 </ul>
 
-<p>Testing notes:
-<code>docker run --name postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:alpine</code></p>
+<h2 id="rusoto-homework">Rusoto homework</h2>
+
+<p>Instead of going through the AWS Console, we can modify the security groups to allow ingress from our IP address using Rusoto.  Find the database&rsquo;s security group and <code>allow</code> inbound traffic from your IP address.  Security groups are under <a href="https://rusoto.github.io/rusoto/rusoto_ec2/struct.CreateSecurityGroupRequest.html">EC2 in Rusoto</a>.</p>
                     </section>
                 </article>
             </div>
@@ -180,10 +471,10 @@ RDS DB instance.</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2017. All rights reserved. 
+                    The source code and content of this website are free and available under the MIT license.
                 </div>
                 <div class="li-page-footer-theme">
-                    <span class=""><a href="https://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a>, is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
                 </div>
             </div>
         </div>
