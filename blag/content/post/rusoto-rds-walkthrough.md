@@ -386,9 +386,11 @@ RDS DB instance.
 
 ## Demo vs longer term infrastructure
 
+As a demo, there's a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addresses when making a real service:
+
 * Lots of `unwrap()` in this sample code.  Check for errors instead of that.
-* Use Cloudformation via Troposphere.
-* Deploy via CodeDeploy, ElasticBeanstalk, Elastic Container Service instead of SCP.
+* Deploys of a real site should use [Cloudformation](https://aws.amazon.com/cloudformation/) via [Troposphere](https://github.com/cloudtools/troposphere) for infrastructure, such as the RDS instance.
+* To deploy an actual Rocket site, use [CodeDeploy](https://aws.amazon.com/codedeploy/), [ElasticBeanstalk](https://aws.amazon.com/elasticbeanstalk/) or [Elastic Container Service](https://aws.amazon.com/ecs/) instead of copying files to an AWS EC2 instance.
 
 ## Rusoto homework
 
