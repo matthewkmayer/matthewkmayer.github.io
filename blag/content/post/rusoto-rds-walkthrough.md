@@ -17,7 +17,7 @@ The second is [rusoto-rocket](https://github.com/matthewkmayer/matthewkmayer.git
 
 ## Prerequisites
 
-### Rocket
+#### Rocket
 
 Starting with the Rocket web site, we'll need to use Rust nightly.  This walkthrough uses `rustc 1.18.0-nightly (036983201 2017-04-26)`.  To switch to that nightly release, run `rustup default nightly-2017-04-26`.  The output of that command should look like this:
 
@@ -47,7 +47,7 @@ $ rustc --version
 rustc 1.18.0-nightly (2b4c91158 2017-04-25)
 ```
 
-### Diesel
+#### Diesel
 
 To set up Diesel, we'll need to [install Postgres](https://wiki.postgresql.org/wiki/Detailed_installation_guides) to get the required libraries for Diesel CLI.  The Postgres service doesn't have to be running for this walkthrough.
 
@@ -55,7 +55,7 @@ Then install the Diesel CLI tool with the Postgres extensions:
 
 `cargo install diesel_cli --features "postgres" --no-default-features`.
 
-### Rusoto
+#### Rusoto
 
 For the AWS portions of this walkthrough, ensure AWS access keys are available either in environment variables or AWS credentials file.
 
