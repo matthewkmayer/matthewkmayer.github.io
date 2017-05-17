@@ -61,7 +61,7 @@ For the AWS portions of this walkthrough, ensure AWS access keys are available e
 
 ## Creating a Postgres RDS instance
 
-See [rusoto-rds/src/main.rs](https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rds/src/main.rs) for the full code.
+See [rusoto-rds/src/main.rs](https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rds/src/main.rs) for the full code.  We'll be using [Rusoto](https://github.com/rusoto/rusoto/) 0.24.0, the latest release as of writing this post.
 
 The meat of the program is this:
 
