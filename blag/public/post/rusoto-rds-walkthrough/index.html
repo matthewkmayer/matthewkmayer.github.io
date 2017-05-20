@@ -316,27 +316,37 @@ extern crate dotenv;
 extern crate rocket;
 extern crate rusoto_rocket;
 
+use std::sync::Mutex;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
+use rocket::State;
 use self::rusoto_rocket::*;
 use self::rusoto_rocket::models::*;
 
+type DbConn = Mutex&lt;PgConnection&gt;;
+
 #[get(&quot;/&quot;)]
-fn index() -&gt; String {
+fn index(db_conn: State&lt;DbConn&gt;) -&gt; String {
     use rusoto_rocket::schema::hits::dsl::*;
-    // we should have connection made outside this handler:
-    let connection = establish_connection();
-    let hits_from_db = hits.filter(id.eq(1)).limit(1).load::&lt;Hit&gt;(&amp;connection).expect(&quot;Couldn't load hits, yo.&quot;);
+    let my_db_conn = db_conn.inner().lock().expect(&quot;Couldn't get mutex lock on db connection&quot;);
+    let hits_from_db = hits.filter(id.eq(1))
+        .limit(1)
+        .load::&lt;Hit&gt;(&amp;my_db_conn as &amp;PgConnection) // Explicit cast needed
+        .expect(&quot;Couldn't load hits, yo.&quot;);
     // increment hits:
     let hits_weve_seen = hits_from_db.first().unwrap().hits_so_far;
-    increment_hit(&amp;connection, 1, hits_weve_seen + 1);
+    increment_hit(&amp;my_db_conn, 1, hits_weve_seen + 1);
     format!(&quot;Hello, world!  Hits: {:?}&quot;, hits_weve_seen).to_string()
 }
 
 fn main() {
     let connection = establish_connection();
     create_hit(&amp;connection, 1);
-    rocket::ignite().mount(&quot;/&quot;, routes![index]).launch();
+
+    rocket::ignite()
+        .manage(Mutex::new(connection))
+        .mount(&quot;/&quot;, routes![index])
+        .launch();
 }
 
 pub fn increment_hit(conn: &amp;PgConnection, id: i32, new_hits: i32) {
@@ -364,34 +374,46 @@ extern crate dotenv;
 extern crate rocket;
 extern crate rusoto_rocket;
 
+use std::sync::Mutex;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
+use rocket::State;
 use self::rusoto_rocket::*;
 use self::rusoto_rocket::models::*;
+
+type DbConn = Mutex&lt;PgConnection&gt;;
 </code></pre>
 
 <p>We enable Rust plugins and the Rocket codegen plugin.  Then we bring in the required crates: <code>diesel</code> for database access, <code>dotenv</code> for configuration, <code>rocket</code> for the site and code for this walkthrough, <code>rusoto_rocket</code>.  We <code>use</code> the required modules: <code>diesel</code> boilerplate, Postgres libraries and our <code>rusoto_rocket</code> code and database models.</p>
 
+<p>To keep the same database connection across multiple requests, we&rsquo;ll use Rocket&rsquo;s <code>State</code> functionality.  We&rsquo;ll wrap up the Diesel Postgres connection in a Mutex for thread safety and refer to that as a <code>DbConn</code>.</p>
+
 <pre><code class="language-rust">#[get(&quot;/&quot;)]
-fn index() -&gt; String {
+fn index(db_conn: State&lt;DbConn&gt;) -&gt; String {
     use rusoto_rocket::schema::hits::dsl::*;
-    // we should have connection made outside this handler:
-    let connection = establish_connection();
-    let hits_from_db = hits.filter(id.eq(1)).limit(1).load::&lt;Hit&gt;(&amp;connection).expect(&quot;Couldn't load hits, yo.&quot;);
+    let my_db_conn = db_conn.inner().lock().expect(&quot;Couldn't get mutex lock on db connection&quot;);
+    let hits_from_db = hits.filter(id.eq(1))
+        .limit(1)
+        .load::&lt;Hit&gt;(&amp;my_db_conn as &amp;PgConnection) // Explicit cast needed
+        .expect(&quot;Couldn't load hits, yo.&quot;);
     // increment hits:
     let hits_weve_seen = hits_from_db.first().unwrap().hits_so_far;
-    increment_hit(&amp;connection, 1, hits_weve_seen + 1);
+    increment_hit(&amp;my_db_conn, 1, hits_weve_seen + 1);
     format!(&quot;Hello, world!  Hits: {:?}&quot;, hits_weve_seen).to_string()
 }
 
 fn main() {
     let connection = establish_connection();
     create_hit(&amp;connection, 1);
-    rocket::ignite().mount(&quot;/&quot;, routes![index]).launch();
+
+    rocket::ignite()
+        .manage(Mutex::new(connection))
+        .mount(&quot;/&quot;, routes![index])
+        .launch();
 }
 </code></pre>
 
-<p>Starting with <code>main</code>, we establish a connection to the database.  Then we create our first <code>hit</code> record with an <code>id</code> of <code>1</code>.  Then we call <code>rocket::ignite().mount(&quot;/&quot;, routes![index]).launch();</code> to bind our Rocket site to <code>/</code> with the <code>index</code> route as the only route.</p>
+<p>Starting with <code>main</code>, we establish a connection to the database.  Then we create our first <code>hit</code> record with an <code>id</code> of <code>1</code>.  Then we bind our Rocket site to <code>/</code> with the <code>index</code> route as the only route.  The <code>.manage</code> line tells Rocket to manage the database connection for us.  It&rsquo;s a <code>Mutex::new(PgConnection)</code> which is translated to a <code>DbConn</code> we defined earlier.</p>
 
 <p>The <code>index</code> route is defined by the <code>fn index()</code> function and the <code>#[get(&quot;/&quot;)]</code> tells Rocket to map it to the root URL: no path required for that endpoint.</p>
 
@@ -429,6 +451,7 @@ RDS DB instance.</p>
 
 <ul>
 <li>Lots of <code>unwrap()</code> in this sample code.  Check for errors instead of that.</li>
+<li>Use a database connection pool instead of a single database connection.</li>
 <li>Deploys of a real site should use <a href="https://aws.amazon.com/cloudformation/">Cloudformation</a> via <a href="https://github.com/cloudtools/troposphere">Troposphere</a> for infrastructure, such as the RDS instance.</li>
 <li>To deploy an actual Rocket site, use <a href="https://aws.amazon.com/codedeploy/">CodeDeploy</a>, <a href="https://aws.amazon.com/elasticbeanstalk/">ElasticBeanstalk</a> or <a href="https://aws.amazon.com/ecs/">Elastic Container Service</a> instead of copying files to an AWS EC2 instance.</li>
 </ul>

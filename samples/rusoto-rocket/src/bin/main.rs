@@ -6,27 +6,37 @@ extern crate dotenv;
 extern crate rocket;
 extern crate rusoto_rocket;
 
+use std::sync::Mutex;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
+use rocket::State;
 use self::rusoto_rocket::*;
 use self::rusoto_rocket::models::*;
 
+type DbConn = Mutex<PgConnection>;
+
 #[get("/")]
-fn index() -> String {
+fn index(db_conn: State<DbConn>) -> String {
     use rusoto_rocket::schema::hits::dsl::*;
-    // we should have connection made outside this handler:
-    let connection = establish_connection();
-    let hits_from_db = hits.filter(id.eq(1)).limit(1).load::<Hit>(&connection).expect("Couldn't load hits, yo.");
+    let my_db_conn = db_conn.inner().lock().expect("Couldn't get mutex lock on db connection");
+    let hits_from_db = hits.filter(id.eq(1))
+        .limit(1)
+        .load::<Hit>(&my_db_conn as &PgConnection) // Explicit cast needed
+        .expect("Couldn't load hits, yo.");
     // increment hits:
     let hits_weve_seen = hits_from_db.first().unwrap().hits_so_far;
-    increment_hit(&connection, 1, hits_weve_seen + 1);
+    increment_hit(&my_db_conn, 1, hits_weve_seen + 1);
     format!("Hello, world!  Hits: {:?}", hits_weve_seen).to_string()
 }
 
 fn main() {
     let connection = establish_connection();
     create_hit(&connection, 1);
-    rocket::ignite().mount("/", routes![index]).launch();
+
+    rocket::ignite()
+        .manage(Mutex::new(connection))
+        .mount("/", routes![index])
+        .launch();
 }
 
 pub fn increment_hit(conn: &PgConnection, id: i32, new_hits: i32) {
