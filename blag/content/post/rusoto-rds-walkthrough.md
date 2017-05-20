@@ -274,27 +274,37 @@ extern crate dotenv;
 extern crate rocket;
 extern crate rusoto_rocket;
 
+use std::sync::Mutex;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
+use rocket::State;
 use self::rusoto_rocket::*;
 use self::rusoto_rocket::models::*;
 
+type DbConn = Mutex<PgConnection>;
+
 #[get("/")]
-fn index() -> String {
+fn index(db_conn: State<DbConn>) -> String {
     use rusoto_rocket::schema::hits::dsl::*;
-    // we should have connection made outside this handler:
-    let connection = establish_connection();
-    let hits_from_db = hits.filter(id.eq(1)).limit(1).load::<Hit>(&connection).expect("Couldn't load hits, yo.");
+    let my_db_conn = db_conn.inner().lock().expect("Couldn't get mutex lock on db connection");
+    let hits_from_db = hits.filter(id.eq(1))
+        .limit(1)
+        .load::<Hit>(&my_db_conn as &PgConnection) // Explicit cast needed
+        .expect("Couldn't load hits, yo.");
     // increment hits:
     let hits_weve_seen = hits_from_db.first().unwrap().hits_so_far;
-    increment_hit(&connection, 1, hits_weve_seen + 1);
+    increment_hit(&my_db_conn, 1, hits_weve_seen + 1);
     format!("Hello, world!  Hits: {:?}", hits_weve_seen).to_string()
 }
 
 fn main() {
     let connection = establish_connection();
     create_hit(&connection, 1);
-    rocket::ignite().mount("/", routes![index]).launch();
+
+    rocket::ignite()
+        .manage(Mutex::new(connection))
+        .mount("/", routes![index])
+        .launch();
 }
 
 pub fn increment_hit(conn: &PgConnection, id: i32, new_hits: i32) {
@@ -323,35 +333,47 @@ extern crate dotenv;
 extern crate rocket;
 extern crate rusoto_rocket;
 
+use std::sync::Mutex;
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
+use rocket::State;
 use self::rusoto_rocket::*;
 use self::rusoto_rocket::models::*;
+
+type DbConn = Mutex<PgConnection>;
 ```
 
 We enable Rust plugins and the Rocket codegen plugin.  Then we bring in the required crates: `diesel` for database access, `dotenv` for configuration, `rocket` for the site and code for this walkthrough, `rusoto_rocket`.  We `use` the required modules: `diesel` boilerplate, Postgres libraries and our `rusoto_rocket` code and database models.
 
+To keep the same database connection across multiple requests, we'll use Rocket's `State` functionality.  We'll wrap up the Diesel Postgres connection in a Mutex for thread safety and refer to that as a `DbConn`.
+
 ```rust
 #[get("/")]
-fn index() -> String {
+fn index(db_conn: State<DbConn>) -> String {
     use rusoto_rocket::schema::hits::dsl::*;
-    // we should have connection made outside this handler:
-    let connection = establish_connection();
-    let hits_from_db = hits.filter(id.eq(1)).limit(1).load::<Hit>(&connection).expect("Couldn't load hits, yo.");
+    let my_db_conn = db_conn.inner().lock().expect("Couldn't get mutex lock on db connection");
+    let hits_from_db = hits.filter(id.eq(1))
+        .limit(1)
+        .load::<Hit>(&my_db_conn as &PgConnection) // Explicit cast needed
+        .expect("Couldn't load hits, yo.");
     // increment hits:
     let hits_weve_seen = hits_from_db.first().unwrap().hits_so_far;
-    increment_hit(&connection, 1, hits_weve_seen + 1);
+    increment_hit(&my_db_conn, 1, hits_weve_seen + 1);
     format!("Hello, world!  Hits: {:?}", hits_weve_seen).to_string()
 }
 
 fn main() {
     let connection = establish_connection();
     create_hit(&connection, 1);
-    rocket::ignite().mount("/", routes![index]).launch();
+
+    rocket::ignite()
+        .manage(Mutex::new(connection))
+        .mount("/", routes![index])
+        .launch();
 }
 ```
 
-Starting with `main`, we establish a connection to the database.  Then we create our first `hit` record with an `id` of `1`.  Then we call `rocket::ignite().mount("/", routes![index]).launch();` to bind our Rocket site to `/` with the `index` route as the only route.
+Starting with `main`, we establish a connection to the database.  Then we create our first `hit` record with an `id` of `1`.  Then we bind our Rocket site to `/` with the `index` route as the only route.  The `.manage` line tells Rocket to manage the database connection for us.  It's a `Mutex::new(PgConnection)` which is translated to a `DbConn` we defined earlier.
 
 The `index` route is defined by the `fn index()` function and the `#[get("/")]` tells Rocket to map it to the root URL: no path required for that endpoint.
 
@@ -389,6 +411,7 @@ RDS DB instance.
 As a demo, there's a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addresses when making a real service:
 
 * Lots of `unwrap()` in this sample code.  Check for errors instead of that.
+* Use a database connection pool instead of a single database connection.
 * Deploys of a real site should use [Cloudformation](https://aws.amazon.com/cloudformation/) via [Troposphere](https://github.com/cloudtools/troposphere) for infrastructure, such as the RDS instance.
 * To deploy an actual Rocket site, use [CodeDeploy](https://aws.amazon.com/codedeploy/), [ElasticBeanstalk](https://aws.amazon.com/elasticbeanstalk/) or [Elastic Container Service](https://aws.amazon.com/ecs/) instead of copying files to an AWS EC2 instance.
 
