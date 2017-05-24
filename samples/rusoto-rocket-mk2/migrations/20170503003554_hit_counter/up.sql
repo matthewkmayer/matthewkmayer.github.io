@@ -1,0 +1,4 @@
+CREATE TABLE hits (
+  id SERIAL PRIMARY KEY,
+  hits_so_far SERIAL NOT NULL
+)
