@@ -122,6 +122,38 @@ if db_call_result.is_err() {
 
 Yes, we're still panicking in this example, but it shows we could do something else such as retrying the request.  We can look at the error and determine if it's a transient error and should be retried or if we should stop trying.
 
+### Nightly compiler reminder
+
+The rest of this post requires using a nightly version of Rust for the Rocket site.  This walkthrough uses `rustc 1.18.0-nightly (036983201 2017-04-26)`.  To switch to that nightly release, run `rustup default nightly-2017-04-26`.  The output of that command should look like this:
+
+```bash
+info: syncing channel updates for 'nightly-2017-04-26-x86_64-apple-darwin'
+info: downloading component 'rustc'
+ 42.3 MiB /  42.3 MiB (100 %) 1014.4 KiB/s ETA:   0 s                
+info: downloading component 'rust-std'
+ 58.2 MiB /  58.2 MiB (100 %)   1.4 MiB/s ETA:   0 s                
+info: downloading component 'cargo'
+  3.6 MiB /   3.6 MiB (100 %)   1.1 MiB/s ETA:   0 s                
+info: downloading component 'rust-docs'
+ 11.5 MiB /  11.5 MiB (100 %)   1.1 MiB/s ETA:   0 s                
+info: installing component 'rustc'
+info: installing component 'rust-std'
+info: installing component 'cargo'
+info: installing component 'rust-docs'
+info: default toolchain set to 'nightly-2017-04-26-x86_64-apple-darwin'
+
+  nightly-2017-04-26-x86_64-apple-darwin installed - rustc 1.18.0-nightly (2b4c91158 2017-04-25)
+```
+
+Verify `rustc` is using the right version:
+
+```bash
+$ rustc --version
+rustc 1.18.0-nightly (2b4c91158 2017-04-25)
+```
+
+Now we're ready to play with the Rocket site some more!
+
 ### Diesel cleanup
 
 Since the first iteration of this project was my first use of Diesel, I didn't know how to do an update and fetch the new value in one database call.  Thanks to rabidferret for [pointing that out on Reddit](https://www.reddit.com/r/rust/comments/6c7xpp/walkthrough_rocket_diesel_and_a_postgres_database/dhv2fgy/).  This is briefly covered in [the Diesel getting started page](http://diesel.rs/guides/getting-started/).  Instead of using `.execute` we'll use `.get_result`.  Per the Diesel docs, this `adds RETURNING * to the end of the query`.  Excellent!  Less database roundtrips is better.
