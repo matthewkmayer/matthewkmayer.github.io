@@ -6,10 +6,21 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 May 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Tue, 23 May 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rusoto RDS walkthrough, mk 2</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-mk2/</link>
+      <pubDate>Tue, 23 May 2017 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-mk2/</guid>
+      <description>&lt;p&gt;Since the publication of &lt;a href=&#34;https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/&#34;&gt;Rusoto RDS walkthrough&lt;/a&gt;, a new version of Rusoto has been released: &lt;a href=&#34;https://github.com/rusoto/rusoto/releases/tag/rusoto-v0.25.0&#34;&gt;0.25.0&lt;/a&gt;.  This includes some breaking changes so let&amp;rsquo;s work through those.  We&amp;rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Rusoto RDS walkthrough</title>

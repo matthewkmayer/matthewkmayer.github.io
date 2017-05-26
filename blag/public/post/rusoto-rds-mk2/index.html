@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Rusoto RDS walkthrough, mk 2 &middot; Matthew Mayer&#39;s tech blog</title>
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-144-precomposed.png" sizes="144x144" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://matthewkmayer.github.io/blag/public">Matthew Mayer&#39;s tech blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Rusoto RDS walkthrough, mk 2</h1>
+                        <span class="li-article-taxonomies">
+                            
+
+                            
+                        </span>
+                        
+                        <time class="li-article-date">Tuesday, May 23, 2017</time>
+                    </header>
+                    <section>
+                        <p>Since the publication of <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/">Rusoto RDS walkthrough</a>, a new version of Rusoto has been released: <a href="https://github.com/rusoto/rusoto/releases/tag/rusoto-v0.25.0">0.25.0</a>.  This includes some breaking changes so let&rsquo;s work through those.  We&rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.</p>
+
+<p></p>
+
+<h3 id="rusoto-rds-mk2">rusoto-rds-mk2</h3>
+
+<p>The previous project&rsquo;s <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds">source code is on github</a>.  We&rsquo;ll be making a new project based off that one.  You can see the final product <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds-mk2">in rusoto-rds-mk2 folder</a>.</p>
+
+<h3 id="cargo-toml-changes-required-for-rusoto-0-25-0">Cargo.toml changes required for Rusoto 0.25.0</h3>
+
+<p>Before:</p>
+
+<pre><code class="language-toml">[dependencies]
+rusoto = {version = &quot;0.24&quot;, features = [&quot;rds&quot;]}
+</code></pre>
+
+<p>After:</p>
+
+<pre><code class="language-toml">[dependencies]
+rusoto_core = {version = &quot;0.25.0&quot;}
+rusoto_rds = {version = &quot;0.25.0&quot;}
+</code></pre>
+
+<p>Note there&rsquo;s now two crates needed: <code>rusoto_core</code> and <code>rusoto_rds</code>.  This is due to Rusoto now creating a crate per AWS service.  We&rsquo;re calling this <a href="https://github.com/rusoto/rusoto/pull/628">crategen</a>.</p>
+
+<h3 id="code-changes-required-for-rusoto-0-25-0">Code changes required for Rusoto 0.25.0</h3>
+
+<p>Before:</p>
+
+<pre><code class="language-rust">extern crate rusoto;
+
+use rusoto::rds::{RdsClient, CreateDBInstanceMessage, DescribeDBInstancesMessage};
+use rusoto::{DefaultCredentialsProvider, Region, default_tls_client};
+</code></pre>
+
+<p>After:</p>
+
+<pre><code class="language-rust">extern crate rusoto_core;
+extern crate rusoto_rds;
+
+use rusoto_rds::{Rds, RdsClient, CreateDBInstanceMessage, DescribeDBInstancesMessage};
+use rusoto_core::{DefaultCredentialsProvider, Region, default_tls_client};
+</code></pre>
+
+<p>We&rsquo;re bringing in both <code>rusoto_core</code> and <code>rusoto_rds</code> crates.  We&rsquo;re also bringing in <code>rusoto_rds::Rds</code> which is a trait for the RDS client.</p>
+
+<p>The only other change in the code is changing the RDS endpoint type.</p>
+
+<p>Before:</p>
+
+<pre><code class="language-rust">let endpoint : rusoto::rds::Endpoint;
+</code></pre>
+
+<p>After:</p>
+
+<pre><code class="language-rust">let endpoint : rusoto_rds::Endpoint;
+</code></pre>
+
+<p>That&rsquo;s all we need to change for migrating to Rusoto 0.25.0.  Let&rsquo;s move on to cleaning up other parts of the code.</p>
+
+<h3 id="making-unwrap-behavior-slightly-nicer">Making unwrap behavior slightly nicer</h3>
+
+<p>In rusoto-rds-mk2: we use <code>.expect()</code> instead of <code>.unwrap()</code>.  This doesn&rsquo;t prevent panics, but it does give us more information as to <em>why</em> things didn&rsquo;t work as expected.  Both <a href="https://doc.rust-lang.org/std/result/enum.Result.html">Result</a> and <a href="https://doc.rust-lang.org/std/option/enum.Option.html">Option</a> implement this.</p>
+
+<p>Before:</p>
+
+<pre><code class="language-rust">let credentials = DefaultCredentialsProvider::new()
+    .unwrap();
+</code></pre>
+
+<p>After:</p>
+
+<pre><code class="language-rust">let credentials = DefaultCredentialsProvider::new()
+    .expect(&quot;Couldn't create AWS credentials provider.&quot;);
+</code></pre>
+
+<p>Knowing when to use <code>expect</code> instead of matching against Result or Option is worth understanding.  In our sample code, panicking if we can&rsquo;t get AWS credentials is probably what we want to do.  But what about calls to AWS?</p>
+
+<pre><code class="language-rust">let db_creation_result = rds_client.create_db_instance(&amp;create_db_instance_request)
+        .expect(&quot;Error sending create DB instance request&quot;);
+</code></pre>
+
+<p><a href="http://rusoto.github.io/rusoto/rusoto_rds/trait.Rds.html#tymethod.create_db_instance">create_db_instance</a> returns a type of <code>Result&lt;CreateDBInstanceResult, CreateDBInstanceError&gt;</code>.  If we use <code>expect</code> we throw away the <code>CreateDBInstanceError</code> which would allow us to see why Rusoto or AWS couldn&rsquo;t fulfill our request.  If we get this error result, let&rsquo;s print out what it says for debugging:</p>
+
+<pre><code class="language-rust">let db_creation_result = match rds_client.create_db_instance(&amp;create_db_instance_request) {
+    Ok(db_create_result) =&gt; db_create_result,
+    Err(e) =&gt; {
+        println!(&quot;Error making database instance: {}&quot;, e);
+        panic!(&quot;No go on database creation.&quot;);
+    },
+};
+</code></pre>
+
+<p>This is better: the happy path set the <code>db_creation_result</code> variable with the result.  The unhappy path still panics, but we now have information on <em>why</em> it happened.  If we don&rsquo;t want to panic, we can modify this more:</p>
+
+<pre><code class="language-rust">let db_call_result = rds_client.create_db_instance(&amp;create_db_instance_request);
+if db_call_result.is_err() {
+    // This `unwrap` on the `err()` call will show us the error we know is there:
+    println!(&quot;Didn't successfully make the DB instance.  Error: {}&quot;, db_call_result.err().unwrap());
+    // Since it didn't succeed, we can look at the error and see if we should retry or not.
+    // For our sample, we'll panic.
+    panic!(&quot;Error making DB instance creation request.&quot;);
+}
+</code></pre>
+
+<p>Yes, we&rsquo;re still panicking in this example, but it shows we could do something else such as retrying the request.  We can look at the error and determine if it&rsquo;s a transient error and should be retried or if we should stop trying.</p>
+
+<h3 id="diesel-cleanup">Diesel cleanup</h3>
+
+<p>Since the first iteration of this project was my first use of Diesel, I didn&rsquo;t know how to do an update and fetch the new value in one database call.  Thanks to rabidferret for <a href="https://www.reddit.com/r/rust/comments/6c7xpp/walkthrough_rocket_diesel_and_a_postgres_database/dhv2fgy/">pointing that out on Reddit</a>.  This is briefly covered in <a href="http://diesel.rs/guides/getting-started/">the Diesel getting started page</a>.  Instead of using <code>.execute</code> we&rsquo;ll use <code>.get_result</code>.  Per the Diesel docs, this <code>adds RETURNING * to the end of the query</code>.  Excellent!  Less database roundtrips is better.</p>
+
+<p>First we&rsquo;ll add <code>numeric_expr!(hits::hits_so_far);</code> to the schema.rs file:</p>
+
+<pre><code class="language-rust">infer_schema!(&quot;dotenv:DATABASE_URL&quot;);
+numeric_expr!(hits::hits_so_far);
+</code></pre>
+
+<p>This uses the <a href="http://docs.diesel.rs/diesel/macro.numeric_expr.html">numeric_expr macro</a> to allow numeric operators.  We&rsquo;ll use the <code>+</code> operator to increment.</p>
+
+<p>Back in <code>main.rs</code> for <code>rusoto-rocket-mk2</code> we&rsquo;ll make some changes.  We&rsquo;ll start with <code>increment_hits</code>.</p>
+
+<p>Before:</p>
+
+<pre><code class="language-rust">pub fn increment_hit(conn: &amp;PgConnection, id: i32, new_hits: i32) {
+    use schema::hits;
+    use rusoto_rocket::schema::hits::dsl::hits as myhits;
+
+    let result = diesel::update(myhits.find(id))
+        .set(hits::hits_so_far.eq(new_hits))
+        .execute(conn);
+
+    match result {
+        Ok(_) =&gt; (),
+        Err(e) =&gt; println!(&quot;Couldn't update hit counter: {}&quot;, e),
+    };
+}
+</code></pre>
+
+<p>This does the increment of the value.  We&rsquo;ll want to do the increment and return of the new value, like so:</p>
+
+<pre><code class="language-rust">pub fn increment_hit(conn: &amp;PgConnection, hit_id: i32) -&gt; Result&lt;i32, diesel::result::Error&gt; {
+    use schema::hits;
+    use schema::hits::dsl::*;
+    use rusoto_rocket_mk2::schema::hits::dsl::hits as myhits;
+
+    let result = diesel::update(myhits.find(hit_id))
+        .set(hits::hits_so_far.eq(hits_so_far + 1))
+        .get_result::&lt;Hit&gt;(conn);
+
+    match result {
+        Ok(hit_count) =&gt; Ok(hit_count.hits_so_far as i32),
+        Err(e) =&gt; {
+            println!(&quot;Couldn't update hit counter: {}&quot;, e);
+            Err(e)
+        }
+    }
+}
+</code></pre>
+
+<p>The main changes are using <code>get_result</code> instead of <code>execute</code> and setting the <code>hits_so_far</code> field to <code>hits_so_far + 1</code>.  This sets the incremented value and returns the updated value from the database.  We also change the function signature to return a <code>Result&lt;i32, diesel::result::Error&gt;</code>.  Before, it was a fire and forget, but now we use that for reporting the hits so far.</p>
+
+<p>In the index function, we move from this:</p>
+
+<pre><code class="language-rust">#[get(&quot;/&quot;)]
+fn index(db_conn: State&lt;DbConn&gt;) -&gt; String {
+    use rusoto_rocket::schema::hits::dsl::*;
+    let my_db_conn = db_conn.inner().lock().expect(&quot;Couldn't get mutex lock on db connection&quot;);
+    let hits_from_db = hits.filter(id.eq(1))
+        .limit(1)
+        .load::&lt;Hit&gt;(&amp;my_db_conn as &amp;PgConnection) // Explicit cast needed
+        .expect(&quot;Couldn't load hits, yo.&quot;);
+    // increment hits:
+    let hits_weve_seen = hits_from_db.first().unwrap().hits_so_far;
+    increment_hit(&amp;my_db_conn, 1, hits_weve_seen + 1);
+    format!(&quot;Hello, world!  Hits: {:?}&quot;, hits_weve_seen).to_string()
+}
+</code></pre>
+
+<p>to this:</p>
+
+<pre><code class="language-rust">#[get(&quot;/&quot;)]
+fn index(db_conn: State&lt;DbConn&gt;) -&gt; String {
+    let my_db_conn = db_conn.inner().lock().expect(&quot;Couldn't get mutex lock on db connection&quot;);
+    let hits_from_db: i32 = match increment_hit(&amp;my_db_conn, 1) {
+        Ok(hits_after_increment) =&gt; hits_after_increment,
+        Err(e) =&gt; {
+            println!(&quot;Couldn't get new hit count from db: {}&quot;, e);
+            -1
+        },
+    };
+    format!(&quot;Hello, world!  Hits: {:?}&quot;, hits_from_db).to_string()
+}
+</code></pre>
+
+<p>We&rsquo;ve removed the database call to get the current state and instead match on the returned <code>Result</code> from <code>increment_hit</code>.  As a bonus, this fixes the off-by-one error in the original example where we&rsquo;d see the page report 0 hits on our first visit.  The error branch of the <code>match</code> exposes the error state by reporting -1 hits if something goes wrong.</p>
+
+<h3 id="doing-local-testing-with-docker-instead-of-rds">Doing local testing with Docker instead of RDS</h3>
+
+<p>To play with the Diesel and Rocket portions of this walkthrough, we can use Docker to spin up a local Postgres container.  Run this command to create a Postgres container from the Alpine Linux distro:</p>
+
+<pre><code class="language-bash">docker run --name postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:alpine
+</code></pre>
+
+<p>We&rsquo;ll also need to adjust our <code>.env</code> file in <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket-mk2/.env">rusoto-rocket-mk2</a>.  It should look like this:</p>
+
+<pre><code>DATABASE_URL=postgres://postgres:mysecretpassword@localhost/rusoto_rocket
+</code></pre>
+
+<p>Note the user is now <code>postgres</code> and the password matched what we supplied the <code>docker</code> command earlier.  We&rsquo;re using <code>localhost</code> since the Postgres image is listening on <code>localhost:5432</code>.</p>
+
+<p>In the rusoto-rocket-mk2 directory, with the updated .env file, run <code>diesel setup</code>.  You&rsquo;ll see this success message:</p>
+
+<pre><code>Creating database: rusoto_rocket
+Running migration 20170503003554
+</code></pre>
+
+<p>Now we can run <code>cargo run</code> to launch our Rocket site, using our local Docker image.  After it&rsquo;s running, visit <a href="http://localhost:8000/">http://localhost:8000/</a> to see the hit counter.  Refresh and see the hits go up.  This time they are being stored in the local Postgres Docker container.</p>
+
+<h3 id="cleanup">Cleanup</h3>
+
+<p><code>docker kill postgres</code> will kill the running container.  Verify it&rsquo;s no longer running by running <code>docker ps</code> and verify it&rsquo;s no longer listed.</p>
+
+<h3 id="diesel-homework">Diesel homework</h3>
+
+<p>If we start the Rocket site multiple times, we&rsquo;ll see an error like this:</p>
+
+<pre><code>thread 'main' panicked at 'Error saving new hit: DatabaseError(UniqueViolation, &quot;duplicate key value violates unique constraint \&quot;hits_pkey\&quot;&quot;)', src/libcore/result.rs:859
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+</code></pre>
+
+<p>This is from calling <code>create_hit(&amp;connection, 1);</code> in <code>main</code>.  In the lib.rs function, we blindly try to insert an item into the database.  Our migration file that creates the table says the <code>id</code> column in the <code>hits</code> table is a primary key, so we can&rsquo;t have duplicates and our application panics.  We can modify that to check if the entry exists and don&rsquo;t attempt an insert in that case.</p>
+
+<p>As a workaround, we can run <code>diesel migration redo</code> to revert the database to a state where table are created but aren&rsquo;t populated, then can run <code>cargo run</code> in the Rocket site to start up again.</p>
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Matthew Mayer</strong>
+    </div>
+</div>
+
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/"> Rusoto RDS walkthrough</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    The source code and content of this website are free and available under the MIT license.
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a>, is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
