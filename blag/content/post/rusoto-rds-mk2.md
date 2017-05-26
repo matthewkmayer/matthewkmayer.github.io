@@ -4,13 +4,13 @@ draft = false
 title = "Rusoto RDS walkthrough, mk 2"
 +++
 
-Since the publication of [Rusoto RDS walkthrough](https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/), a new version of Rusoto has been released: [0.25.0](https://github.com/rusoto/rusoto/releases/tag/rusoto-v0.25.0).  This includes some breaking changes so let's work through those.
+Since the publication of [Rusoto RDS walkthrough](https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/), a new version of Rusoto has been released: [0.25.0](https://github.com/rusoto/rusoto/releases/tag/rusoto-v0.25.0).  This includes some breaking changes so let's work through those.  We'll also be cleaning up some of the rougher edges in the previous walkthrough.
 
 <!--more-->
 
 ### rusoto-rds-mk2
 
-The previous project's [source code is on github.](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds).  We'll be making a new project based off that one.  You can see the final product [in rusoto-rds-mk2 folder](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds-mk2).
+The previous project's [source code is on github](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds).  We'll be making a new project based off that one.  You can see the final product [in rusoto-rds-mk2 folder](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds-mk2).
 
 ### Cargo.toml changes required for Rusoto 0.25.0
 
@@ -39,8 +39,7 @@ Before:
 extern crate rusoto;
 
 use rusoto::rds::{RdsClient, CreateDBInstanceMessage, DescribeDBInstancesMessage};
-use rusoto::{DefaultCredentialsProvider, Region};
-use rusoto::default_tls_client;
+use rusoto::{DefaultCredentialsProvider, Region, default_tls_client};
 ```
 
 After:
@@ -78,13 +77,15 @@ In rusoto-rds-mk2: we use `.expect()` instead of `.unwrap()`.  This doesn't prev
 Before:
 
 ```rust
-let credentials = DefaultCredentialsProvider::new().unwrap();
+let credentials = DefaultCredentialsProvider::new()
+    .unwrap();
 ```
 
 After:
 
 ```rust
-let credentials = DefaultCredentialsProvider::new().expect("Couldn't create AWS credentials provider.");
+let credentials = DefaultCredentialsProvider::new()
+    .expect("Couldn't create AWS credentials provider.");
 ```
 
 Knowing when to use `expect` instead of matching against Result or Option is worth understanding.  In our sample code, panicking if we can't get AWS credentials is probably what we want to do.  But what about calls to AWS?
@@ -213,7 +214,7 @@ fn index(db_conn: State<DbConn>) -> String {
 }
 ```
 
-We've removed the database call to get the current state and instead match on the returned `Result` from `increment_hit`.  As a bonus, this fixes the off-by-one error in the original example where we'd see the page report 0 hits on our first visit.  We expose the error state by reporting -1 hits if something goes wrong.
+We've removed the database call to get the current state and instead match on the returned `Result` from `increment_hit`.  As a bonus, this fixes the off-by-one error in the original example where we'd see the page report 0 hits on our first visit.  The error branch of the `match` exposes the error state by reporting -1 hits if something goes wrong.
 
 ### Doing local testing with Docker instead of RDS
 
