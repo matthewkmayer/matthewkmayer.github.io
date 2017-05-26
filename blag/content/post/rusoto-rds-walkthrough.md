@@ -408,7 +408,7 @@ RDS DB instance.
 
 ## Demo vs longer term infrastructure
 
-As a demo, there's a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addresses when making a real service:
+As a demo, there's a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addressed when making a real service:
 
 * Lots of `unwrap()` in this sample code.  Check for errors instead of that.
 * Use a database connection pool instead of a single database connection.
