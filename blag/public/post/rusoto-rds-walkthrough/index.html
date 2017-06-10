@@ -282,12 +282,14 @@ from your IP address.  If the following <code>diesel</code> commands time out, d
 <p>The source code for the Rocket site is located <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket">on Github</a>.</p>
 
 <p>The <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/Cargo.toml">Cargo.toml</a> brings in the following dependencies:</p>
-[dependencies]
-rocket = "0.2.6"
-rocket_codegen = "0.2.6"
-diesel = { version = "0.11.0", features = ["postgres"] }
-diesel_codegen = { version = "0.11.0", features = ["postgres"] }
-dotenv = "0.8.0"
+
+<pre><code>[dependencies]
+rocket = &quot;0.2.6&quot;
+rocket_codegen = &quot;0.2.6&quot;
+diesel = { version = &quot;0.11.0&quot;, features = [&quot;postgres&quot;] }
+diesel_codegen = { version = &quot;0.11.0&quot;, features = [&quot;postgres&quot;] }
+dotenv = &quot;0.8.0&quot;
+</code></pre>
 
 <p>We&rsquo;re using Rocket 0.2.6 along with its codegen library, Diesel 0.11.0 with Postgres with its codegen library and dotenv for supplying configuration to Diesel.</p>
 

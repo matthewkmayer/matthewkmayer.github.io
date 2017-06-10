@@ -70,13 +70,17 @@
 <h3 id="cargo-toml-changes-required-for-rusoto-0-25-0">Cargo.toml changes required for Rusoto 0.25.0</h3>
 
 <p>Before:</p>
-[dependencies]
-rusoto = {version = "0.24", features = ["rds"]}
+
+<pre><code>[dependencies]
+rusoto = {version = &quot;0.24&quot;, features = [&quot;rds&quot;]}
+</code></pre>
 
 <p>After:</p>
-[dependencies]
-rusoto_core = {version = "0.25.0"}
-rusoto_rds = {version = "0.25.0"}
+
+<pre><code>[dependencies]
+rusoto_core = {version = &quot;0.25.0&quot;}
+rusoto_rds = {version = &quot;0.25.0&quot;}
+</code></pre>
 
 <p>Note there&rsquo;s now two crates needed: <code>rusoto_core</code> and <code>rusoto_rds</code>.  This is due to Rusoto now creating a crate per AWS service.  We&rsquo;re calling this <a href="https://github.com/rusoto/rusoto/pull/628">crategen</a>.</p>
 
