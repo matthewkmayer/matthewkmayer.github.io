@@ -252,7 +252,7 @@ The source code for the Rocket site is located [on Github](https://github.com/ma
 
 The [Cargo.toml](https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/Cargo.toml) brings in the following dependencies:
 
-```toml
+```
 [dependencies]
 rocket = "0.2.6"
 rocket_codegen = "0.2.6"

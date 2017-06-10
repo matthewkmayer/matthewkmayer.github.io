@@ -16,14 +16,14 @@ The previous project's [source code is on github](https://github.com/matthewkmay
 
 Before:
 
-```toml
+```
 [dependencies]
 rusoto = {version = "0.24", features = ["rds"]}
 ```
 
 After:
 
-```toml
+```
 [dependencies]
 rusoto_core = {version = "0.25.0"}
 rusoto_rds = {version = "0.25.0"}
