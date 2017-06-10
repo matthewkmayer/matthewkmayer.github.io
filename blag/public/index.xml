@@ -6,10 +6,21 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 May 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Fri, 09 Jun 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rusoto codegen</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/</link>
+      <pubDate>Fri, 09 Jun 2017 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/</guid>
+      <description>&lt;p&gt;Writing a software development kit (SDK) is a challenge.  Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &amp;ldquo;other.&amp;rdquo;  &lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt; uses the &lt;a href=&#34;https://github.com/boto/botocore&#34;&gt;botocore&lt;/a&gt; service definitions to create Rust code to interact with Amazon Web Services.  Let&amp;rsquo;s dive into how it&amp;rsquo;s done!&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Rusoto RDS walkthrough, mk 2</title>
