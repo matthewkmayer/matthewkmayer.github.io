@@ -6,10 +6,21 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Jun 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Fri, 16 Jun 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rusoto codegen, part two</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-two/</link>
+      <pubDate>Fri, 16 Jun 2017 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-two/</guid>
+      <description>&lt;p&gt;In the &lt;a href=&#34;https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/&#34;&gt;previous post&lt;/a&gt; we took a quick tour of the major pieces of &lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt; code generation.  In this post we&amp;rsquo;ll get deeper into code generation for the Simple Queue Service.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Rusoto codegen</title>
