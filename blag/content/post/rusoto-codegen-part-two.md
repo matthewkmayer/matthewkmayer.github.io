@@ -233,3 +233,136 @@ Back to the service-specific code generation!
 ```rust
 protocol_generator.generate_prelude(writer, service)?;
 ```
+
+In here, the `protocol_generator` variable refers to `QueryGenerator`.  This is from the earlier `match` statement: `generate(writer, service, QueryGenerator, XmlErrorTypes)`.  `QueryGenerator` is implemented in [service_crategen/src/codegen/generator/query.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/query.rs).  Here's how it implements the `GenerateProtocol` trait:
+
+```rust
+pub struct QueryGenerator;
+
+impl GenerateProtocol for QueryGenerator {
+...
+  fn generate_prelude(&self, writer: &mut FileWriter, _service: &Service) -> IoResult {
+      writeln!(writer,
+               "use std::str::FromStr;
+          use xml::EventReader;
+          use xml::reader::ParserConfig;
+          use rusoto_core::param::{{Params, ServiceParams}};
+          use rusoto_core::signature::SignedRequest;
+          use xml::reader::XmlEvent;
+          use rusoto_core::xmlutil::{{Next, Peek, XmlParseError, XmlResponse}};
+          use rusoto_core::xmlutil::{{characters, end_element, start_element, skip_tree, peek_at_name}};
+          use rusoto_core::xmlerror::*;
+
+          enum DeserializerNext {{
+              Close,
+              Skip,
+              Element(String),
+      }}")
+  }
+...
+```
+
+There's more to that trait, but we'll focus on `generate_prelude`.  While we've already generated a generic prelude all services share but the `query` type needs additional imports.  For example we need to parse the XML payloads returned by SQS, so we bring in items from the [xml crate](https://github.com/netvl/xml-rs).  We also bring in Rusoto xmlutil helpers to make the code more concise.
+
+Moving on to `generate_types(writer, service, &protocol_generator)?;`, it's in [service_crategen/src/codegen/generator/mod.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs):
+
+```rust
+fn generate_types<P>(writer: &mut FileWriter, service: &Service, protocol_generator: &P) -> IoResult
+  where P: GenerateProtocol {
+
+  let (serialized_types, deserialized_types) = filter_types(service);
+
+  for (name, shape) in service.shapes().iter() {
+        let type_name = mutate_type_name(&name);
+
+        // We generate enums for error types, so no need to create model objects for them
+        if shape.exception() {
+            continue;
+        }
+
+        // If botocore includes documentation, clean it up a bit and use it
+        if let Some(ref docs) = shape.documentation {
+            writeln!(writer, "#[doc=\"{}\"]",
+                               docs.replace("\\", "\\\\").replace("\"", "\\\""))?;
+        }
+
+        let deserialized = deserialized_types.contains(&type_name);
+        let serialized = serialized_types.contains(&type_name);
+
+        // generate a rust type for the shape
+        if type_name != "String" {
+            let generated_type = match shape.shape_type {
+                ShapeType::Structure => {
+                    generate_struct(service,
+                                     &type_name,
+                                     &shape,
+                                     serialized,
+                                     deserialized,
+                                     protocol_generator)
+                }
+                ShapeType::Map => generate_map(&type_name, &shape),
+                ShapeType::List => generate_list(&type_name, &shape),
+                shape_type => {
+                    generate_primitive_type(&type_name,
+                                             shape_type,
+                                             protocol_generator.timestamp_type())
+                }
+            };
+            writeln!(writer, "{}", generated_type)?;
+        }
+
+        if deserialized {
+            if let Some(deserializer) = protocol_generator.generate_deserializer(&type_name, &shape, service) {
+                writeln!(writer, "{}", deserializer)?;
+            }
+        }
+
+        if serialized {
+            if let Some(serializer) = protocol_generator.generate_serializer(&type_name, &shape, service) {
+                writeln!(writer, "{}", serializer)?;
+            }
+        }
+      }
+      Ok(())
+}
+```
+
+The first thing we do is filter out the types.  This splits types into how they are used: inputs to AWS services and outputs.  This allows us to generate deserializers for outputs from AWS and serializers for inputs.  Without doing this, the generated code has lots of unused code and makes the services files larger than they have to be.  We then iterate over each shape in the service and generate its Rust equivalent.  Taking `generate_primitive_type` as an example:
+
+```rust
+fn generate_primitive_type(name: &str, shape_type: ShapeType, for_timestamps: &str) -> String {
+  let primitive_type = match shape_type {
+    ShapeType::Blob => "Vec<u8>",
+    ShapeType::Boolean => "bool",
+    ShapeType::Double => "f64",
+    ShapeType::Float => "f32",
+    ShapeType::Integer => "i64",
+    ShapeType::Long => "i64",
+    ShapeType::String => "String",
+    ShapeType::Timestamp => for_timestamps,
+    primitive_type => panic!("Unknown primitive type: {:?}", primitive_type),
+  };
+
+  format!("pub type {} = {};", name, primitive_type)
+}
+```
+
+This is fairly straightforward.  Take the type defined in the service definition and map them to a Rust type.  Booleans map to `bool`, floats to `f32`, etc...  One special case is `for_timestamps` where we let the caller determine how it wants it to look.
+
+The `generate_types` function also handles translating botocore documentation to rustdoc in the code.  Towards the end of the function it handles making serializers and deserializers if the shape needs them.  Finally it returns `Ok(())` to mark that part of codegen as complete.
+
+The remainder of the code generation follows the same pattern: take the botocore service definition and translate that to Rust code.  Here's the parts we haven't covered:
+
+```rust
+error_type_generator.generate_error_types(writer, service)?;
+generate_client(writer, service, &protocol_generator)?;
+generate_tests(writer, service)?;
+```
+
+Error types are errors AWS can return for requests.  We turn those into Rust code so we can have typed error messages.  `generate_client` is where the rubber meets the road and we create the Rust client for the service.  Finally, `generate_tests` looks through botocore and translates the parsing tests from botocore to Rust code.  This means we have generated, automated tests for ensuring our deserializers and error handlers can handle examples of what AWS returns without actually making AWS calls.
+
+## Packaging up the code
+
+After this deeper look of how we make Rust code, we still need to go over how the generated code is used in the crate.  Continuing with SQS, the next post will look into how the `rusoto_sqs` crate is created from scratch and populated with code from codegen covered in this post.
+
+Thanks for reading!
