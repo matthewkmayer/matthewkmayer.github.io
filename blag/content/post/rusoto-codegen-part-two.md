@@ -92,7 +92,7 @@ pub struct ServiceDefinition {
 }
 ```
 
-ServiceConfig is populate from the list of services we want to generate.  It stores this JSON:
+ServiceConfig is populated from the list of services we want to generate.  It stores this JSON:
 
 ```json
 "sqs" : {
@@ -183,12 +183,14 @@ fn generate<P, E>(writer: &mut FileWriter, service: &Service, protocol_generator
 }
 ```
 
-We're finally seeing some new Rust features: `generate<P, E>` means we're using generics and the `?` operator replaces the `try!` macro.
+We're finally seeing some slightly more advanced Rust features: `generate<P, E>` means we're using generics and the `?` operator replaces the `try!` macro.
 
 Breaking it down:
 
 ```rust
-fn generate<P, E>(writer: &mut FileWriter, service: &Service, protocol_generator: P, error_type_generator: E) -> IoResult
+fn generate<P, E>(writer: &mut FileWriter, service: &Service, 
+    protocol_generator: P, error_type_generator: E) -> IoResult
+
     where P: GenerateProtocol,
           E: GenerateErrorTypes { ...
 ```
@@ -211,6 +213,8 @@ writeln!(writer, "#[allow(warnings)]
 ```
 
 Now we're getting to Rust code for SQS!  This is our prelude to the service.  Every AWS service Rusoto supports has this code at the top of `generated.rs`.  Take a peek at [SQS' generated.rs file](https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/src/generated.rs).  This brings in all the items we need for talking to AWS: [hyper](https://github.com/hyperium/hyper) for HTTP(s) requests, wrappers for signing AWS requests from `rusoto_core::request`, AWS regions from `rusoto_core::region`, etc...  We also bring in AWS credential providing helpers.
+
+Here's the next part of `generate`:
 
 ```rust
 protocol_generator.generate_prelude(writer, service)?;
@@ -262,7 +266,7 @@ impl GenerateProtocol for QueryGenerator {
 ...
 ```
 
-There's more to that trait, but we'll focus on `generate_prelude`.  While we've already generated a generic prelude all services share but the `query` type needs additional imports.  For example we need to parse the XML payloads returned by SQS, so we bring in items from the [xml crate](https://github.com/netvl/xml-rs).  We also bring in Rusoto xmlutil helpers to make the code more concise.
+There's more to that trait, but we'll focus on `generate_prelude`.  While we've already created a generic prelude all services share, the `query` type needs additional imports.  For example we need to parse the XML payloads returned by SQS, so we bring in items from the [xml crate](https://github.com/netvl/xml-rs).  We also bring in Rusoto xmlutil helpers to make the code more concise.
 
 Moving on to `generate_types(writer, service, &protocol_generator)?;`, it's in [service_crategen/src/codegen/generator/mod.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs):
 
@@ -327,7 +331,7 @@ fn generate_types<P>(writer: &mut FileWriter, service: &Service, protocol_genera
 }
 ```
 
-The first thing we do is filter out the types.  This splits types into how they are used: inputs to AWS services and outputs.  This allows us to generate deserializers for outputs from AWS and serializers for inputs.  Without doing this, the generated code has lots of unused code and makes the services files larger than they have to be.  We then iterate over each shape in the service and generate its Rust equivalent.  Taking `generate_primitive_type` as an example:
+The first thing we do is filter out the types.  This splits types into how they are used: inputs to AWS services and outputs.  This allows us to generate deserializers for outputs from AWS and serializers for inputs.  If we didn't do this, the generated code would have lots of unused code and make the services files larger than they have to be.  We then iterate over each shape in the service and generate its Rust equivalent.  Taking `generate_primitive_type` as an example:
 
 ```rust
 fn generate_primitive_type(name: &str, shape_type: ShapeType, for_timestamps: &str) -> String {
@@ -359,7 +363,7 @@ generate_client(writer, service, &protocol_generator)?;
 generate_tests(writer, service)?;
 ```
 
-Error types are errors AWS can return for requests.  We turn those into Rust code so we can have typed error messages.  `generate_client` is where the rubber meets the road and we create the Rust client for the service.  Finally, `generate_tests` looks through botocore and translates the parsing tests from botocore to Rust code.  This means we have generated, automated tests for ensuring our deserializers and error handlers can handle examples of what AWS returns without actually making AWS calls.
+Error types are errors AWS can return for requests.  We turn those into Rust code so we can have typed error messages.  `generate_client` is where the rubber meets the road and we create the Rust client for the service.  Take a look at [SqsClient docs](https://rusoto.github.io/rusoto/rusoto_sqs/struct.SqsClient.html) to see what it generates.  Finally, `generate_tests` looks through botocore and translates the parsing tests from botocore to Rust code.  This means we have generated, automated tests for ensuring our deserializers and error handlers can handle examples of what AWS returns without actually making AWS calls.
 
 ## Packaging up the code
 

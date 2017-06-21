@@ -141,7 +141,7 @@ codegen::generator::generate_source(<span style="color: #555555">&amp;</span>ser
 }<span style="color: #bbbbbb"></span>
 </pre></div>
 
-<p>ServiceConfig is populate from the list of services we want to generate.  It stores this JSON:</p>
+<p>ServiceConfig is populated from the list of services we want to generate.  It stores this JSON:</p>
 <div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #CC3300">&quot;sqs&quot;</span> <span style="color: #AA0000; background-color: #FFAAAA">:</span> {
     <span style="color: #330099; font-weight: bold">&quot;version&quot;</span>: <span style="color: #CC3300">&quot;0.25.0&quot;</span>,
     <span style="color: #330099; font-weight: bold">&quot;coreVersion&quot;</span>: <span style="color: #CC3300">&quot;0.25.0&quot;</span>,
@@ -220,10 +220,12 @@ codegen::generator::generate_source(<span style="color: #555555">&amp;</span>ser
 }<span style="color: #bbbbbb"></span>
 </pre></div>
 
-<p>We&rsquo;re finally seeing some new Rust features: <code>generate&lt;P, E&gt;</code> means we&rsquo;re using generics and the <code>?</code> operator replaces the <code>try!</code> macro.</p>
+<p>We&rsquo;re finally seeing some slightly more advanced Rust features: <code>generate&lt;P, E&gt;</code> means we&rsquo;re using generics and the <code>?</code> operator replaces the <code>try!</code> macro.</p>
 
 <p>Breaking it down:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate</span><span style="color: #555555">&lt;</span>P,<span style="color: #bbbbbb"> </span>E<span style="color: #555555">&gt;</span>(writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter,<span style="color: #bbbbbb"> </span>service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>,<span style="color: #bbbbbb"> </span>protocol_generator: <span style="color: #00AA88; font-weight: bold">P</span>,<span style="color: #bbbbbb"> </span>error_type_generator: <span style="color: #00AA88; font-weight: bold">E</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"></span>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate</span><span style="color: #555555">&lt;</span>P,<span style="color: #bbbbbb"> </span>E<span style="color: #555555">&gt;</span>(writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter,<span style="color: #bbbbbb"> </span>service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>,<span style="color: #bbbbbb"> </span>
+<span style="color: #bbbbbb">    </span>protocol_generator: <span style="color: #00AA88; font-weight: bold">P</span>,<span style="color: #bbbbbb"> </span>error_type_generator: <span style="color: #00AA88; font-weight: bold">E</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"></span>
+
 <span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">where</span><span style="color: #bbbbbb"> </span>P: <span style="color: #00AA88; font-weight: bold">GenerateProtocol</span>,<span style="color: #bbbbbb"></span>
 <span style="color: #bbbbbb">          </span>E: <span style="color: #00AA88; font-weight: bold">GenerateErrorTypes</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"> </span>...<span style="color: #bbbbbb"></span>
 </pre></div>
@@ -244,6 +246,8 @@ codegen::generator::generate_source(<span style="color: #555555">&amp;</span>ser
 </pre></div>
 
 <p>Now we&rsquo;re getting to Rust code for SQS!  This is our prelude to the service.  Every AWS service Rusoto supports has this code at the top of <code>generated.rs</code>.  Take a peek at <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/src/generated.rs">SQS&rsquo; generated.rs file</a>.  This brings in all the items we need for talking to AWS: <a href="https://github.com/hyperium/hyper">hyper</a> for HTTP(s) requests, wrappers for signing AWS requests from <code>rusoto_core::request</code>, AWS regions from <code>rusoto_core::region</code>, etc&hellip;  We also bring in AWS credential providing helpers.</p>
+
+<p>Here&rsquo;s the next part of <code>generate</code>:</p>
 <div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>protocol_generator.generate_prelude(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
 generate_types(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>protocol_generator)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
 error_type_generator.generate_error_types(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
@@ -287,7 +291,7 @@ generate_tests(writer,<span style="color: #bbbbbb"> </span>service)<span style="
 ...<span style="color: #bbbbbb"></span>
 </pre></div>
 
-<p>There&rsquo;s more to that trait, but we&rsquo;ll focus on <code>generate_prelude</code>.  While we&rsquo;ve already generated a generic prelude all services share but the <code>query</code> type needs additional imports.  For example we need to parse the XML payloads returned by SQS, so we bring in items from the <a href="https://github.com/netvl/xml-rs">xml crate</a>.  We also bring in Rusoto xmlutil helpers to make the code more concise.</p>
+<p>There&rsquo;s more to that trait, but we&rsquo;ll focus on <code>generate_prelude</code>.  While we&rsquo;ve already created a generic prelude all services share, the <code>query</code> type needs additional imports.  For example we need to parse the XML payloads returned by SQS, so we bring in items from the <a href="https://github.com/netvl/xml-rs">xml crate</a>.  We also bring in Rusoto xmlutil helpers to make the code more concise.</p>
 
 <p>Moving on to <code>generate_types(writer, service, &amp;protocol_generator)?;</code>, it&rsquo;s in <a href="https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs">service_crategen/src/codegen/generator/mod.rs</a>:</p>
 <div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate_types</span><span style="color: #555555">&lt;</span>P<span style="color: #555555">&gt;</span>(writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter,<span style="color: #bbbbbb"> </span>service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>,<span style="color: #bbbbbb"> </span>protocol_generator: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">P</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"></span>
@@ -350,7 +354,7 @@ generate_tests(writer,<span style="color: #bbbbbb"> </span>service)<span style="
 }<span style="color: #bbbbbb"></span>
 </pre></div>
 
-<p>The first thing we do is filter out the types.  This splits types into how they are used: inputs to AWS services and outputs.  This allows us to generate deserializers for outputs from AWS and serializers for inputs.  Without doing this, the generated code has lots of unused code and makes the services files larger than they have to be.  We then iterate over each shape in the service and generate its Rust equivalent.  Taking <code>generate_primitive_type</code> as an example:</p>
+<p>The first thing we do is filter out the types.  This splits types into how they are used: inputs to AWS services and outputs.  This allows us to generate deserializers for outputs from AWS and serializers for inputs.  If we didn&rsquo;t do this, the generated code would have lots of unused code and make the services files larger than they have to be.  We then iterate over each shape in the service and generate its Rust equivalent.  Taking <code>generate_primitive_type</code> as an example:</p>
 <div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate_primitive_type</span>(name: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>,<span style="color: #bbbbbb"> </span>shape_type: <span style="color: #00AA88; font-weight: bold">ShapeType</span>,<span style="color: #bbbbbb"> </span>for_timestamps: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">String</span> {<span style="color: #bbbbbb"></span>
 <span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>primitive_type<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>shape_type<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
 <span style="color: #bbbbbb">    </span>ShapeType::Blob<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;Vec&lt;u8&gt;&quot;</span>,<span style="color: #bbbbbb"></span>
@@ -378,7 +382,7 @@ generate_client(writer,<span style="color: #bbbbbb"> </span>service,<span style=
 generate_tests(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
 </pre></div>
 
-<p>Error types are errors AWS can return for requests.  We turn those into Rust code so we can have typed error messages.  <code>generate_client</code> is where the rubber meets the road and we create the Rust client for the service.  Finally, <code>generate_tests</code> looks through botocore and translates the parsing tests from botocore to Rust code.  This means we have generated, automated tests for ensuring our deserializers and error handlers can handle examples of what AWS returns without actually making AWS calls.</p>
+<p>Error types are errors AWS can return for requests.  We turn those into Rust code so we can have typed error messages.  <code>generate_client</code> is where the rubber meets the road and we create the Rust client for the service.  Take a look at <a href="https://rusoto.github.io/rusoto/rusoto_sqs/struct.SqsClient.html">SqsClient docs</a> to see what it generates.  Finally, <code>generate_tests</code> looks through botocore and translates the parsing tests from botocore to Rust code.  This means we have generated, automated tests for ensuring our deserializers and error handlers can handle examples of what AWS returns without actually making AWS calls.</p>
 
 <h2 id="packaging-up-the-code">Packaging up the code</h2>
 
