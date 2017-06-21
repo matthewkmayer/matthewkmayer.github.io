@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Rusoto codegen, part two &middot; Matthew Mayer&#39;s tech blog</title>
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-144-precomposed.png" sizes="144x144" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://matthewkmayer.github.io/blag/public">Matthew Mayer&#39;s tech blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Rusoto codegen, part two</h1>
+                        <span class="li-article-taxonomies">
+                            
+
+                            
+                        </span>
+                        
+                        <time class="li-article-date">Friday, June 16, 2017</time>
+                    </header>
+                    <section>
+                        <p>In the <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/">previous post</a> we took a quick tour of the major pieces of <a href="https://github.com/rusoto/rusoto">Rusoto</a> code generation.  In this post we&rsquo;ll get deeper into code generation for the Simple Queue Service.</p>
+
+<p></p>
+
+<h2 id="picking-up-from-part-one">Picking up from part one</h2>
+
+<p>Part one described a few parts of Rusoto codegen:</p>
+
+<ol>
+<li>Finding which services to generate</li>
+<li>Making the service&rsquo;s crate</li>
+<li>Generating the service and placing it inside its crate</li>
+<li><code>rustfmt</code> the generated code to make it look pretty</li>
+</ol>
+
+<p>Step three is where this post will concentrate.  Since part one was written, some name spacing has changed but the code does the same thing.  In <a href="https://github.com/rusoto/rusoto/blob/master/service_crategen/src/main.rs">service_crategen&rsquo;s main.rs file</a>:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>gen_writer<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>BufWriter::new(gen_file);<span style="color: #bbbbbb"></span>
+codegen::generator::generate_source(<span style="color: #555555">&amp;</span>service,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span><span style="color: #006699; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>gen_writer).unwrap();<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>The <code>generate_source</code> function is defined in <a href="https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs">service_crategen/codegen/generator/mod.rs</a>:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate_source</span>(service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>,<span style="color: #bbbbbb"> </span>writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>service.protocol()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #CC3300">&quot;json&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>JsonGenerator,<span style="color: #bbbbbb"> </span>JsonErrorTypes),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #CC3300">&quot;query&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">|</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;ec2&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>QueryGenerator,<span style="color: #bbbbbb"> </span>XmlErrorTypes),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #CC3300">&quot;rest-json&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>RestJsonGenerator,<span style="color: #bbbbbb"> </span>JsonErrorTypes),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #CC3300">&quot;rest-xml&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>RestXmlGenerator,<span style="color: #bbbbbb"> </span>XmlErrorTypes),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>protocol<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Unknown protocol {}&quot;</span>,<span style="color: #bbbbbb"> </span>protocol),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>The function signature shows it takes a reference to a <code>Service</code> and a mutable reference to a <code>FileWriter</code>.  The <code>FileWriter</code> type is supplied by the <code>BufWriter</code> we created just before calling <code>generate_source</code>.  The <code>Service</code> type is declared in <a href="https://github.com/rusoto/rusoto/blob/master/service_crategen/src/service.rs">service.rs</a> in the service_crategen project:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[derive(Debug)]</span><span style="color: #bbbbbb"></span>
+<span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">struct</span> <span style="color: #00AA88; font-weight: bold">Service</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>config: ::ServiceConfig,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>definition: <span style="color: #00AA88; font-weight: bold">ServiceDefinition</span><span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+
+<span style="color: #006699; font-weight: bold">impl</span><span style="color: #bbbbbb"> </span>Service<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">new</span>(config: <span style="color: #00AA88; font-weight: bold">ServiceConfig</span>,<span style="color: #bbbbbb"> </span>definition: <span style="color: #00AA88; font-weight: bold">ServiceDefinition</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">Self</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>Service<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span>config: <span style="color: #00AA88; font-weight: bold">config</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span>definition: <span style="color: #00AA88; font-weight: bold">definition</span><span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">name</span>(<span style="color: #555555">&amp;</span><span style="color: #336666">self</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span> {<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span><span style="color: #336666">self</span>.definition.metadata.service_abbreviation<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span><span style="color: #336666">Some</span>(<span style="color: #006699; font-weight: bold">ref</span><span style="color: #bbbbbb"> </span>service_abbreviation)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>service_abbreviation.as_str(),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span><span style="color: #336666">None</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #336666">self</span>.definition.metadata.service_full_name.as_ref()<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">full_name</span>(<span style="color: #555555">&amp;</span><span style="color: #336666">self</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span> {<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #555555">&amp;</span><span style="color: #336666">self</span>.definition.metadata.service_full_name<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">protocol</span>(<span style="color: #555555">&amp;</span><span style="color: #336666">self</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span> {<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #555555">&amp;</span><span style="color: #336666">self</span>.definition.metadata.protocol<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+...<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>The <code>Service</code> type wraps up both a <code>ServiceConfig</code> and <code>ServiceDefinition</code>.  ServiceDefinition is what we saw in part one and looked like this:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[derive(Debug, Deserialize)]</span><span style="color: #bbbbbb"></span>
+<span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">struct</span> <span style="color: #00AA88; font-weight: bold">ServiceDefinition</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>documentation: <span style="color: #336666">Option</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span><span style="color: #555555">&gt;</span>,<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>examples: <span style="color: #336666">Option</span><span style="color: #555555">&lt;</span>BTreeMap<span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span><span style="color: #336666">String</span><span style="color: #555555">&gt;&gt;</span>,<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>metadata: <span style="color: #00AA88; font-weight: bold">Metadata</span>,<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>operations: <span style="color: #00AA88; font-weight: bold">BTreeMap</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span>Operation<span style="color: #555555">&gt;</span>,<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #009999">#[serde(deserialize_with=</span><span style="color: #CC3300">&quot;ShapesMap::deserialize_shapes_map&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>shapes: <span style="color: #00AA88; font-weight: bold">BTreeMap</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span>Shape<span style="color: #555555">&gt;</span>,<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>version: <span style="color: #336666">Option</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span><span style="color: #555555">&gt;</span><span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>ServiceConfig is populated from the list of services we want to generate.  It stores this JSON:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #CC3300">&quot;sqs&quot;</span> <span style="color: #AA0000; background-color: #FFAAAA">:</span> {
+    <span style="color: #330099; font-weight: bold">&quot;version&quot;</span>: <span style="color: #CC3300">&quot;0.25.0&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;coreVersion&quot;</span>: <span style="color: #CC3300">&quot;0.25.0&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;protocolVersion&quot;</span>: <span style="color: #CC3300">&quot;2012-11-05&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;baseTypeName&quot;</span>: <span style="color: #CC3300">&quot;Sqs&quot;</span>
+  }
+</pre></div>
+
+<p>in this form:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[derive(Clone, Debug, Deserialize)]</span><span style="color: #bbbbbb"></span>
+<span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">struct</span> <span style="color: #00AA88; font-weight: bold">ServiceConfig</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>version: <span style="color: #336666">String</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #009999">#[serde(rename = </span><span style="color: #CC3300">&quot;coreVersion&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>core_version: <span style="color: #336666">String</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #009999">#[serde(rename = </span><span style="color: #CC3300">&quot;protocolVersion&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>protocol_version: <span style="color: #336666">String</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #009999">#[serde(rename = </span><span style="color: #CC3300">&quot;customDependencies&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>custom_dependencies: <span style="color: #336666">Option</span><span style="color: #555555">&lt;</span>BTreeMap<span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span>cargo::Dependency<span style="color: #555555">&gt;&gt;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #009999">#[serde(rename = </span><span style="color: #CC3300">&quot;baseTypeName&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>base_type_name: <span style="color: #336666">String</span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>Back to <code>generate_source</code>!</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate_source</span>(service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>,<span style="color: #bbbbbb"> </span>writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>service.protocol()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #CC3300">&quot;json&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>JsonGenerator,<span style="color: #bbbbbb"> </span>JsonErrorTypes),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #CC3300">&quot;query&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">|</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;ec2&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>QueryGenerator,<span style="color: #bbbbbb"> </span>XmlErrorTypes),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #CC3300">&quot;rest-json&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>RestJsonGenerator,<span style="color: #bbbbbb"> </span>JsonErrorTypes),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #CC3300">&quot;rest-xml&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>RestXmlGenerator,<span style="color: #bbbbbb"> </span>XmlErrorTypes),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>protocol<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Unknown protocol {}&quot;</span>,<span style="color: #bbbbbb"> </span>protocol),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>From the <a href="https://github.com/boto/botocore/blob/develop/botocore/data/sqs/2012-11-05/service-2.json">botocore SQS definition</a> we know SQS uses the <code>query</code> protocol:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #CC3300">&quot;metadata&quot;</span> <span style="color: #AA0000; background-color: #FFAAAA">:</span> {
+    <span style="color: #330099; font-weight: bold">&quot;apiVersion&quot;</span>:<span style="color: #CC3300">&quot;2012-11-05&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;endpointPrefix&quot;</span>:<span style="color: #CC3300">&quot;sqs&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;protocol&quot;</span>:<span style="color: #CC3300">&quot;query&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;serviceAbbreviation&quot;</span>:<span style="color: #CC3300">&quot;Amazon SQS&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;serviceFullName&quot;</span>:<span style="color: #CC3300">&quot;Amazon Simple Queue Service&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;signatureVersion&quot;</span>:<span style="color: #CC3300">&quot;v4&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;uid&quot;</span>:<span style="color: #CC3300">&quot;sqs-2012-11-05&quot;</span>,
+    <span style="color: #330099; font-weight: bold">&quot;xmlNamespace&quot;</span>:<span style="color: #CC3300">&quot;http://queue.amazonaws.com/doc/2012-11-05/&quot;</span>
+  }
+</pre></div>
+
+<p>This means we&rsquo;ll be taking this branch in the <code>match</code> statement:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #CC3300">&quot;query&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">|</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;ec2&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span>QueryGenerator,<span style="color: #bbbbbb"> </span>XmlErrorTypes),<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>This passes the <code>writer</code> and <code>service</code> variables along with <code>QueryGenerator</code> and <code>XmlErrorTypes</code> into <code>generate</code>.  Let&rsquo;s look into <code>generate</code>, defined in <a href="https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs">service_crategen/src/codegen/generator/mod.rs</a>:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate</span><span style="color: #555555">&lt;</span>P,<span style="color: #bbbbbb"> </span>E<span style="color: #555555">&gt;</span>(writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter,<span style="color: #bbbbbb"> </span>service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>,<span style="color: #bbbbbb"> </span>protocol_generator: <span style="color: #00AA88; font-weight: bold">P</span>,<span style="color: #bbbbbb"> </span>error_type_generator: <span style="color: #00AA88; font-weight: bold">E</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">where</span><span style="color: #bbbbbb"> </span>P: <span style="color: #00AA88; font-weight: bold">GenerateProtocol</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">          </span>E: <span style="color: #00AA88; font-weight: bold">GenerateErrorTypes</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span>writeln<span style="color: #555555">!</span>(writer,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;#[allow(warnings)]</span>
+<span style="color: #CC3300">        use hyper::Client;</span>
+<span style="color: #CC3300">        use hyper::status::StatusCode;</span>
+<span style="color: #CC3300">        use rusoto_core::request::DispatchSignedRequest;</span>
+<span style="color: #CC3300">        use rusoto_core::region;</span>
+<span style="color: #CC3300">        use std::fmt;</span>
+<span style="color: #CC3300">        use std::error::Error;</span>
+<span style="color: #CC3300">        use rusoto_core::request::HttpDispatchError;</span>
+<span style="color: #CC3300">        use rusoto_core::credential::{{CredentialsError, ProvideAwsCredentials}};</span>
+<span style="color: #CC3300">    &quot;</span>)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span>protocol_generator.generate_prelude(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>generate_types(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>protocol_generator)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>error_type_generator.generate_error_types(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>generate_client(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>protocol_generator)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>generate_tests(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #336666">Ok</span>(())<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>We&rsquo;re finally seeing some slightly more advanced Rust features: <code>generate&lt;P, E&gt;</code> means we&rsquo;re using generics and the <code>?</code> operator replaces the <code>try!</code> macro.</p>
+
+<p>Breaking it down:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate</span><span style="color: #555555">&lt;</span>P,<span style="color: #bbbbbb"> </span>E<span style="color: #555555">&gt;</span>(writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter,<span style="color: #bbbbbb"> </span>service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>,<span style="color: #bbbbbb"> </span>
+<span style="color: #bbbbbb">    </span>protocol_generator: <span style="color: #00AA88; font-weight: bold">P</span>,<span style="color: #bbbbbb"> </span>error_type_generator: <span style="color: #00AA88; font-weight: bold">E</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">where</span><span style="color: #bbbbbb"> </span>P: <span style="color: #00AA88; font-weight: bold">GenerateProtocol</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">          </span>E: <span style="color: #00AA88; font-weight: bold">GenerateErrorTypes</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"> </span>...<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p><code>generate</code> takes a total of four arguments.  Two are generics, <code>P</code> and <code>E</code>.  They are defined in the <code>where</code> block: <code>P: GenerateProtocol</code> means <code>P</code> accepts anything that fulfills the <code>GenerateProtocol</code> trait.  Similarly, <code>E</code> accepts anything that implements the <code>GenerateErrorTypes</code> trait.  This is used in the signature so the <code>protocol_generator</code> arg is anything that implements the <code>GenerateProtocol</code> trait and <code>error_type_generator</code> is for the <code>GenerateErrorTypes</code> trait.</p>
+
+<p>Now that we&rsquo;ve rephrased that a few times, let&rsquo;s go to the next part:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>writeln<span style="color: #555555">!</span>(writer,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;#[allow(warnings)]</span>
+<span style="color: #CC3300">  use hyper::Client;</span>
+<span style="color: #CC3300">  use hyper::status::StatusCode;</span>
+<span style="color: #CC3300">  use rusoto_core::request::DispatchSignedRequest;</span>
+<span style="color: #CC3300">  use rusoto_core::region;</span>
+<span style="color: #CC3300">  use std::fmt;</span>
+<span style="color: #CC3300">  use std::error::Error;</span>
+<span style="color: #CC3300">  use rusoto_core::request::HttpDispatchError;</span>
+<span style="color: #CC3300">  use rusoto_core::credential::{{CredentialsError, ProvideAwsCredentials}};</span>
+<span style="color: #CC3300">&quot;</span>)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>Now we&rsquo;re getting to Rust code for SQS!  This is our prelude to the service.  Every AWS service Rusoto supports has this code at the top of <code>generated.rs</code>.  Take a peek at <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/src/generated.rs">SQS&rsquo; generated.rs file</a>.  This brings in all the items we need for talking to AWS: <a href="https://github.com/hyperium/hyper">hyper</a> for HTTP(s) requests, wrappers for signing AWS requests from <code>rusoto_core::request</code>, AWS regions from <code>rusoto_core::region</code>, etc&hellip;  We also bring in AWS credential providing helpers.</p>
+
+<p>Here&rsquo;s the next part of <code>generate</code>:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>protocol_generator.generate_prelude(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+generate_types(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>protocol_generator)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+error_type_generator.generate_error_types(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+generate_client(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>protocol_generator)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+generate_tests(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>This section is tailored to the specific service being generated.  <code>protocol_generator</code> implements talking to AWS and <code>error_type_generator</code> handles all the errors AWS could return for the service.  We&rsquo;ll get to that right after the last part of <code>generate</code>:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #336666">Ok</span>(())<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>If we hit here, everything is okay and we return the <code>Result</code> type with an empty object, <code>()</code>.</p>
+
+<p>Back to the service-specific code generation!</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>protocol_generator.generate_prelude(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>In here, the <code>protocol_generator</code> variable refers to <code>QueryGenerator</code>.  This is from the earlier <code>match</code> statement: <code>generate(writer, service, QueryGenerator, XmlErrorTypes)</code>.  <code>QueryGenerator</code> is implemented in <a href="https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/query.rs">service_crategen/src/codegen/generator/query.rs</a>.  Here&rsquo;s how it implements the <code>GenerateProtocol</code> trait:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">struct</span> <span style="color: #00AA88; font-weight: bold">QueryGenerator</span>;<span style="color: #bbbbbb"></span>
+
+<span style="color: #006699; font-weight: bold">impl</span><span style="color: #bbbbbb"> </span>GenerateProtocol<span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">for</span><span style="color: #bbbbbb"> </span>QueryGenerator<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+...<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate_prelude</span>(<span style="color: #555555">&amp;</span><span style="color: #336666">self</span>,<span style="color: #bbbbbb"> </span>writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter,<span style="color: #bbbbbb"> </span>_service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">      </span>writeln<span style="color: #555555">!</span>(writer,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">               </span><span style="color: #CC3300">&quot;use std::str::FromStr;</span>
+<span style="color: #CC3300">          use xml::EventReader;</span>
+<span style="color: #CC3300">          use xml::reader::ParserConfig;</span>
+<span style="color: #CC3300">          use rusoto_core::param::{{Params, ServiceParams}};</span>
+<span style="color: #CC3300">          use rusoto_core::signature::SignedRequest;</span>
+<span style="color: #CC3300">          use xml::reader::XmlEvent;</span>
+<span style="color: #CC3300">          use rusoto_core::xmlutil::{{Next, Peek, XmlParseError, XmlResponse}};</span>
+<span style="color: #CC3300">          use rusoto_core::xmlutil::{{characters, end_element, start_element, skip_tree, peek_at_name}};</span>
+<span style="color: #CC3300">          use rusoto_core::xmlerror::*;</span>
+
+<span style="color: #CC3300">          enum DeserializerNext {{</span>
+<span style="color: #CC3300">              Close,</span>
+<span style="color: #CC3300">              Skip,</span>
+<span style="color: #CC3300">              Element(String),</span>
+<span style="color: #CC3300">      }}&quot;</span>)<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">  </span>}<span style="color: #bbbbbb"></span>
+...<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>There&rsquo;s more to that trait, but we&rsquo;ll focus on <code>generate_prelude</code>.  While we&rsquo;ve already created a generic prelude all services share, the <code>query</code> type needs additional imports.  For example we need to parse the XML payloads returned by SQS, so we bring in items from the <a href="https://github.com/netvl/xml-rs">xml crate</a>.  We also bring in Rusoto xmlutil helpers to make the code more concise.</p>
+
+<p>Moving on to <code>generate_types(writer, service, &amp;protocol_generator)?;</code>, it&rsquo;s in <a href="https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs">service_crategen/src/codegen/generator/mod.rs</a>:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate_types</span><span style="color: #555555">&lt;</span>P<span style="color: #555555">&gt;</span>(writer: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>FileWriter,<span style="color: #bbbbbb"> </span>service: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">Service</span>,<span style="color: #bbbbbb"> </span>protocol_generator: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">P</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #00AA88; font-weight: bold">IoResult</span><span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">where</span><span style="color: #bbbbbb"> </span>P: <span style="color: #00AA88; font-weight: bold">GenerateProtocol</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>(serialized_types,<span style="color: #bbbbbb"> </span>deserialized_types)<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>filter_types(service);<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">for</span><span style="color: #bbbbbb"> </span>(name,<span style="color: #bbbbbb"> </span>shape)<span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">in</span><span style="color: #bbbbbb"> </span>service.shapes().iter()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>type_name<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>mutate_type_name(<span style="color: #555555">&amp;</span>name);<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">        </span><span style="color: #0099FF; font-style: italic">// We generate enums for error types, so no need to create model objects for them</span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>shape.exception()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span><span style="color: #006699; font-weight: bold">continue</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">        </span><span style="color: #0099FF; font-style: italic">// If botocore includes documentation, clean it up a bit and use it</span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span><span style="color: #336666">Some</span>(<span style="color: #006699; font-weight: bold">ref</span><span style="color: #bbbbbb"> </span>docs)<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>shape.documentation<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span>writeln<span style="color: #555555">!</span>(writer,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;#[doc=</span><span style="color: #CC3300; font-weight: bold">\&quot;</span><span style="color: #CC3300">{}</span><span style="color: #CC3300; font-weight: bold">\&quot;</span><span style="color: #CC3300">]&quot;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                               </span>docs.replace(<span style="color: #CC3300">&quot;</span><span style="color: #CC3300; font-weight: bold">\\</span><span style="color: #CC3300">&quot;</span>,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;</span><span style="color: #CC3300; font-weight: bold">\\\\</span><span style="color: #CC3300">&quot;</span>).replace(<span style="color: #CC3300">&quot;</span><span style="color: #CC3300; font-weight: bold">\&quot;</span><span style="color: #CC3300">&quot;</span>,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;</span><span style="color: #CC3300; font-weight: bold">\\\&quot;</span><span style="color: #CC3300">&quot;</span>))<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>deserialized<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>deserialized_types.contains(<span style="color: #555555">&amp;</span>type_name);<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>serialized<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>serialized_types.contains(<span style="color: #555555">&amp;</span>type_name);<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">        </span><span style="color: #0099FF; font-style: italic">// generate a rust type for the shape</span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>type_name<span style="color: #bbbbbb"> </span><span style="color: #555555">!=</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;String&quot;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>generated_type<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>shape.shape_type<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                </span>ShapeType::Structure<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                    </span>generate_struct(service,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                                     </span><span style="color: #555555">&amp;</span>type_name,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                                     </span><span style="color: #555555">&amp;</span>shape,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                                     </span>serialized,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                                     </span>deserialized,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                                     </span>protocol_generator)<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                </span>ShapeType::Map<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate_map(<span style="color: #555555">&amp;</span>type_name,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>shape),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                </span>ShapeType::List<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>generate_list(<span style="color: #555555">&amp;</span>type_name,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>shape),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                </span>shape_type<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                    </span>generate_primitive_type(<span style="color: #555555">&amp;</span>type_name,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                                             </span>shape_type,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                                             </span>protocol_generator.timestamp_type())<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span>};<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span>writeln<span style="color: #555555">!</span>(writer,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;{}&quot;</span>,<span style="color: #bbbbbb"> </span>generated_type)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>deserialized<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span><span style="color: #336666">Some</span>(deserializer)<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>protocol_generator.generate_deserializer(<span style="color: #555555">&amp;</span>type_name,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>shape,<span style="color: #bbbbbb"> </span>service)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                </span>writeln<span style="color: #555555">!</span>(writer,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;{}&quot;</span>,<span style="color: #bbbbbb"> </span>deserializer)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>serialized<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span><span style="color: #336666">Some</span>(serializer)<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>protocol_generator.generate_serializer(<span style="color: #555555">&amp;</span>type_name,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>shape,<span style="color: #bbbbbb"> </span>service)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">                </span>writeln<span style="color: #555555">!</span>(writer,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;{}&quot;</span>,<span style="color: #bbbbbb"> </span>serializer)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">      </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">      </span><span style="color: #336666">Ok</span>(())<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>The first thing we do is filter out the types.  This splits types into how they are used: inputs to AWS services and outputs.  This allows us to generate deserializers for outputs from AWS and serializers for inputs.  If we didn&rsquo;t do this, the generated code would have lots of unused code and make the services files larger than they have to be.  We then iterate over each shape in the service and generate its Rust equivalent.  Taking <code>generate_primitive_type</code> as an example:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">generate_primitive_type</span>(name: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>,<span style="color: #bbbbbb"> </span>shape_type: <span style="color: #00AA88; font-weight: bold">ShapeType</span>,<span style="color: #bbbbbb"> </span>for_timestamps: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">String</span> {<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>primitive_type<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>shape_type<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>ShapeType::Blob<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;Vec&lt;u8&gt;&quot;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>ShapeType::Boolean<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;bool&quot;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>ShapeType::Double<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;f64&quot;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>ShapeType::Float<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;f32&quot;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>ShapeType::Integer<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;i64&quot;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>ShapeType::Long<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;i64&quot;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>ShapeType::<span style="color: #336666">String</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;String&quot;</span>,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>ShapeType::Timestamp<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>for_timestamps,<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>primitive_type<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Unknown primitive type: {:?}&quot;</span>,<span style="color: #bbbbbb"> </span>primitive_type),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">  </span>};<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">  </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;pub type {} = {};&quot;</span>,<span style="color: #bbbbbb"> </span>name,<span style="color: #bbbbbb"> </span>primitive_type)<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>This is fairly straightforward.  Take the type defined in the service definition and map them to a Rust type.  Booleans map to <code>bool</code>, floats to <code>f32</code>, etc&hellip;  One special case is <code>for_timestamps</code> where we let the caller determine how it wants it to look.</p>
+
+<p>The <code>generate_types</code> function also handles translating botocore documentation to rustdoc in the code.  Towards the end of the function it handles making serializers and deserializers if the shape needs them.  Finally it returns <code>Ok(())</code> to mark that part of codegen as complete.</p>
+
+<p>The remainder of the code generation follows the same pattern: take the botocore service definition and translate that to Rust code.  Here&rsquo;s the parts we haven&rsquo;t covered:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>error_type_generator.generate_error_types(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+generate_client(writer,<span style="color: #bbbbbb"> </span>service,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>protocol_generator)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+generate_tests(writer,<span style="color: #bbbbbb"> </span>service)<span style="color: #555555">?</span>;<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>Error types are errors AWS can return for requests.  We turn those into Rust code so we can have typed error messages.  <code>generate_client</code> is where the rubber meets the road and we create the Rust client for the service.  Take a look at <a href="https://rusoto.github.io/rusoto/rusoto_sqs/struct.SqsClient.html">SqsClient docs</a> to see what it generates.  Finally, <code>generate_tests</code> looks through botocore and translates the parsing tests from botocore to Rust code.  This means we have generated, automated tests for ensuring our deserializers and error handlers can handle examples of what AWS returns without actually making AWS calls.</p>
+
+<h2 id="packaging-up-the-code">Packaging up the code</h2>
+
+<p>After this deeper look of how we make Rust code, we still need to go over how the generated code is used in the crate.  Continuing with SQS, the next post will look into how the <code>rusoto_sqs</code> crate is created from scratch and populated with code from codegen covered in this post.</p>
+
+<p>Thanks for reading!</p>
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Matthew Mayer</strong>
+    </div>
+</div>
+
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/"> Rusoto codegen</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    The source code and content of this website are free and available under the MIT license.
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a>, is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
