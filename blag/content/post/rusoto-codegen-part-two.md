@@ -24,7 +24,7 @@ let mut gen_writer = BufWriter::new(gen_file);
 codegen::generator::generate_source(&service, &mut gen_writer).unwrap();
 ```
 
-The `generate_source` function is defined in [service_crategen/codegen/generator/mod.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs):
+The `generate_source` function is defined in [service_crategen/src/commands/generate/codegen/mod.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/commands/generate/codegen/mod.rs):
 
 ```rust
 pub fn generate_source(service: &Service, writer: &mut FileWriter) -> IoResult {
@@ -188,7 +188,7 @@ We're finally seeing some slightly more advanced Rust features: `generate<P, E>`
 Breaking it down:
 
 ```rust
-fn generate<P, E>(writer: &mut FileWriter, service: &Service, 
+fn generate<P, E>(writer: &mut FileWriter, service: &Service,
     protocol_generator: P, error_type_generator: E) -> IoResult
 
     where P: GenerateProtocol,
@@ -238,7 +238,7 @@ Back to the service-specific code generation!
 protocol_generator.generate_prelude(writer, service)?;
 ```
 
-In here, the `protocol_generator` variable refers to `QueryGenerator`.  This is from the earlier `match` statement: `generate(writer, service, QueryGenerator, XmlErrorTypes)`.  `QueryGenerator` is implemented in [service_crategen/src/codegen/generator/query.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/query.rs).  Here's how it implements the `GenerateProtocol` trait:
+In here, the `protocol_generator` variable refers to `QueryGenerator`.  This is from the earlier `match` statement: `generate(writer, service, QueryGenerator, XmlErrorTypes)`.  `QueryGenerator` is implemented in [service_crategen/src/commands/generate/codegen/query.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/commands/generate/codegen/query.rs).  Here's how it implements the `GenerateProtocol` trait:
 
 ```rust
 pub struct QueryGenerator;
@@ -268,7 +268,7 @@ impl GenerateProtocol for QueryGenerator {
 
 There's more to that trait, but we'll focus on `generate_prelude`.  While we've already created a generic prelude all services share, the `query` type needs additional imports.  For example we need to parse the XML payloads returned by SQS, so we bring in items from the [xml crate](https://github.com/netvl/xml-rs).  We also bring in Rusoto xmlutil helpers to make the code more concise.
 
-Moving on to `generate_types(writer, service, &protocol_generator)?;`, it's in [service_crategen/src/codegen/generator/mod.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs):
+Moving on to `generate_types(writer, service, &protocol_generator)?;`, it's in [service_crategen/src/commands/generate/codegen/mod.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/commands/generate/codegen/mod.rs):
 
 ```rust
 fn generate_types<P>(writer: &mut FileWriter, service: &Service, protocol_generator: &P) -> IoResult
