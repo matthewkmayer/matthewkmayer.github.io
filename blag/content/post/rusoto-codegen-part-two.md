@@ -155,7 +155,7 @@ This means we'll be taking this branch in the `match` statement:
 "query" | "ec2" => generate(writer, service, QueryGenerator, XmlErrorTypes),
 ```
 
-This passes the `writer` and `service` variables along with `QueryGenerator` and `XmlErrorTypes` into `generate`.  Let's look into `generate`, defined in [service_crategen/src/codegen/generator/mod.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/codegen/generator/mod.rs):
+This passes the `writer` and `service` variables along with `QueryGenerator` and `XmlErrorTypes` into `generate`.  Let's look into `generate`, defined in [service_crategen/src/commands/generate/codegen/mod.rs](https://github.com/rusoto/rusoto/blob/master/service_crategen/src/commands/generate/codegen/mod.rs):
 
 ```rust
 fn generate<P, E>(writer: &mut FileWriter, service: &Service, protocol_generator: P, error_type_generator: E) -> IoResult
