@@ -6,10 +6,22 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Jun 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Tue, 11 Jul 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rusoto codegen, part three</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-three/</link>
+      <pubDate>Tue, 11 Jul 2017 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-three/</guid>
+      <description>&lt;p&gt;This is part three of Rusoto code generation.  The first two parts went over how code inside a crate is generated.
+In in post, we&amp;rsquo;ll take a look at how we make the crate for an AWS service.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Rusoto codegen, part two</title>
