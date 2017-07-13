@@ -60,7 +60,7 @@
                     </header>
                     <section>
                         <p>This is part three of Rusoto code generation.  The first two parts went over how code inside a crate is generated.
-In in post, we&rsquo;ll take a look at how we make the crate for an AWS service.</p>
+In this post, we&rsquo;ll take a look at how we make the crate for an AWS service.</p>
 
 <p></p>
 
@@ -131,7 +131,7 @@ This contains both the service name and the botocore API definition version.  Th
 <span style="color: #003333">path</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;../../../mock&quot;</span>
 </pre></div>
 
-<p>All services require <code>rusoto_core</code>.  That&rsquo;s where code used by all services live.  For example, the AWS request signature calculation functions.  <code>rusoto_mock</code> is brought in for testing purposes when the SQS crate is being developed.</p>
+<p><code>rusoto_core</code> is where code used by all services live.  For example, the AWS request signature calculation functions.  <code>rusoto_mock</code> is brought in for testing purposes when the SQS crate is being developed.</p>
 <div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #555555">[</span>dependencies<span style="color: #555555">]</span>
 <span style="color: #003333">hyper</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.10.0&quot;</span>
 xml-rs <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.6&quot;</span>
@@ -139,7 +139,7 @@ xml-rs <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;
 
 <p>Other services may bring in more dependencies, but SQS only needs <code>hyper</code> and <code>xml-rs</code>.  And that wraps up Cargo.toml!</p>
 
-<p>The <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/README.md">README</a> is a short overview to help when navigating the project on Github.  It has links to <a href="https://rusoto.org">https://rusoto.org</a>, <a href="https://rusoto.github.io/rusoto/rusoto_core/index.html">API documentation</a> and slightly customized information for the service such as the service name and how to bring it into a project&rsquo;s Cargo.toml.</p>
+<p>The <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/README.md">README</a> is a short overview to help when navigating the project on Github.  It has links to <a href="https://rusoto.org">https://rusoto.org</a>, the <a href="https://rusoto.github.io/rusoto/rusoto_core/index.html">API documentation</a> and slightly customized information for the service such as the service name and how to bring it into a project&rsquo;s Cargo.toml.</p>
 
 <p>Before we look at the other files, here&rsquo;s a refresher on the directory structure:</p>
 <div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>.

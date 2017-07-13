@@ -5,7 +5,7 @@ title = "Rusoto codegen, part three"
 +++
 
 This is part three of Rusoto code generation.  The first two parts went over how code inside a crate is generated.
-In in post, we'll take a look at how we make the crate for an AWS service.
+In this post, we'll take a look at how we make the crate for an AWS service.
 
 <!--more-->
 
@@ -83,7 +83,7 @@ version = "0.25.0"
 path = "../../../mock"
 ```
 
-All services require `rusoto_core`.  That's where code used by all services live.  For example, the AWS request signature calculation functions.  `rusoto_mock` is brought in for testing purposes when the SQS crate is being developed.
+`rusoto_core` is where code used by all services live.  For example, the AWS request signature calculation functions.  `rusoto_mock` is brought in for testing purposes when the SQS crate is being developed.
 
 ```bash
 [dependencies]
@@ -93,7 +93,7 @@ xml-rs = "0.6"
 
 Other services may bring in more dependencies, but SQS only needs `hyper` and `xml-rs`.  And that wraps up Cargo.toml!
 
-The [README](https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/README.md) is a short overview to help when navigating the project on Github.  It has links to [https://rusoto.org](https://rusoto.org), [API documentation](https://rusoto.github.io/rusoto/rusoto_core/index.html) and slightly customized information for the service such as the service name and how to bring it into a project's Cargo.toml.
+The [README](https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/README.md) is a short overview to help when navigating the project on Github.  It has links to [https://rusoto.org](https://rusoto.org), the [API documentation](https://rusoto.github.io/rusoto/rusoto_core/index.html) and slightly customized information for the service such as the service name and how to bring it into a project's Cargo.toml.
 
 Before we look at the other files, here's a refresher on the directory structure:
 
