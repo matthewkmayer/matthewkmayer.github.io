@@ -12,6 +12,46 @@ My recap of RustConf 2017 in Portland, Oregon.  Or: how I avoided hotel surge pr
 
 Was told first conference for something is the best.  In this case the first one set a tone of possibility and potentials.  The second RustConf, in 2017, focused less on this and more on the progress made and a little more nitty-gritty details (epochs).
 
+## Presentations recap
+
+#### Opening keynote
+
+Rust's compiler is continuing to improve.  Mozilla doesn't have a stranglehold on Rust: only 17% of the core Rust team works for Mozilla.  Epochs are a way to evolve the language in opt-in ways for potential breaking changes, but if a breaking change affects an old, unmaintained crate, it can be set to use the old epoch and newer code can use the new one.  No Python 2/3 split is going to happen.
+
+RustBridge helps people get started programming in Rust.  Looks amazing and I hope to help with the effort.
+
+#### A Tale of Teaching Rust
+
+I missed the first few minutes of this due to hallway track shennanigans, but [Rustlings](https://github.com/carols10cents/rustlings) is apparently the way to go for teaching Rust.
+
+#### Building Rocket
+
+An excellent demystification of how Rocket works.  I was in the "too much magic" camp before but am now convinced Rocket simply automates how I'd hand-craft web server code.  Can't wait to have reduced-boilerplate for database interaction.  (Link to Rusoto + Rocket + Diesel blag post)
+
+#### Shipping a Solid Rust Crate
+
+Apparently one must include lots of anime in a crate. 😉  Good overview of what to have for a crate: documentation, documentation, documentation, a filled out Cargo.toml file, good README, sample code, a Code of Conduct, etc...
+
+#### Menhir and Friends: the State of the Art of Parsing in Rust
+
+This talk was over my head: I haven't had to write a parser since college and have forgotten all that content.
+
+#### Type System Tips for the Real World
+
+Highly polished, informative and fun presentation.  Just the right level of technical details and explainations for my current knowledge level.  Cleared up how Diesel operates and removes some of my fear it's "too much magic" like I view ActiveRecord.
+
+#### Improving Rust Performance Through Profiling and Benchmarking
+
+Nice deep dive into making Rust projects faster.  Can't wait to get to performance as a priority for my projects.
+
+#### Fast, Safe, Pure-Rust Elliptic Curve Cryptography
+
+Another presentation a bit over my head.  My grasp on elliptic curve cryptography is weak, to be generous.  The math involved could have used some animation to clearly explain how the steps happen.  This would have made it easier for me to follow.
+
+#### Closing Keynote: Safe Systems Software and the Future of Computing
+
+Microsoft's Singularity and Midori experiences.  A bittersweet presentation: much progress made on improving operating system safety that was killed before its time.  But hope for the future with lessons learned.
+
 ## Hallway track
 
 Meetin' people is great.
