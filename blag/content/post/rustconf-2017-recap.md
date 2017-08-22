@@ -54,7 +54,7 @@ Microsoft's [Singularity](https://en.wikipedia.org/wiki/Singularity_(operating_s
 
 ## Hallway track
 
-The "Hallway track" at a conference refers to the conversations happening in hallways instead of the main events and presentation.  I made my own "table track."  A maintainer of [Rusoto](https://github.com/rusoto/rusoto/) happened to sit at the same table so we caught up a little.  Another person who's been in touch about the same project contact me before the conference and we got a chance to chat in person, which is always great.
+The "Hallway track" at a conference refers to the conversations happening in hallways instead of the main events and presentations.  I made my own "table track."  Another maintainer of [Rusoto](https://github.com/rusoto/rusoto/) happened to sit at the same table so we caught up a little.  Another person who's been in touch about the same project contact me before the conference and we got a chance to chat in person, which is always great.
 
 The person sitting to my left gave me an excellent view into Haskell.  Funny how diverse the attendees' technical knowledge is.
 
