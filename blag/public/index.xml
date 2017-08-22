@@ -6,10 +6,21 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 11 Jul 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 20 Aug 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>RustConf 2017 recap</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rustconf-2017-recap/</link>
+      <pubDate>Sun, 20 Aug 2017 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rustconf-2017-recap/</guid>
+      <description>&lt;p&gt;My recap of RustConf 2017 in Portland, Oregon.  Or: how I avoided hotel surge pricing during the eclipse weekend!&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Rusoto codegen, part three</title>
