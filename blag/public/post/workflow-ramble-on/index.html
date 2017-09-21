@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Workflow Ramblings &middot; Matthew Mayer&#39;s tech blog</title>
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-144-precomposed.png" sizes="144x144" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://matthewkmayer.github.io/blag/public">Matthew Mayer&#39;s tech blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Workflow Ramblings</h1>
+                        <span class="li-article-taxonomies">
+                            
+
+                            
+                        </span>
+                        
+                        <time class="li-article-date">Wednesday, September 13, 2017</time>
+                    </header>
+                    <section>
+                        <p>While a software enginerd/pixie wrangler at heart, I&rsquo;ve discovered I can&rsquo;t follow the stereotypical developer path: grab a ticket from Jira, work on it, shove the results to QA and repeat.  This approach leaves a tremendous amount of efficiency on the table.</p>
+
+<p>Outside that narrow path, there&rsquo;s many methods to maximize the effects of the work put in.  Think force multiplier, but don&rsquo;t think 10x developer.</p>
+
+<p></p>
+
+<h2 id="overview-and-influences">Overview and influences</h2>
+
+<p>The ideas to follow are nothing new.  Most of the influences come from the <a href="http://agilemanifesto.org/">Agile Manifesto</a>, especially the <a href="http://agilemanifesto.org/principles.html">12 principles page</a>, <a href="https://en.wikipedia.org/wiki/Kanban_(development)">kanban</a> and years of interacting with the <a href="http://agilepdx.org/">AgilePDX</a> community.</p>
+
+<p>Here&rsquo;s six topics that act as force multipliers for software work:</p>
+
+<ul>
+<li>Favor describing behavior from the user&rsquo;s perspective</li>
+<li>Small tasks</li>
+<li>It&rsquo;s not done until it&rsquo;s in production</li>
+<li>Limit work in progress</li>
+<li>Working, delivered software now is better than perfect software sometime in the future</li>
+<li>Frequent deployments mean deployments are less scary</li>
+</ul>
+
+<h2 id="favor-describing-behavior-from-the-user-s-perspective">Favor describing behavior from the user&rsquo;s perspective</h2>
+
+<p>Tickets should be from the perspective of the user and describe how they want the system to act.  Leave solutions out, just describe the behavior.</p>
+
+<p>A common anti-pattern is to see &ldquo;as a <strong>member of the scrum team</strong>, I want to <strong>foo</strong> so I can <strong>bar</strong>.&rdquo;  The customer, the person paying your salary, problem doesn&rsquo;t care about what the <strong>foo</strong> is.  What they <em>want</em> is working software.  Maybe faster software, or software with less bugs. Those are all user stories.  Switching data stores, moving to a different hosting provider, etc&hellip; are all things <em>the user doesn&rsquo;t care about</em>.  Make them technical tasks instead.</p>
+
+<p>By keeping tickets written from the perspective of the user, this allows the team performing the work to figure out what the best way to deliver the requested changes are.</p>
+
+<p>Another anti-pattern is having a technical solution prescribed during ticket creation or grooming.  Pinning a solution to a problem when the least is known about the problem leads to pain, rework and technical debt.</p>
+
+<h2 id="small-tasks">Small tasks</h2>
+
+<p>Favoring small tasks over large tasks give benefits such as:</p>
+
+<ul>
+<li>getting working software in front of the customer faster</li>
+<li>less work is thrown away if priorities change</li>
+<li>it&rsquo;s easier to see tickets that are stuck or not progressing</li>
+</ul>
+
+<p><a href="https://gojko.net/2012/01/23/splitting-user-stories-the-hamburger-method/">Hamburger slicing</a> is one method to get a handle on making tickets smaller.  It&rsquo;s just a framework or tool and not the be-all, end-all, but a great place to start.</p>
+
+<h2 id="it-s-not-done-until-it-s-in-production">It&rsquo;s not done until it&rsquo;s in production</h2>
+
+<p>It&rsquo;s far too common to see a ticket be marked as &ldquo;done&rdquo; when a pull request is created, or it&rsquo;s given to QA, or it&rsquo;s slated for release but not yet deployed.</p>
+
+<p>Here&rsquo;s why this isn&rsquo;t a good practice:</p>
+
+<ul>
+<li>if there&rsquo;s an issue discovered during code review or a bug found by QA, the developer needs to context switch from their new ticket back to the old ticket</li>
+<li>it encourages working on multiple tickets quickly instead of completing one at a time</li>
+<li>code completed but not yet deployed is not as valuable to the business or customer as deployed code</li>
+</ul>
+
+<p>A common reason for delaying releases is &ldquo;we use Scrum, we release at the end of the sprint.&rdquo; Luckily, <a href="http://www.scrumguides.org/scrum-guide.html">the Scrum guide</a> doesn&rsquo;t say you have to wait until the end of the sprint to ship software.  Don&rsquo;t wait.</p>
+
+<p>Feature flags can decouple releases from deployments, but don&rsquo;t let features sit too long without being flipped on.</p>
+
+<h2 id="limit-work-in-progress">Limit work in progress</h2>
+
+<p>Goal: take a single ticket from &ldquo;TODO&rdquo; to &ldquo;deployed and tested in production.&rdquo;  This maximizes overall throughput by minimizing context-switching.</p>
+
+<p>Anti-pattern: a single person having three or more tickets they are &ldquo;working on&rdquo; at the same time.</p>
+
+<p>For more information, there is a wonderful serious of posts on <a href="http://www.personalkanban.com/pk/primers/the-basics-of-limiting-wip-why-limit-wip-series-post-1/">personalkanban.com</a> that applies to software development as well as using kanban for personal tasks.</p>
+
+<h2 id="working-delivered-software-now-is-better-than-perfect-software-sometime-in-the-future">Working, delivered software now is better than perfect software sometime in the future</h2>
+
+<p>Agile Manifesto:</p>
+
+<pre><code>Our highest priority is to satisfy the customer
+through early and continuous delivery
+of valuable software.
+</code></pre>
+
+<p>A prototype system, feature or even bug workaround delivered to a customer today is better than a textbook-worthy, gold-plated perfection of software engineering in six months.  Get working software out early, incrementally add to it and continue to iterate.</p>
+
+<h2 id="frequent-deployments-mean-deployments-are-less-scary">Frequent deployments mean deployments are less scary</h2>
+
+<p>Goal is to be able to deliver software as quickly as possible.  What&rsquo;s the lead time from an idea to a solution delivered to the customer?</p>
+
+<p>Automation is your friend here.  Make deploys repeatable and minimize the amount of manual steps.  A human touching a keyboard to do a deploy is far less reliable than a tool.</p>
+
+<p>Anti-pattern: &ldquo;war room&rdquo; deploys, done outside of normal business hours.</p>
+
+<p>Anti-pattern: avoiding deployments because they are messy, error-prone and have a high failure rate.</p>
+
+<h2 id="a-thank-you-to-my-mentors">A thank you to my mentors</h2>
+
+<p>My usage of these techniques didn&rsquo;t arise in a vacuum.  I&rsquo;ve been fortunate to have a few high-quality mentors in my career who I&rsquo;m immensely grateful for their help growing my professional skills.</p>
+
+<h2 id="call-to-action">Call to action</h2>
+
+<p>Try one of these changes!  Run an experiment with it.  Form your hypothesis, run experiment, gather data, see if the hypothesis still stands.</p>
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Matthew Mayer</strong>
+    </div>
+</div>
+
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://matthewkmayer.github.io/blag/public/post/rustconf-2017-recap/"> RustConf 2017 recap</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    The source code and content of this website are free and available under the MIT license.
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a>, a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
