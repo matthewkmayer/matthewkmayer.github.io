@@ -6,20 +6,20 @@
     <description>Recent content in Posts on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 13 Sep 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Wed, 20 Sep 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Workflow Ramblings</title>
-      <link>https://matthewkmayer.github.io/blag/public/post/workflow-ramble-on/</link>
-      <pubDate>Wed, 13 Sep 2017 21:28:53 -0700</pubDate>
+      <title>Software development force multipliers</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/software-dev-force-multipliers/</link>
+      <pubDate>Wed, 20 Sep 2017 21:28:53 -0700</pubDate>
       
-      <guid>https://matthewkmayer.github.io/blag/public/post/workflow-ramble-on/</guid>
-      <description>&lt;p&gt;While a software enginerd/pixie wrangler at heart, I&amp;rsquo;ve discovered I can&amp;rsquo;t follow the stereotypical developer path: grab a ticket from Jira, work on it, shove the results to QA and repeat.  This approach leaves a tremendous amount of efficiency on the table.&lt;/p&gt;
+      <guid>https://matthewkmayer.github.io/blag/public/post/software-dev-force-multipliers/</guid>
+      <description>&lt;p&gt;While a software enginerd/pixie wrangler at heart, I&amp;rsquo;ve discovered the stereotypical developer path of &lt;em&gt;grabbing a ticket from Jira, working on it, shoving the results to QA and repeat&lt;/em&gt; isn&amp;rsquo;t for me.  The biggest reason is how this leaves a tremendous amount of efficiency on the table. This inefficient approach is difficult to reconcile with empathy for the customer buying and using the product.&lt;/p&gt;
 
-&lt;p&gt;Outside that narrow path, there&amp;rsquo;s many methods to maximize the effects of the work put in.  Think force multiplier, but don&amp;rsquo;t think 10x developer.&lt;/p&gt;
+&lt;p&gt;My code writing speed has peaked: I can&amp;rsquo;t write code any faster.  But I&amp;rsquo;ve found new tools and methods to maximize my efficiency.  Let&amp;rsquo;s go over a sampling of the more important ones.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
