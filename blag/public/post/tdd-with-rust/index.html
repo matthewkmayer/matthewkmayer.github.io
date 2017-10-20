@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Test driven development with Rust &middot; Matthew Mayer&#39;s tech blog</title>
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-144-precomposed.png" sizes="144x144" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://matthewkmayer.github.io/blag/public">Matthew Mayer&#39;s tech blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Test driven development with Rust</h1>
+                        <span class="li-article-taxonomies">
+                            
+
+                            
+                        </span>
+                        
+                        <time class="li-article-date">Thursday, October 19, 2017</time>
+                    </header>
+                    <section>
+                        <p><a href="https://en.wikipedia.org/wiki/Test-driven_development">Test Driven Development</a> (TDD) encourages better software design. When the desired behavior is known and expressible, it&rsquo;s highly effective to make modular and easily tested code.</p>
+
+<p>Let&rsquo;s take a look at using TDD with Rust, using <a href="https://github.com/matthewkmayer/release-party-BR">release-party</a> as an example.</p>
+
+<p></p>
+
+<h2 id="what-we-re-changing">What we&rsquo;re changing</h2>
+
+<p>Release-party is a command line tool I made for my day job.  We&rsquo;ve got a fair amount of repositories on GitHub: one for each microservice.  Our deployments are automated through TravisCI: the <code>master</code> branch is deployed to our testing environment and the <code>release</code> branch is deployed to production.</p>
+
+<p>This is a hybrid of <a href="http://scottchacon.com/2011/08/31/github-flow.html">GitHub flow</a> and <a href="https://trunkbaseddevelopment.com/">trunk based development</a>.  Release-party automates the process of going to each repository in the organization, seeing if <code>release</code> is behind <code>master</code> and if so, create a new pull request.  It quickly became a time sink to do that manually, multiple times a week, and release-party will do the inspection and pull request creation as needed.</p>
+
+<p>One required argument to the tool is the GitHub organization.  Until recently, users had to supply the entire GitHub API URL, such as <code>https://api.github.com/orgs/ORG-HERE/repos</code>.  To make things easier on users, I modified it to take just the org: <code>ORG-HERE</code>.  However, when run with the previous argument of the entire URL, it unceremonously keeled over with an unhelpful error message.</p>
+
+<p>Here&rsquo;s how it looks when supplying the old style of argument:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #003333">RP_GITHUBTOKEN</span><span style="color: #555555">=</span>ghtoken release-party-br --org <span style="color: #CC3300">&quot;https://api.github.com/orgs/ORG-HERE/repos&quot;</span>
+thread <span style="color: #CC3300">&#39;main&#39;</span> panicked at 
+<span style="color: #CC3300">&#39;expected repos: &quot;Couldn\&#39;</span>t deserialize repos from github: invalid type: 
+map, expected a sequence at line <span style="color: #FF6600">1</span> column <span style="color: #FF6600">1</span><span style="color: #CC3300">&quot;&#39;, src/libcore/result.rs:860:4</span>
+<span style="color: #CC3300">note: Run with `RUST_BACKTRACE=1` for a backtrace.</span>
+</pre></div>
+
+<p>Our goal: be <em>helpful</em> if we are supplied the old style of argument.</p>
+
+<h2 id="how-we-want-it-to-behave">How we want it to behave</h2>
+
+<p>First pass: we&rsquo;ll check the <code>org</code> argument to see if it contains a URL.  If so, let the user know they just need to supply the org name.</p>
+
+<h2 id="red-green-refactor">Red, green, refactor</h2>
+
+<p>Test first:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[test]</span><span style="color: #bbbbbb"></span>
+<span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">handle_malformed_org</span>()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">  </span>assert_eq<span style="color: #555555">!</span>(<span style="color: #006699; font-weight: bold">false</span>,<span style="color: #bbbbbb"> </span>org_is_just_org(<span style="color: #CC3300">&quot;https://api.github.com/orgs/ORG-HERE/repos&quot;</span>));<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p><code>org_is_just_org</code> is a new function to check if a string contains just the org name.  In this test we pass it the complete API URL, which should fail.</p>
+
+<p>Dogmatic TDD states we should run the tests now and watch it fail.  This is done by running <code>cargo test</code> and seeing the compilation error.  I prefer a less dogmatic approach: let&rsquo;s put in the <code>org_is_just_org</code> function, place it in the code base but the function will always return true:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">org_is_just_org</span>(org: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #007788; font-weight: bold">bool</span> {<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">true</span><span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>It&rsquo;s called in another function:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">make_org_url</span>(matches: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">clap</span>::ArgMatches)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">String</span> {<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>org<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>matches<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>.value_of(<span style="color: #CC3300">&quot;ORG&quot;</span>)<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>.expect(<span style="color: #CC3300">&quot;Please specify a github org&quot;</span>);<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #555555">!</span>org_is_just_org(<span style="color: #555555">&amp;</span>org)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Please make org just the organization name.&quot;</span>)<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;https://api.github.com/orgs/{}/repos&quot;</span>,<span style="color: #bbbbbb"> </span>org)<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>Now when we run <code>cargo test</code> we see it fail:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #336666">test</span> tests::handle_malformed_org ... FAILED
+...
+failures:
+
+---- tests::handle_malformed_org stdout ----
+	thread <span style="color: #CC3300">&#39;tests::handle_malformed_org&#39;</span> panicked at <span style="color: #CC3300">&#39;assertion failed: `(left == right)`</span>
+<span style="color: #CC3300">  left: `false`,</span>
+<span style="color: #CC3300"> right: `true`&#39;</span>, src/main.rs:176:8
+note: Run with <span style="color: #CC3300">`</span><span style="color: #003333">RUST_BACKTRACE</span><span style="color: #555555">=</span><span style="color: #FF6600">1</span><span style="color: #CC3300">`</span> <span style="color: #006699; font-weight: bold">for</span> a backtrace.
+
+
+failures:
+    tests::handle_malformed_org
+
+<span style="color: #336666">test</span> result: FAILED. <span style="color: #FF6600">6</span> passed; <span style="color: #FF6600">1</span> failed; <span style="color: #FF6600">0</span> ignored; <span style="color: #FF6600">0</span> measured; <span style="color: #FF6600">0</span> filtered out
+</pre></div>
+
+<p>On to making the test pass!  Let&rsquo;s modify <code>org_is_just_org</code>:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">org_is_just_org</span>(org: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #007788; font-weight: bold">bool</span> {<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>org.contains(<span style="color: #CC3300">&quot;https://api.github.com&quot;</span>)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">return</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">false</span>;<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">true</span><span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>That looks better.  What does <code>cargo test</code> say?</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>running <span style="color: #FF6600">7</span> tests
+<span style="color: #336666">test</span> github::tests::no_next_link ... ok
+<span style="color: #336666">test</span> github::tests::has_next_link ... ok
+<span style="color: #336666">test</span> github::tests::no_requests_left ... ok
+<span style="color: #336666">test</span> github::tests::plenty_of_requests_left ... ok
+<span style="color: #336666">test</span> tests::handle_malformed_org ... ok
+<span style="color: #336666">test</span> tests::get_ignored_repos_happy_path ... ok
+<span style="color: #336666">test</span> github::tests::finds_next_link ... ok
+
+<span style="color: #336666">test</span> result: ok. <span style="color: #FF6600">7</span> passed; <span style="color: #FF6600">0</span> failed; <span style="color: #FF6600">0</span> ignored; <span style="color: #FF6600">0</span> measured; <span style="color: #FF6600">0</span> filtered out
+</pre></div>
+
+<p>Success!</p>
+
+<p>Since our change was so small, there&rsquo;s little to nothing to refactor.  While we&rsquo;re in here, let&rsquo;s also ensure the happy path is tested:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[test]</span><span style="color: #bbbbbb"></span>
+<span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">handle_okay_org</span>()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>assert_eq<span style="color: #555555">!</span>(<span style="color: #006699; font-weight: bold">true</span>,<span style="color: #bbbbbb"> </span>org_is_just_org(<span style="color: #CC3300">&quot;ORG-HERE&quot;</span>));<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>We&rsquo;re green on all the tests.</p>
+
+<h2 id="how-we-want-it-to-behave-phase-two">How we want it to behave, phase two</h2>
+
+<p>Panicking with a message of <code>Please make org just the organization name.</code> isn&rsquo;t super helpful.  It&rsquo;s correct but we can do better.  Let&rsquo;s try to make a suggestion to the user.  If they provide <code>https://api.github.com/orgs/ORG-HERE/repos</code> let&rsquo;s respond with something along the lines of <code>did you mean ORG-HERE?</code>.</p>
+
+<h2 id="red-green-refactor-1">Red, green, refactor</h2>
+
+<p>Our new test:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[test]</span><span style="color: #bbbbbb"></span>
+<span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">suggestion_for_org</span>()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>assert_eq<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Try this&quot;</span>,<span style="color: #bbbbbb"> </span>
+<span style="color: #bbbbbb">        </span>suggest_org_arg(<span style="color: #CC3300">&quot;https://api.github.com/orgs/ORG-HERE/repos&quot;</span>).unwrap());<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>New function:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">suggest_org_arg</span>(org: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">Result</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span><span style="color: #336666">String</span><span style="color: #555555">&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #336666">Err</span>(<span style="color: #CC3300">&quot;Can&#39;t make a suggestion&quot;</span>.to_owned())<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>And the new function slotted in where we want it:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">make_org_url</span>(matches: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">clap</span>::ArgMatches)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">String</span> {<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>org<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>matches<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>.value_of(<span style="color: #CC3300">&quot;ORG&quot;</span>)<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>.expect(<span style="color: #CC3300">&quot;Please specify a github org&quot;</span>);<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #555555">!</span>org_is_just_org(<span style="color: #555555">&amp;</span>org)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>suggest_org_arg(<span style="color: #555555">&amp;</span>org)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span><span style="color: #336666">Ok</span>(suggestion)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Try this for the org value: {}&quot;</span>,<span style="color: #bbbbbb"> </span>suggestion),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">            </span><span style="color: #336666">Err</span>(_)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Please make org just the organization name.&quot;</span>),<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+
+<span style="color: #bbbbbb">    </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;https://api.github.com/orgs/{}/repos&quot;</span>,<span style="color: #bbbbbb"> </span>org)<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>We can see our test fail:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>...
+<span style="color: #336666">test</span> tests::suggestion_for_org ... FAILED
+...
+
+failures:
+
+---- tests::suggestion_for_org stdout ----
+	thread <span style="color: #CC3300">&#39;tests::suggestion_for_org&#39;</span> panicked at <span style="color: #CC3300">&#39;called `Result::unwrap()` on an `Err` value: &quot;Can\&#39;</span>t make a suggestion<span style="color: #CC3300">&quot;&#39;, src/libcore/result.rs:906:4</span>
+<span style="color: #CC3300">note: Run with `RUST_BACKTRACE=1` for a backtrace.</span>
+
+
+<span style="color: #CC3300">failures:</span>
+<span style="color: #CC3300">    tests::suggestion_for_org</span>
+
+<span style="color: #CC3300">test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out</span>
+</pre></div>
+
+<p>And to make it pass:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">suggest_org_arg</span>(org: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">Result</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span><span style="color: #336666">String</span><span style="color: #555555">&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>org.starts_with(<span style="color: #CC3300">&quot;https://api.github.com/orgs/&quot;</span>)<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;&amp;</span><span style="color: #bbbbbb"> </span>org.ends_with(<span style="color: #CC3300">&quot;/repos&quot;</span>)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">return</span><span style="color: #bbbbbb"> </span><span style="color: #336666">Ok</span>(<span style="color: #CC3300">&quot;Try this&quot;</span>.to_owned());<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #336666">Err</span>(<span style="color: #CC3300">&quot;Can&#39;t make a suggestion&quot;</span>.to_owned())<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #336666">test</span> result: ok. <span style="color: #FF6600">9</span> passed; <span style="color: #FF6600">0</span> failed; <span style="color: #FF6600">0</span> ignored; <span style="color: #FF6600">0</span> measured; <span style="color: #FF6600">0</span> filtered out
+</pre></div>
+
+<p>Yes!  We now have a passing test.  But the test doesn&rsquo;t actually test our end state: it doesn&rsquo;t return the suggestion.  Let&rsquo;s fix that:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[test]</span><span style="color: #bbbbbb"></span>
+<span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">suggestion_for_org_happy</span>()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>assert_eq<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Try this: ORG-HERE&quot;</span>,<span style="color: #bbbbbb"> </span>
+<span style="color: #bbbbbb">        </span>suggest_org_arg(<span style="color: #CC3300">&quot;https://api.github.com/orgs/ORG-HERE/repos&quot;</span>).unwrap());<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p><code>cargo test</code> will show us that fails because our implementation doesn&rsquo;t return the suggestion.  On to that:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">suggest_org_arg</span>(org: <span style="color: #006699">&amp;</span><span style="color: #007788; font-weight: bold">str</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">Result</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span><span style="color: #336666">String</span><span style="color: #555555">&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>org.starts_with(<span style="color: #CC3300">&quot;https://api.github.com/orgs/&quot;</span>)<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;&amp;</span><span style="color: #bbbbbb"> </span>org.ends_with(<span style="color: #CC3300">&quot;/repos&quot;</span>)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>suggestion<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>org.replace(<span style="color: #CC3300">&quot;https://api.github.com/orgs/&quot;</span>,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;&quot;</span>).replace(<span style="color: #CC3300">&quot;/repos&quot;</span>,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;&quot;</span>);<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">return</span><span style="color: #bbbbbb"> </span><span style="color: #336666">Ok</span>(format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Try this: {}&quot;</span>,<span style="color: #bbbbbb"> </span>suggestion).to_owned());<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span><span style="color: #336666">Err</span>(<span style="color: #CC3300">&quot;Can&#39;t make a suggestion&quot;</span>.to_owned())<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p><code>cargo test</code> shows all green:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #336666">test</span> result: ok. <span style="color: #FF6600">9</span> passed; <span style="color: #FF6600">0</span> failed; <span style="color: #FF6600">0</span> ignored; <span style="color: #FF6600">0</span> measured; <span style="color: #FF6600">0</span> filtered out
+</pre></div>
+
+<p>For completeness we&rsquo;ll also test some error cases for the function:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[test]</span><span style="color: #bbbbbb"></span>
+<span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">suggestion_for_org_sad</span>()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>assert_eq<span style="color: #555555">!</span>(<span style="color: #006699; font-weight: bold">true</span>,<span style="color: #bbbbbb"> </span>suggest_org_arg(<span style="color: #CC3300">&quot;https://api.github.com/orgs/ORG-HERE/&quot;</span>).is_err());<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>assert_eq<span style="color: #555555">!</span>(<span style="color: #006699; font-weight: bold">true</span>,<span style="color: #bbbbbb"> </span>suggest_org_arg(<span style="color: #CC3300">&quot;http://api.github.com/orgs/ORG-HERE/&quot;</span>).is_err());<span style="color: #bbbbbb"></span>
+<span style="color: #bbbbbb">    </span>assert_eq<span style="color: #555555">!</span>(<span style="color: #006699; font-weight: bold">true</span>,<span style="color: #bbbbbb"> </span>suggest_org_arg(<span style="color: #CC3300">&quot;api.github.com/orgs/ORG-HERE/repos&quot;</span>).is_err());<span style="color: #bbbbbb"></span>
+}<span style="color: #bbbbbb"></span>
+</pre></div>
+
+<p>Once again a <code>cargo test</code> shows the new test demonstrates our function works as expected:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>running <span style="color: #FF6600">10</span> tests
+<span style="color: #336666">test</span> github::tests::no_next_link ... ok
+<span style="color: #336666">test</span> github::tests::has_next_link ... ok
+<span style="color: #336666">test</span> github::tests::no_requests_left ... ok
+<span style="color: #336666">test</span> github::tests::plenty_of_requests_left ... ok
+<span style="color: #336666">test</span> tests::handle_malformed_org ... ok
+<span style="color: #336666">test</span> tests::handle_okay_org ... ok
+<span style="color: #336666">test</span> tests::get_ignored_repos_happy_path ... ok
+<span style="color: #336666">test</span> tests::suggestion_for_org_happy ... ok
+<span style="color: #336666">test</span> tests::suggestion_for_org_sad ... ok
+<span style="color: #336666">test</span> github::tests::finds_next_link ... ok
+
+<span style="color: #336666">test</span> result: ok. <span style="color: #FF6600">10</span> passed; <span style="color: #FF6600">0</span> failed; <span style="color: #FF6600">0</span> ignored; <span style="color: #FF6600">0</span> measured; <span style="color: #FF6600">0</span> filtered out
+</pre></div>
+
+<h2 id="the-proof-of-the-pudding-is-in-the-eating">The proof of the pudding is in the eating</h2>
+
+<p>One last manual check to make sure it&rsquo;s all plumbed corectly:</p>
+<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #003333">RP_GITHUBTOKEN</span><span style="color: #555555">=</span>foo cargo run -- --org https://api.github.com/orgs/my-org-name/repos
+    Finished dev <span style="color: #555555">[</span>unoptimized + debuginfo<span style="color: #555555">]</span> target<span style="color: #555555">(</span>s<span style="color: #555555">)</span> in <span style="color: #FF6600">0</span>.0 secs
+     Running <span style="color: #CC3300">`</span>target/debug/release-party-br --org <span style="color: #CC3300">&#39;https://api.github.com/orgs/my-org-name/repos&#39;`</span>
+thread <span style="color: #CC3300">&#39;main&#39;</span> panicked at <span style="color: #CC3300">&#39;Try this for the org value: Try this: my-org-name&#39;</span>, src/main.rs:66:30
+</pre></div>
+
+<p>We&rsquo;ve done it!  When passed <code>--org 'https://api.github.com/orgs/my-org-name/repos'</code> we return with <code>'Try this for the org value: Try this: my-org-name'</code>.</p>
+
+<h2 id="future-work">Future work</h2>
+
+<p>The first issue is the format: <code>'Try this for the org value: Try this: my-org-name'</code> repeats <code>Try this</code> and it should be cleaned up.</p>
+
+<p>Second, panicking still looks ugly and the work we just did is still a bit hidden due to that.  There&rsquo;s <a href="https://github.com/matthewkmayer/release-party-BR/issues/64">a ticket for fixing that behavior</a> later.</p>
+
+<h2 id="confidence">Confidence!</h2>
+
+<p>We&rsquo;ve added new behavior using composable functions that are easily tested.  Our tests are written and will always be around to ensure if we incorrectly change something, they&rsquo;ll catch it.</p>
+
+<p>This gives us better confidence our code is correct.  Code on!</p>
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Matthew Mayer</strong>
+    </div>
+</div>
+
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://matthewkmayer.github.io/blag/public/post/software-dev-force-multipliers/"> Software development force multipliers</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    The source code and content of this website are free and available under the MIT license.
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a>, a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

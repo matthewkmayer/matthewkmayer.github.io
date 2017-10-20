@@ -6,10 +6,23 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 20 Sep 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Thu, 19 Oct 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Test driven development with Rust</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/tdd-with-rust/</link>
+      <pubDate>Thu, 19 Oct 2017 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/tdd-with-rust/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Test-driven_development&#34;&gt;Test Driven Development&lt;/a&gt; (TDD) encourages better software design. When the desired behavior is known and expressible, it&amp;rsquo;s highly effective to make modular and easily tested code.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s take a look at using TDD with Rust, using &lt;a href=&#34;https://github.com/matthewkmayer/release-party-BR&#34;&gt;release-party&lt;/a&gt; as an example.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Software development force multipliers</title>
