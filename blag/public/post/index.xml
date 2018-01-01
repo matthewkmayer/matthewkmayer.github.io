@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 19 Oct 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 31 Dec 2017 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rusoto: 2017 in review</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rusoto-2017-in-review/</link>
+      <pubDate>Sun, 31 Dec 2017 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-2017-in-review/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt;, an unofficial SDK for &lt;a href=&#34;https://aws.amazon.com/&#34;&gt;Amazon Web Services&lt;/a&gt;, had a wonderful year! We made great strides in improving functionality, increasing the number of services covered and making various ergonomic changes.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Test driven development with Rust</title>
