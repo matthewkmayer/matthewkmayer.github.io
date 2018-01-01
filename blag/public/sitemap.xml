@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://matthewkmayer.github.io/blag/public/post/rusoto-2017-in-review/</loc>
+    <lastmod>2017-12-31T21:28:53-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://matthewkmayer.github.io/blag/public/post/tdd-with-rust/</loc>
     <lastmod>2017-10-19T21:28:53-07:00</lastmod>
   </url>
@@ -49,13 +54,13 @@
   
   <url>
     <loc>https://matthewkmayer.github.io/blag/public/</loc>
-    <lastmod>2017-10-19T21:28:53-07:00</lastmod>
+    <lastmod>2017-12-31T21:28:53-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://matthewkmayer.github.io/blag/public/post/</loc>
-    <lastmod>2017-10-19T21:28:53-07:00</lastmod>
+    <lastmod>2017-12-31T21:28:53-07:00</lastmod>
     <priority>0</priority>
   </url>
   
