@@ -27,7 +27,7 @@ CloudSearch Domain, GreenGrass, Elastic Filesystem, Workdocs, Cognito Sync, Shie
 Discovery, CodeStar, Migration Hub, Marketplace Entitlement, CloudHSMv2, ResourceGroupsTaggingApi, Lex,
 Lex Models, Budgets
 
-As of the end of 2018, Rusoto is *three* services shy of implementing publicly available AWS services from before re:Invent 2017.
+As of the end of 2017, Rusoto is *three* services shy of implementing publicly available AWS services from before re:Invent 2017.
 
 ## Ergonomics
 
