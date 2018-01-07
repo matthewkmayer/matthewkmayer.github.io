@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 31 Dec 2017 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jan 2018 21:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rust 2018</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rust-2018/</link>
+      <pubDate>Sun, 07 Jan 2018 21:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rust-2018/</guid>
+      <description>&lt;p&gt;Per the &lt;a href=&#34;https://blog.rust-lang.org/2018/01/03/new-years-rust-a-call-for-community-blogposts.html&#34;&gt;call for blog posts&lt;/a&gt;, I&amp;rsquo;ve got thoughts and ideas on where Rust can go in the upcoming year. My wants haven&amp;rsquo;t changed much over the last year or so: give me non-embarassing compilation speed! 😁&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Rusoto: 2017 in review</title>
