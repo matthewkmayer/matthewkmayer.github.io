@@ -87,32 +87,24 @@ rusoto_rds = {version = &quot;0.25.0&quot;}
 <h3 id="code-changes-required-for-rusoto-0-25-0">Code changes required for Rusoto 0.25.0</h3>
 
 <p>Before:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">extern</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">crate</span><span style="color: #bbbbbb"> </span>rusoto;<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>rusoto::rds::{RdsClient,<span style="color: #bbbbbb"> </span>CreateDBInstanceMessage,<span style="color: #bbbbbb"> </span>DescribeDBInstancesMessage};<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>rusoto::{DefaultCredentialsProvider,<span style="color: #bbbbbb"> </span>Region,<span style="color: #bbbbbb"> </span>default_tls_client};<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto::rds::{RdsClient,<span style="color:#bbb"> </span>CreateDBInstanceMessage,<span style="color:#bbb"> </span>DescribeDBInstancesMessage};<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto::{DefaultCredentialsProvider,<span style="color:#bbb"> </span>Region,<span style="color:#bbb"> </span>default_tls_client};</code></pre></div>
 <p>After:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">extern</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">crate</span><span style="color: #bbbbbb"> </span>rusoto_core;<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">extern</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">crate</span><span style="color: #bbbbbb"> </span>rusoto_rds;<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>rusoto_rds::{Rds,<span style="color: #bbbbbb"> </span>RdsClient,<span style="color: #bbbbbb"> </span>CreateDBInstanceMessage,<span style="color: #bbbbbb"> </span>DescribeDBInstancesMessage};<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>rusoto_core::{DefaultCredentialsProvider,<span style="color: #bbbbbb"> </span>Region,<span style="color: #bbbbbb"> </span>default_tls_client};<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto_core;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto_rds;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rds::{Rds,<span style="color:#bbb"> </span>RdsClient,<span style="color:#bbb"> </span>CreateDBInstanceMessage,<span style="color:#bbb"> </span>DescribeDBInstancesMessage};<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::{DefaultCredentialsProvider,<span style="color:#bbb"> </span>Region,<span style="color:#bbb"> </span>default_tls_client};</code></pre></div>
 <p>We&rsquo;re bringing in both <code>rusoto_core</code> and <code>rusoto_rds</code> crates.  We&rsquo;re also bringing in <code>rusoto_rds::Rds</code> which is a trait for the RDS client.</p>
 
 <p>The only other change in the code is changing the RDS endpoint type.</p>
 
 <p>Before:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>endpoint<span style="color: #bbbbbb"> </span>: <span style="color: #00AA88; font-weight: bold">rusoto</span>::rds::Endpoint;<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto</span>::rds::Endpoint;</code></pre></div>
 <p>After:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>endpoint<span style="color: #bbbbbb"> </span>: <span style="color: #00AA88; font-weight: bold">rusoto_rds</span>::Endpoint;<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto_rds</span>::Endpoint;</code></pre></div>
 <p>That&rsquo;s all we need to change for migrating to Rusoto 0.25.0.  Let&rsquo;s move on to cleaning up other parts of the code.</p>
 
 <h3 id="making-unwrap-behavior-slightly-nicer">Making unwrap behavior slightly nicer</h3>
@@ -120,69 +112,55 @@ rusoto_rds = {version = &quot;0.25.0&quot;}
 <p>In rusoto-rds-mk2: we use <code>.expect()</code> instead of <code>.unwrap()</code>.  This doesn&rsquo;t prevent panics, but it does give us more information as to <em>why</em> things didn&rsquo;t work as expected.  Both <a href="https://doc.rust-lang.org/std/result/enum.Result.html">Result</a> and <a href="https://doc.rust-lang.org/std/option/enum.Option.html">Option</a> implement this.</p>
 
 <p>Before:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>credentials<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>DefaultCredentialsProvider::new()<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>.unwrap();<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new()<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>.unwrap();</code></pre></div>
 <p>After:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>credentials<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>DefaultCredentialsProvider::new()<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>.expect(<span style="color: #CC3300">&quot;Couldn&#39;t create AWS credentials provider.&quot;</span>);<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new()<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t create AWS credentials provider.&#34;</span>);</code></pre></div>
 <p>Knowing when to use <code>expect</code> instead of matching against Result or Option is worth understanding.  In our sample code, panicking if we can&rsquo;t get AWS credentials is probably what we want to do.  But what about calls to AWS?</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>db_creation_result<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>rds_client.create_db_instance(<span style="color: #555555">&amp;</span>create_db_instance_request)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>.expect(<span style="color: #CC3300">&quot;Error sending create DB instance request&quot;</span>);<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_creation_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request)<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>.expect(<span style="color:#c30">&#34;Error sending create DB instance request&#34;</span>);</code></pre></div>
 <p><a href="http://rusoto.github.io/rusoto/rusoto_rds/trait.Rds.html#tymethod.create_db_instance">create_db_instance</a> returns a type of <code>Result&lt;CreateDBInstanceResult, CreateDBInstanceError&gt;</code>.  If we use <code>expect</code> we throw away the <code>CreateDBInstanceError</code> which would allow us to see why Rusoto or AWS couldn&rsquo;t fulfill our request.  If we get this error result, let&rsquo;s print out what it says for debugging:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>db_creation_result<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>rds_client.create_db_instance(<span style="color: #555555">&amp;</span>create_db_instance_request)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #336666">Ok</span>(db_create_result)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>db_create_result,<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #336666">Err</span>(e)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>println<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Error making database instance: {}&quot;</span>,<span style="color: #bbbbbb"> </span>e);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;No go on database creation.&quot;</span>);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>},<span style="color: #bbbbbb"></span>
-};<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_creation_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#366">Ok</span>(db_create_result)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>db_create_result,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Error making database instance: {}&#34;</span>,<span style="color:#bbb"> </span>e);<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>panic<span style="color:#555">!</span>(<span style="color:#c30">&#34;No go on database creation.&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>},<span style="color:#bbb">
+</span><span style="color:#bbb"></span>};</code></pre></div>
 <p>This is better: the happy path set the <code>db_creation_result</code> variable with the result.  The unhappy path still panics, but we now have information on <em>why</em> it happened.  If we don&rsquo;t want to panic, we can modify this more:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>db_call_result<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>rds_client.create_db_instance(<span style="color: #555555">&amp;</span>create_db_instance_request);<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>db_call_result.is_err()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #0099FF; font-style: italic">// This `unwrap` on the `err()` call will show us the error we know is there:</span>
-<span style="color: #bbbbbb">    </span>println<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Didn&#39;t successfully make the DB instance.  Error: {}&quot;</span>,<span style="color: #bbbbbb"> </span>db_call_result.err().unwrap());<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #0099FF; font-style: italic">// Since it didn&#39;t succeed, we can look at the error and see if we should retry or not.</span>
-<span style="color: #bbbbbb">    </span><span style="color: #0099FF; font-style: italic">// For our sample, we&#39;ll panic.</span>
-<span style="color: #bbbbbb">    </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Error making DB instance creation request.&quot;</span>);<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_call_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>db_call_result.is_err()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// This `unwrap` on the `err()` call will show us the error we know is there:
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Didn&#39;t successfully make the DB instance.  Error: {}&#34;</span>,<span style="color:#bbb"> </span>db_call_result.err().unwrap());<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// Since it didn&#39;t succeed, we can look at the error and see if we should retry or not.
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// For our sample, we&#39;ll panic.
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>panic<span style="color:#555">!</span>(<span style="color:#c30">&#34;Error making DB instance creation request.&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>Yes, we&rsquo;re still panicking in this example, but it shows we could do something else such as retrying the request.  We can look at the error and determine if it&rsquo;s a transient error and should be retried or if we should stop trying.</p>
 
 <h3 id="nightly-compiler-reminder">Nightly compiler reminder</h3>
 
 <p>The rest of this post requires using a nightly version of Rust for the Rocket site.  This walkthrough uses <code>rustc 1.18.0-nightly (036983201 2017-04-26)</code>.  To switch to that nightly release, run <code>rustup default nightly-2017-04-26</code>.  The output of that command should look like this:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>info: syncing channel updates <span style="color: #006699; font-weight: bold">for</span> <span style="color: #CC3300">&#39;nightly-2017-04-26-x86_64-apple-darwin&#39;</span>
-info: downloading component <span style="color: #CC3300">&#39;rustc&#39;</span>
- <span style="color: #FF6600">42</span>.3 MiB /  <span style="color: #FF6600">42</span>.3 MiB <span style="color: #555555">(</span><span style="color: #FF6600">100</span> %<span style="color: #555555">)</span> <span style="color: #FF6600">1014</span>.4 KiB/s ETA:   <span style="color: #FF6600">0</span> s                
-info: downloading component <span style="color: #CC3300">&#39;rust-std&#39;</span>
- <span style="color: #FF6600">58</span>.2 MiB /  <span style="color: #FF6600">58</span>.2 MiB <span style="color: #555555">(</span><span style="color: #FF6600">100</span> %<span style="color: #555555">)</span>   <span style="color: #FF6600">1</span>.4 MiB/s ETA:   <span style="color: #FF6600">0</span> s                
-info: downloading component <span style="color: #CC3300">&#39;cargo&#39;</span>
-  <span style="color: #FF6600">3</span>.6 MiB /   <span style="color: #FF6600">3</span>.6 MiB <span style="color: #555555">(</span><span style="color: #FF6600">100</span> %<span style="color: #555555">)</span>   <span style="color: #FF6600">1</span>.1 MiB/s ETA:   <span style="color: #FF6600">0</span> s                
-info: downloading component <span style="color: #CC3300">&#39;rust-docs&#39;</span>
- <span style="color: #FF6600">11</span>.5 MiB /  <span style="color: #FF6600">11</span>.5 MiB <span style="color: #555555">(</span><span style="color: #FF6600">100</span> %<span style="color: #555555">)</span>   <span style="color: #FF6600">1</span>.1 MiB/s ETA:   <span style="color: #FF6600">0</span> s                
-info: installing component <span style="color: #CC3300">&#39;rustc&#39;</span>
-info: installing component <span style="color: #CC3300">&#39;rust-std&#39;</span>
-info: installing component <span style="color: #CC3300">&#39;cargo&#39;</span>
-info: installing component <span style="color: #CC3300">&#39;rust-docs&#39;</span>
-info: default toolchain <span style="color: #336666">set</span> to <span style="color: #CC3300">&#39;nightly-2017-04-26-x86_64-apple-darwin&#39;</span>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">info: syncing channel updates <span style="color:#069;font-weight:bold">for</span> <span style="color:#c30">&#39;nightly-2017-04-26-x86_64-apple-darwin&#39;</span>
+info: downloading component <span style="color:#c30">&#39;rustc&#39;</span>
+ <span style="color:#f60">42</span>.3 MiB /  <span style="color:#f60">42</span>.3 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span> <span style="color:#f60">1014</span>.4 KiB/s ETA:   <span style="color:#f60">0</span> s                
+info: downloading component <span style="color:#c30">&#39;rust-std&#39;</span>
+ <span style="color:#f60">58</span>.2 MiB /  <span style="color:#f60">58</span>.2 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   <span style="color:#f60">1</span>.4 MiB/s ETA:   <span style="color:#f60">0</span> s                
+info: downloading component <span style="color:#c30">&#39;cargo&#39;</span>
+  <span style="color:#f60">3</span>.6 MiB /   <span style="color:#f60">3</span>.6 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   <span style="color:#f60">1</span>.1 MiB/s ETA:   <span style="color:#f60">0</span> s                
+info: downloading component <span style="color:#c30">&#39;rust-docs&#39;</span>
+ <span style="color:#f60">11</span>.5 MiB /  <span style="color:#f60">11</span>.5 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   <span style="color:#f60">1</span>.1 MiB/s ETA:   <span style="color:#f60">0</span> s                
+info: installing component <span style="color:#c30">&#39;rustc&#39;</span>
+info: installing component <span style="color:#c30">&#39;rust-std&#39;</span>
+info: installing component <span style="color:#c30">&#39;cargo&#39;</span>
+info: installing component <span style="color:#c30">&#39;rust-docs&#39;</span>
+info: default toolchain <span style="color:#366">set</span> to <span style="color:#c30">&#39;nightly-2017-04-26-x86_64-apple-darwin&#39;</span>
 
-  nightly-2017-04-26-x86_64-apple-darwin installed - rustc <span style="color: #FF6600">1</span>.18.0-nightly <span style="color: #555555">(</span>2b4c91158 <span style="color: #FF6600">2017</span>-04-25<span style="color: #555555">)</span>
-</pre></div>
-
+  nightly-2017-04-26-x86_64-apple-darwin installed - rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(</span>2b4c91158 <span style="color:#f60">2017</span>-04-25<span style="color:#555">)</span></code></pre></div>
 <p>Verify <code>rustc</code> is using the right version:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>$ rustc --version
-rustc <span style="color: #FF6600">1</span>.18.0-nightly <span style="color: #555555">(</span>2b4c91158 <span style="color: #FF6600">2017</span>-04-25<span style="color: #555555">)</span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ rustc --version
+rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(</span>2b4c91158 <span style="color:#f60">2017</span>-04-25<span style="color:#555">)</span></code></pre></div>
 <p>Now we&rsquo;re ready to play with the Rocket site some more!</p>
 
 <h3 id="diesel-cleanup">Diesel cleanup</h3>
@@ -190,91 +168,79 @@ rustc <span style="color: #FF6600">1</span>.18.0-nightly <span style="color: #55
 <p>Since the first iteration of this project was my first use of Diesel, I didn&rsquo;t know how to do an update and fetch the new value in one database call.  Thanks to rabidferret for <a href="https://www.reddit.com/r/rust/comments/6c7xpp/walkthrough_rocket_diesel_and_a_postgres_database/dhv2fgy/">pointing that out on Reddit</a>.  This is briefly covered in <a href="http://diesel.rs/guides/getting-started/">the Diesel getting started page</a>.  Instead of using <code>.execute</code> we&rsquo;ll use <code>.get_result</code>.  Per the Diesel docs, this <code>adds RETURNING * to the end of the query</code>.  Excellent!  Less database roundtrips is better.</p>
 
 <p>First we&rsquo;ll add <code>numeric_expr!(hits::hits_so_far);</code> to the schema.rs file:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>infer_schema<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;dotenv:DATABASE_URL&quot;</span>);<span style="color: #bbbbbb"></span>
-numeric_expr<span style="color: #555555">!</span>(hits::hits_so_far);<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">infer_schema<span style="color:#555">!</span>(<span style="color:#c30">&#34;dotenv:DATABASE_URL&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>numeric_expr<span style="color:#555">!</span>(hits::hits_so_far);</code></pre></div>
 <p>This uses the <a href="http://docs.diesel.rs/diesel/macro.numeric_expr.html">numeric_expr macro</a> to allow numeric operators.  We&rsquo;ll use the <code>+</code> operator to increment.</p>
 
 <p>Back in <code>main.rs</code> for <code>rusoto-rocket-mk2</code> we&rsquo;ll make some changes.  We&rsquo;ll start with <code>increment_hits</code>.</p>
 
 <p>Before:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">increment_hit</span>(conn: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">PgConnection</span>,<span style="color: #bbbbbb"> </span>id: <span style="color: #007788; font-weight: bold">i32</span>,<span style="color: #bbbbbb"> </span>new_hits: <span style="color: #007788; font-weight: bold">i32</span>)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>schema::hits;<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>rusoto_rocket::schema::hits::dsl::hits<span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">as</span><span style="color: #bbbbbb"> </span>myhits;<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>result<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>diesel::update(myhits.find(id))<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>.set(hits::hits_so_far.eq(new_hits))<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>.execute(conn);<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>result<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #336666">Ok</span>(_)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #336666">Err</span>(e)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>println<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Couldn&#39;t update hit counter: {}&quot;</span>,<span style="color: #bbbbbb"> </span>e),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>};<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">increment_hit</span>(conn: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">PgConnection</span>,<span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb"> </span>new_hits: <span style="color:#078;font-weight:bold">i32</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::hits<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span>myhits;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>diesel::update(myhits.find(id))<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>.set(hits::hits_so_far.eq(new_hits))<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>.execute(conn);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>};<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>This does the increment of the value.  We&rsquo;ll want to do the increment and return of the new value, like so:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">increment_hit</span>(conn: <span style="color: #006699">&amp;</span><span style="color: #00AA88; font-weight: bold">PgConnection</span>,<span style="color: #bbbbbb"> </span>hit_id: <span style="color: #007788; font-weight: bold">i32</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">Result</span><span style="color: #555555">&lt;</span><span style="color: #007788; font-weight: bold">i32</span>,<span style="color: #bbbbbb"> </span>diesel::result::Error<span style="color: #555555">&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>schema::hits;<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>schema::hits::dsl::<span style="color: #555555">*</span>;<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>rusoto_rocket_mk2::schema::hits::dsl::hits<span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">as</span><span style="color: #bbbbbb"> </span>myhits;<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>result<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>diesel::update(myhits.find(hit_id))<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>.set(hits::hits_so_far.eq(hits_so_far<span style="color: #bbbbbb"> </span><span style="color: #555555">+</span><span style="color: #bbbbbb"> </span><span style="color: #FF6600">1</span>))<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>.get_result::<span style="color: #555555">&lt;</span>Hit<span style="color: #555555">&gt;</span>(conn);<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>result<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #336666">Ok</span>(hit_count)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span><span style="color: #336666">Ok</span>(hit_count.hits_so_far<span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">as</span><span style="color: #bbbbbb"> </span><span style="color: #007788; font-weight: bold">i32</span>),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #336666">Err</span>(e)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">            </span>println<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Couldn&#39;t update hit counter: {}&quot;</span>,<span style="color: #bbbbbb"> </span>e);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">            </span><span style="color: #336666">Err</span>(e)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>}<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">increment_hit</span>(conn: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">PgConnection</span>,<span style="color:#bbb"> </span>hit_id: <span style="color:#078;font-weight:bold">i32</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span><span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb"> </span>diesel::result::Error<span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits::dsl::<span style="color:#555">*</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket_mk2::schema::hits::dsl::hits<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span>myhits;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>diesel::update(myhits.find(hit_id))<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>.set(hits::hits_so_far.eq(hits_so_far<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#f60">1</span>))<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>.get_result::<span style="color:#555">&lt;</span>Hit<span style="color:#555">&gt;</span>(conn);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(hit_count)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#366">Ok</span>(hit_count.hits_so_far<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">i32</span>),<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e);<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#366">Err</span>(e)<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>The main changes are using <code>get_result</code> instead of <code>execute</code> and setting the <code>hits_so_far</code> field to <code>hits_so_far + 1</code>.  This sets the incremented value and returns the updated value from the database.  We also change the function signature to return a <code>Result&lt;i32, diesel::result::Error&gt;</code>.  Before, it was a fire and forget, but now we use that for reporting the hits so far.</p>
 
 <p>In the index function, we move from this:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[get(</span><span style="color: #CC3300">&quot;/&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">index</span>(db_conn: <span style="color: #00AA88; font-weight: bold">State</span><span style="color: #555555">&lt;</span>DbConn<span style="color: #555555">&gt;</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">String</span> {<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>rusoto_rocket::schema::hits::dsl::<span style="color: #555555">*</span>;<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>my_db_conn<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>db_conn.inner().lock().expect(<span style="color: #CC3300">&quot;Couldn&#39;t get mutex lock on db connection&quot;</span>);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>hits_from_db<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>hits.filter(id.eq(<span style="color: #FF6600">1</span>))<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>.limit(<span style="color: #FF6600">1</span>)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>.load::<span style="color: #555555">&lt;</span>Hit<span style="color: #555555">&gt;</span>(<span style="color: #555555">&amp;</span>my_db_conn<span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">as</span><span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>PgConnection)<span style="color: #bbbbbb"> </span><span style="color: #0099FF; font-style: italic">// Explicit cast needed</span>
-<span style="color: #bbbbbb">        </span>.expect(<span style="color: #CC3300">&quot;Couldn&#39;t load hits, yo.&quot;</span>);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #0099FF; font-style: italic">// increment hits:</span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>hits_weve_seen<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>hits_from_db.first().unwrap().hits_so_far;<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>increment_hit(<span style="color: #555555">&amp;</span>my_db_conn,<span style="color: #bbbbbb"> </span><span style="color: #FF6600">1</span>,<span style="color: #bbbbbb"> </span>hits_weve_seen<span style="color: #bbbbbb"> </span><span style="color: #555555">+</span><span style="color: #bbbbbb"> </span><span style="color: #FF6600">1</span>);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Hello, world!  Hits: {:?}&quot;</span>,<span style="color: #bbbbbb"> </span>hits_weve_seen).to_string()<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[get(</span><span style="color:#c30">&#34;/&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">index</span>(db_conn: <span style="color:#0a8;font-weight:bold">State</span><span style="color:#555">&lt;</span>DbConn<span style="color:#555">&gt;</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::<span style="color:#555">*</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>my_db_conn<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>db_conn.inner().lock().expect(<span style="color:#c30">&#34;Couldn&#39;t get mutex lock on db connection&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_from_db<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits.filter(id.eq(<span style="color:#f60">1</span>))<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>.limit(<span style="color:#f60">1</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>.load::<span style="color:#555">&lt;</span>Hit<span style="color:#555">&gt;</span>(<span style="color:#555">&amp;</span>my_db_conn<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#555">&amp;</span>PgConnection)<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// Explicit cast needed
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">        </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t load hits, yo.&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// increment hits:
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits_from_db.first().unwrap().hits_so_far;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>increment_hit(<span style="color:#555">&amp;</span>my_db_conn,<span style="color:#bbb"> </span><span style="color:#f60">1</span>,<span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Hello, world!  Hits: {:?}&#34;</span>,<span style="color:#bbb"> </span>hits_weve_seen).to_string()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>to this:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[get(</span><span style="color: #CC3300">&quot;/&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">fn</span> <span style="color: #CC00FF">index</span>(db_conn: <span style="color: #00AA88; font-weight: bold">State</span><span style="color: #555555">&lt;</span>DbConn<span style="color: #555555">&gt;</span>)<span style="color: #bbbbbb"> </span>-&gt; <span style="color: #336666">String</span> {<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>my_db_conn<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>db_conn.inner().lock().expect(<span style="color: #CC3300">&quot;Couldn&#39;t get mutex lock on db connection&quot;</span>);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>hits_from_db: <span style="color: #007788; font-weight: bold">i32</span> <span style="color: #555555">=</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span>increment_hit(<span style="color: #555555">&amp;</span>my_db_conn,<span style="color: #bbbbbb"> </span><span style="color: #FF6600">1</span>)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #336666">Ok</span>(hits_after_increment)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>hits_after_increment,<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #336666">Err</span>(e)<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">            </span>println<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Couldn&#39;t get new hit count from db: {}&quot;</span>,<span style="color: #bbbbbb"> </span>e);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">            </span><span style="color: #555555">-</span><span style="color: #FF6600">1</span><span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>},<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>};<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Hello, world!  Hits: {:?}&quot;</span>,<span style="color: #bbbbbb"> </span>hits_from_db).to_string()<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[get(</span><span style="color:#c30">&#34;/&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">index</span>(db_conn: <span style="color:#0a8;font-weight:bold">State</span><span style="color:#555">&lt;</span>DbConn<span style="color:#555">&gt;</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>my_db_conn<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>db_conn.inner().lock().expect(<span style="color:#c30">&#34;Couldn&#39;t get mutex lock on db connection&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_from_db: <span style="color:#078;font-weight:bold">i32</span> <span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>increment_hit(<span style="color:#555">&amp;</span>my_db_conn,<span style="color:#bbb"> </span><span style="color:#f60">1</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(hits_after_increment)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>hits_after_increment,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t get new hit count from db: {}&#34;</span>,<span style="color:#bbb"> </span>e);<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#555">-</span><span style="color:#f60">1</span><span style="color:#bbb">
+</span><span style="color:#bbb">        </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>};<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Hello, world!  Hits: {:?}&#34;</span>,<span style="color:#bbb"> </span>hits_from_db).to_string()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>We&rsquo;ve removed the database call to get the current state and instead match on the returned <code>Result</code> from <code>increment_hit</code>.  As a bonus, this fixes the off-by-one error in the original example where we&rsquo;d see the page report 0 hits on our first visit.  The error branch of the <code>match</code> exposes the error state by reporting -1 hits if something goes wrong.</p>
 
 <h3 id="doing-local-testing-with-docker-instead-of-rds">Doing local testing with Docker instead of RDS</h3>
 
 <p>To play with the Diesel and Rocket portions of this walkthrough, we can use Docker to spin up a local Postgres container.  Run this command to create a Postgres container from the Alpine Linux distro:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>docker run --name postgres -e <span style="color: #003333">POSTGRES_PASSWORD</span><span style="color: #555555">=</span>mysecretpassword -p <span style="color: #FF6600">5432</span>:5432 -d postgres:alpine
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run --name postgres -e <span style="color:#033">POSTGRES_PASSWORD</span><span style="color:#555">=</span>mysecretpassword -p <span style="color:#f60">5432</span>:5432 -d postgres:alpine</code></pre></div>
 <p>We&rsquo;ll also need to adjust our <code>.env</code> file in <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket-mk2/.env">rusoto-rocket-mk2</a>.  It should look like this:</p>
 
 <pre><code>DATABASE_URL=postgres://postgres:mysecretpassword@localhost/rusoto_rocket
@@ -345,7 +311,7 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
                     The source code and content of this website are free and available under the MIT license.
                 </div>
                 <div class="li-page-footer-theme">
-                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a>, a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
                 </div>
             </div>
         </div>

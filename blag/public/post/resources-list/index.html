@@ -5,7 +5,7 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
-        <title>Rust 2018 &middot; Matthew Mayer&#39;s tech blog</title>
+        <title>Curated list of resources for software engineering &middot; Matthew Mayer&#39;s tech blog</title>
         <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
         <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/libraries/normalize.3.0.1.css" />
         <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/css/liquorice.css" />
@@ -49,61 +49,71 @@
             <div class="sixteen columns">
                 <article class="li-article">
                     <header class="li-article-header">
-                        <h1 class="li-article-title">Rust 2018</h1>
+                        <h1 class="li-article-title">Curated list of resources for software engineering</h1>
                         <span class="li-article-taxonomies">
                             
 
                             
                         </span>
                         
-                        <time class="li-article-date">Sunday, January 7, 2018</time>
+                        <time class="li-article-date">Sunday, March 18, 2018</time>
                     </header>
                     <section>
-                        <p>Per the <a href="https://blog.rust-lang.org/2018/01/03/new-years-rust-a-call-for-community-blogposts.html">call for blog posts</a>, I&rsquo;ve got thoughts and ideas on where Rust can go in the upcoming year. My wants haven&rsquo;t changed much over the last year or so: give me non-embarassing compilation speed! 😁</p>
+                        <p>List of links for topics including:</p>
+
+<ul>
+<li>Git</li>
+<li>Branching strategies</li>
+<li>Ruby</li>
+<li>Go</li>
+<li>Testing</li>
+<li>Cloud and AWS</li>
+</ul>
 
 <p></p>
 
-<p>Before getting started, I&rsquo;m very appreciative of the hard work put into the overall Rust community and ecosystem, including the behind-the-scenes work. It&rsquo;s difficult to understate just how much time and energy people volunteer in pursuit of a better, Rust-ier world.</p>
-
-<p>From my experience using Rust in <a href="https://github.com/rusoto/rusoto/">Rusoto</a> for over two years (shortly after Rust 1.0&rsquo;s release):</p>
-
-<h2 id="where-we-ve-been">Where we&rsquo;ve been</h2>
+<h2 id="git">Git</h2>
 
 <ul>
-<li>Compilation speed: unbearably slow for someone used to Go</li>
-<li>Documentation, official or otherwise, was sparse</li>
-<li>Compiler errors were often difficult to decipher to understand what the actual problem is</li>
-<li>Standard formatting or style guide wasn&rsquo;t well formed, hard to enforce and slow to address interesting syntax edge cases</li>
-<li>Young ecosystem with many libraries/packages not yet created</li>
+<li><a href="http://think-like-a-git.net/">Think like a Git</a></li>
+<li><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control">Pro Git</a></li>
 </ul>
 
-<h2 id="sharp-edges-still-present-as-of-jan-2018">Sharp edges still present as of Jan 2018</h2>
+<h2 id="branching-strategies">Branching strategies</h2>
 
 <ul>
-<li>We&rsquo;re still missing libraries other languages have built-in or available</li>
-<li>Compilation speed</li>
-<li>IDE support needs improvement: <a href="https://intellij-rust.github.io/">IntelliJ IDEA&rsquo;s Rust plugin</a> and the <a href="https://github.com/rust-lang-nursery/rls-vscode">VS Code Rust plugin</a> are okay</li>
-<li>Compilation speed: yes, it&rsquo;s listed again</li>
+<li><a href="http://scottchacon.com/2011/08/31/github-flow.html">GitHub flow</a></li>
+<li><a href="https://trunkbaseddevelopment.com/">Trunk based Development</a></li>
 </ul>
 
-<h2 id="improvements-i-d-love-to-see">Improvements I&rsquo;d love to see</h2>
+<h2 id="ruby">Ruby</h2>
 
 <ul>
-<li>Compilation speed boost</li>
-<li>More examples, more blog posts, more docs, more books</li>
+<li><a href="https://learnrubythehardway.org/book/">Learn Ruby the Hard Way</a></li>
 </ul>
 
-<h2 id="optimistic-for-2018">Optimistic for 2018</h2>
+<h2 id="go">Go</h2>
 
-<p>Despite continually beating up on <code>rustc</code>&rsquo;s compilation times, our computers are getting faster (despite exciting <a href="https://meltdownattack.com/">side channel attacks</a> and performance-reducing mitigations around them) and <code>rustc</code>&rsquo;s performance is still making strides to being better.</p>
+<ul>
+<li><a href="https://golang.org/doc/effective_go.html">Effective Go</a></li>
+<li><a href="https://github.com/monsooncommerce/golang-tripping-hazards">Golang Tripping Hazards</a></li>
+</ul>
 
-<p>As cloud computing continues to gain momentum and use, efficient utilization of cloud resources means a smaller bill: Rust will continue to make inroads here, thanks to its knock-down, drag-out performance capacity.</p>
+<h2 id="testing">Testing</h2>
 
-<p><a href="https://crates.io/">Crates.io</a> continues to grow as more libraries are added. I&rsquo;m excited to see gaps filled and libraries reaching 1.0.</p>
+<ul>
+<li><a href="https://martinfowler.com/articles/practical-test-pyramid.html">Practical Test Pyramid</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Test-driven_development">https://en.wikipedia.org/wiki/Test-driven_development</a></li>
+<li><a href="http://www.jamesshore.com/Blog/Red-Green-Refactor.html">Red Green Refactor Repeat</a></li>
+<li><a href="https://cucumber.io/docs/reference">Cucumber general reference</a></li>
+</ul>
 
-<p>More and more guides, tutorials and walkthroughs are being published. Soon the ecosystem will have more comprehensive documentation to ease learning.</p>
+<h2 id="cloud-and-aws">Cloud and AWS</h2>
 
-<p>I find it difficult to imagine a world where Rust isn&rsquo;t a smashing success in the next few years. We&rsquo;ll keep pushing towards that wonderfully safe future. 👍</p>
+<ul>
+<li><a href="https://aws.amazon.com/getting-started/">Getting Started on AWS</a></li>
+<li><a href="https://acloud.guru/">A Cloud Guru</a></li>
+</ul>
                     </section>
                 </article>
             </div>
@@ -120,8 +130,7 @@
             <div class="eight columns">
                 <div class="li-pagination-previous">
                     
-                        Later article<br />
-                        <a href="https://matthewkmayer.github.io/blag/public/post/resources-list/"> Curated list of resources for software engineering</a>
+                        &nbsp;
                     
                 </div>
             </div>
@@ -129,7 +138,7 @@
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-2017-in-review/"> Rusoto: 2017 in review</a>
+                        <a href="https://matthewkmayer.github.io/blag/public/post/rust-2018/"> Rust 2018</a>
                     
                 </div>
             </div>

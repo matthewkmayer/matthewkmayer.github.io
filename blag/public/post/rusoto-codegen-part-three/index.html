@@ -79,7 +79,7 @@ We glossed over where the generated code went in order to concentrate on the gen
 <p>To help us understand what we&rsquo;re making, here&rsquo;s how the <code>rusoto_sqs</code> crate is laid out at the end of code generation.</p>
 
 <p>Trimmed output from <code>tree</code> in the <code>rusoto/services/sqs</code> directory:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>.
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.
 ├── Cargo.toml
 ├── README.md
 └── src
@@ -87,62 +87,54 @@ We glossed over where the generated code went in order to concentrate on the gen
     │   ├── custom_tests.rs
     │   └── mod.rs
     ├── generated.rs
-    └── lib.rs
-</pre></div>
-
+    └── lib.rs</code></pre></div>
 <p>This is your run-of-the-mill library crate setup with minor tweaks with the <code>custom</code> directory and a <code>generated.rs</code> file.  Diving into the <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/Cargo.toml">Cargo.toml file</a>:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #555555">[</span>package<span style="color: #555555">]</span>
-<span style="color: #003333">authors</span> <span style="color: #555555">=</span> <span style="color: #555555">[</span><span style="color: #CC3300">&quot;Anthony DiMarco &lt;ocramida@gmail.com&gt;&quot;</span>, <span style="color: #CC3300">&quot;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&quot;</span>, <span style="color: #CC3300">&quot;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&quot;</span>, <span style="color: #CC3300">&quot;Nikita Pekin &lt;contact@nikitapek.in&gt;&quot;</span><span style="color: #555555">]</span>
-<span style="color: #003333">description</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;AWS SDK for Rust - Amazon Simple Queue Service @ 2012-11-05&quot;</span>
-<span style="color: #003333">documentation</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;https://rusoto.github.io/rusoto/rusoto_core/index.html&quot;</span>
-<span style="color: #003333">keywords</span> <span style="color: #555555">=</span> <span style="color: #555555">[</span><span style="color: #CC3300">&quot;AWS&quot;</span>, <span style="color: #CC3300">&quot;Amazon&quot;</span>, <span style="color: #CC3300">&quot;sqs&quot;</span><span style="color: #555555">]</span>
-<span style="color: #003333">license</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;MIT&quot;</span>
-<span style="color: #003333">name</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;rusoto_sqs&quot;</span>
-<span style="color: #003333">readme</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;README.md&quot;</span>
-<span style="color: #003333">repository</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;https://github.com/rusoto/rusoto&quot;</span>
-<span style="color: #003333">version</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.27.0&quot;</span>
-<span style="color: #003333">homepage</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;https://www.rusoto.org/&quot;</span>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#555">[</span>package<span style="color:#555">]</span>
+<span style="color:#033">authors</span> <span style="color:#555">=</span> <span style="color:#555">[</span><span style="color:#c30">&#34;Anthony DiMarco &lt;ocramida@gmail.com&gt;&#34;</span>, <span style="color:#c30">&#34;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&#34;</span>, <span style="color:#c30">&#34;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&#34;</span>, <span style="color:#c30">&#34;Nikita Pekin &lt;contact@nikitapek.in&gt;&#34;</span><span style="color:#555">]</span>
+<span style="color:#033">description</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;AWS SDK for Rust - Amazon Simple Queue Service @ 2012-11-05&#34;</span>
+<span style="color:#033">documentation</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;https://rusoto.github.io/rusoto/rusoto_core/index.html&#34;</span>
+<span style="color:#033">keywords</span> <span style="color:#555">=</span> <span style="color:#555">[</span><span style="color:#c30">&#34;AWS&#34;</span>, <span style="color:#c30">&#34;Amazon&#34;</span>, <span style="color:#c30">&#34;sqs&#34;</span><span style="color:#555">]</span>
+<span style="color:#033">license</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;MIT&#34;</span>
+<span style="color:#033">name</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;rusoto_sqs&#34;</span>
+<span style="color:#033">readme</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;README.md&#34;</span>
+<span style="color:#033">repository</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;https://github.com/rusoto/rusoto&#34;</span>
+<span style="color:#033">version</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.27.0&#34;</span>
+<span style="color:#033">homepage</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;https://www.rusoto.org/&#34;</span>
 
-<span style="color: #555555">[</span>build-dependencies<span style="color: #555555">]</span>
+<span style="color:#555">[</span>build-dependencies<span style="color:#555">]</span>
 
-<span style="color: #555555">[</span>dependencies<span style="color: #555555">]</span>
-<span style="color: #003333">hyper</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.10.0&quot;</span>
-xml-rs <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.6&quot;</span>
+<span style="color:#555">[</span>dependencies<span style="color:#555">]</span>
+<span style="color:#033">hyper</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.10.0&#34;</span>
+xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;</span>
 
-<span style="color: #555555">[</span>dependencies.rusoto_core<span style="color: #555555">]</span>
-<span style="color: #003333">version</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.27.0&quot;</span>
-<span style="color: #003333">path</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;../../core&quot;</span>
-<span style="color: #555555">[</span>dev-dependencies.rusoto_mock<span style="color: #555555">]</span>
-<span style="color: #003333">version</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.25.0&quot;</span>
-<span style="color: #003333">path</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;../../../mock&quot;</span>
-</pre></div>
-
+<span style="color:#555">[</span>dependencies.rusoto_core<span style="color:#555">]</span>
+<span style="color:#033">version</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.27.0&#34;</span>
+<span style="color:#033">path</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;../../core&#34;</span>
+<span style="color:#555">[</span>dev-dependencies.rusoto_mock<span style="color:#555">]</span>
+<span style="color:#033">version</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.25.0&#34;</span>
+<span style="color:#033">path</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;../../../mock&#34;</span></code></pre></div>
 <p>This file contains contains the usual crate information, such as authors, description, etc&hellip; as well as dependencies needed to build the SQS service client.</p>
 
 <p>The first item that&rsquo;s customized for the SQS crate is the description: <code>&quot;AWS SDK for Rust - Amazon Simple Queue Service @ 2012-11-05&quot;</code>.
 This contains both the service name and the botocore API definition version.  There&rsquo;s also the crate name, <code>rusoto_sqs</code>.</p>
 
 <p>Breaking out the dependencies section:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #555555">[</span>dependencies.rusoto_core<span style="color: #555555">]</span>
-<span style="color: #003333">version</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.27.0&quot;</span>
-<span style="color: #003333">path</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;../../core&quot;</span>
-<span style="color: #555555">[</span>dev-dependencies.rusoto_mock<span style="color: #555555">]</span>
-<span style="color: #003333">version</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.25.0&quot;</span>
-<span style="color: #003333">path</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;../../../mock&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#555">[</span>dependencies.rusoto_core<span style="color:#555">]</span>
+<span style="color:#033">version</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.27.0&#34;</span>
+<span style="color:#033">path</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;../../core&#34;</span>
+<span style="color:#555">[</span>dev-dependencies.rusoto_mock<span style="color:#555">]</span>
+<span style="color:#033">version</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.25.0&#34;</span>
+<span style="color:#033">path</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;../../../mock&#34;</span></code></pre></div>
 <p><code>rusoto_core</code> is where code used by all services live.  For example, the AWS request signature calculation functions.  <code>rusoto_mock</code> is brought in for testing purposes when the SQS crate is being developed.</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #555555">[</span>dependencies<span style="color: #555555">]</span>
-<span style="color: #003333">hyper</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.10.0&quot;</span>
-xml-rs <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.6&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#555">[</span>dependencies<span style="color:#555">]</span>
+<span style="color:#033">hyper</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.10.0&#34;</span>
+xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;</span></code></pre></div>
 <p>Other services may bring in more dependencies, but SQS only needs <code>hyper</code> and <code>xml-rs</code>.  And that wraps up Cargo.toml!</p>
 
 <p>The <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/README.md">README</a> is a short overview to help when navigating the project on Github.  It has links to <a href="https://rusoto.org">https://rusoto.org</a>, the <a href="https://rusoto.github.io/rusoto/rusoto_core/index.html">API documentation</a> and slightly customized information for the service such as the service name and how to bring it into a project&rsquo;s Cargo.toml.</p>
 
 <p>Before we look at the other files, here&rsquo;s a refresher on the directory structure:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>.
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.
 ├── Cargo.toml
 ├── README.md
 └── src
@@ -150,37 +142,33 @@ xml-rs <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;
     │   ├── custom_tests.rs
     │   └── mod.rs
     ├── generated.rs
-    └── lib.rs
-</pre></div>
-
+    └── lib.rs</code></pre></div>
 <p>The files we&rsquo;ll concentrate on now are the ones under the <code>src</code> directory.  Both <code>lib.rs</code> and <code>generated.rs</code> are created by our codegen.  Let&rsquo;s look at the shorter one first, <code>lib.rs</code>:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #0099FF; font-style: italic">// =================================================================</span>
-<span style="color: #0099FF; font-style: italic">//</span>
-<span style="color: #0099FF; font-style: italic">//                           * WARNING *</span>
-<span style="color: #0099FF; font-style: italic">//</span>
-<span style="color: #0099FF; font-style: italic">//                    This file is generated!</span>
-<span style="color: #0099FF; font-style: italic">//</span>
-<span style="color: #0099FF; font-style: italic">//  Changes made to this file will be overwritten. If changes are</span>
-<span style="color: #0099FF; font-style: italic">//  required to the generated code, the service_crategen project</span>
-<span style="color: #0099FF; font-style: italic">//  must be updated to generate the changes.</span>
-<span style="color: #0099FF; font-style: italic">//</span>
-<span style="color: #0099FF; font-style: italic">// =================================================================</span>
-
-<span style="color: #CC3300; font-style: italic">//! &lt;p&gt;Welcome to the &lt;i&gt;Amazon Simple Queue Service API Reference&lt;/i&gt;.&lt;/p&gt; &lt;p&gt;Amazon Simple Queue Service (Amazon SQS) is a reliable, highly-scalable hosted queue for storing messages as they travel between applications or microservices. Amazon SQS moves data between distributed application components and helps you decouple these components.&lt;/p&gt; &lt;note&gt; &lt;p&gt; &lt;a href=&quot;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html&quot;&gt;Standard queues&lt;/a&gt; are available in all regions. &lt;a href=&quot;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html&quot;&gt;FIFO queues&lt;/a&gt; are available in US West (Oregon) and US East (Ohio).&lt;/p&gt; &lt;/note&gt; &lt;p&gt;You can use &lt;a href=&quot;http://aws.amazon.com/tools/#sdk&quot;&gt;AWS SDKs&lt;/a&gt; to access Amazon SQS using your favorite programming language. The SDKs perform tasks such as the following automatically:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt;Cryptographically sign your service requests&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;Retry requests&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;Handle error responses&lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;p&gt; &lt;b&gt;Additional Information&lt;/b&gt; &lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;http://aws.amazon.com/sqs/&quot;&gt;Amazon SQS Product Page&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;i&gt;Amazon SQS Developer Guide&lt;/i&gt; &lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/MakingRequestsArticle.html&quot;&gt;Making API Requests&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-attributes.html&quot;&gt;Using Amazon SQS Message Attributes&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html&quot;&gt;Using Amazon SQS Dead Letter Queues&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;i&gt;Amazon Web Services General Reference&lt;/i&gt; &lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&quot;http://docs.aws.amazon.com/general/latest/gr/rande.html#sqs_region&quot;&gt;Regions and Endpoints&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;/ul&gt;</span>
-<span style="color: #CC3300; font-style: italic">//!</span>
-<span style="color: #CC3300; font-style: italic">//! If you&#39;re using the service, you&#39;re probably looking for [SqsClient](struct.SqsClient.html) and [Sqs](trait.Sqs.html).</span>
-
-<span style="color: #006699; font-weight: bold">extern</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">crate</span><span style="color: #bbbbbb"> </span>hyper;<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">extern</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">crate</span><span style="color: #bbbbbb"> </span>rusoto_core;<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">extern</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">crate</span><span style="color: #bbbbbb"> </span>xml;<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">mod</span> <span style="color: #00CCFF; font-weight: bold">generated</span>;<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">mod</span> <span style="color: #00CCFF; font-weight: bold">custom</span>;<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>generated::<span style="color: #555555">*</span>;<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">use</span><span style="color: #bbbbbb"> </span>custom::<span style="color: #555555">*</span>;<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#09f;font-style:italic">// =================================================================
+</span><span style="color:#09f;font-style:italic">//
+</span><span style="color:#09f;font-style:italic">//                           * WARNING *
+</span><span style="color:#09f;font-style:italic">//
+</span><span style="color:#09f;font-style:italic">//                    This file is generated!
+</span><span style="color:#09f;font-style:italic">//
+</span><span style="color:#09f;font-style:italic">//  Changes made to this file will be overwritten. If changes are
+</span><span style="color:#09f;font-style:italic">//  required to the generated code, the service_crategen project
+</span><span style="color:#09f;font-style:italic">//  must be updated to generate the changes.
+</span><span style="color:#09f;font-style:italic">//
+</span><span style="color:#09f;font-style:italic">// =================================================================
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#c30;font-style:italic">//! &lt;p&gt;Welcome to the &lt;i&gt;Amazon Simple Queue Service API Reference&lt;/i&gt;.&lt;/p&gt; &lt;p&gt;Amazon Simple Queue Service (Amazon SQS) is a reliable, highly-scalable hosted queue for storing messages as they travel between applications or microservices. Amazon SQS moves data between distributed application components and helps you decouple these components.&lt;/p&gt; &lt;note&gt; &lt;p&gt; &lt;a href=&#34;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html&#34;&gt;Standard queues&lt;/a&gt; are available in all regions. &lt;a href=&#34;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html&#34;&gt;FIFO queues&lt;/a&gt; are available in US West (Oregon) and US East (Ohio).&lt;/p&gt; &lt;/note&gt; &lt;p&gt;You can use &lt;a href=&#34;http://aws.amazon.com/tools/#sdk&#34;&gt;AWS SDKs&lt;/a&gt; to access Amazon SQS using your favorite programming language. The SDKs perform tasks such as the following automatically:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt;Cryptographically sign your service requests&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;Retry requests&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;Handle error responses&lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;p&gt; &lt;b&gt;Additional Information&lt;/b&gt; &lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&#34;http://aws.amazon.com/sqs/&#34;&gt;Amazon SQS Product Page&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;i&gt;Amazon SQS Developer Guide&lt;/i&gt; &lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&#34;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/MakingRequestsArticle.html&#34;&gt;Making API Requests&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&#34;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-attributes.html&#34;&gt;Using Amazon SQS Message Attributes&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&#34;http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html&#34;&gt;Using Amazon SQS Dead Letter Queues&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;i&gt;Amazon Web Services General Reference&lt;/i&gt; &lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;a href=&#34;http://docs.aws.amazon.com/general/latest/gr/rande.html#sqs_region&#34;&gt;Regions and Endpoints&lt;/a&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;/ul&gt;
+</span><span style="color:#c30;font-style:italic">//!
+</span><span style="color:#c30;font-style:italic">//! If you&#39;re using the service, you&#39;re probably looking for [SqsClient](struct.SqsClient.html) and [Sqs](trait.Sqs.html).
+</span><span style="color:#c30;font-style:italic"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>hyper;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto_core;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>xml;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">mod</span> <span style="color:#0cf;font-weight:bold">generated</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">mod</span> <span style="color:#0cf;font-weight:bold">custom</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>generated::<span style="color:#555">*</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>custom::<span style="color:#555">*</span>;</code></pre></div>
 <p>At the top we have a fancy warning to help guide putting code in the correct spot.  This file is generated from scratch by codegen whenever it&rsquo;s run.  We see the dependencies required by the service and bringing in <code>generated</code> and <code>custom</code> modules, exporting them as public.</p>
 
 <p><code>generated.rs</code> is where the service interaction code lives.  We won&rsquo;t paste it here since it&rsquo;s currently over 4,000 lines long for this relatively simple AWS service.  The file can be <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/src/generated.rs">seen on Github</a> if you&rsquo;d like to peruse it.  It&rsquo;s the output from the code generation we walked through on the previous two posts.</p>
@@ -190,283 +178,257 @@ xml-rs <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;
 <p>Now that we&rsquo;ve seen what the crate structure looks like and have seen the service client generation, let&rsquo;s dig into how we put it all together to make this crate from scratch.</p>
 
 <p>The work happens in <a href="https://github.com/rusoto/rusoto/tree/master/service_crategen">the service_crategen folder</a>.  We use <a href="https://github.com/kbknapp/clap-rs">clap</a> to allow us to run the <code>service_crategen</code> executable with command line arguments.  To produce crates for AWS services, we run it like so:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>cargo run -- generate -c ./services.json -o ../rusoto/services
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cargo run -- generate -c ./services.json -o ../rusoto/services</code></pre></div>
 <p>This loads the services.json file we saw in the previous posts, containing the lists of AWS services to generate, and outputs the crates to the <code>../rusoto/services</code> folder.  The crate generation starts with this part of <code>main.rs</code>:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span><span style="color: #336666">Some</span>(matches)<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>matches.subcommand_matches(<span style="color: #CC3300">&quot;generate&quot;</span>)<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>services_config_path<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>matches.value_of(<span style="color: #CC3300">&quot;services_config&quot;</span>).unwrap();<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>service_configs<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>ServiceConfig::load_all(services_config_path)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>.expect(<span style="color: #CC3300">&quot;Unable to read services configuration file.&quot;</span>);<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>out_dir<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>Path::new(matches.value_of(<span style="color: #CC3300">&quot;out_dir&quot;</span>).unwrap());<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span>commands::generate::generate_services(service_configs,<span style="color: #bbbbbb"> </span>out_dir);<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span><span style="color:#366">Some</span>(matches)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>matches.subcommand_matches(<span style="color:#c30">&#34;generate&#34;</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>services_config_path<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>matches.value_of(<span style="color:#c30">&#34;services_config&#34;</span>).unwrap();<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>service_configs<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>ServiceConfig::load_all(services_config_path)<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>.expect(<span style="color:#c30">&#34;Unable to read services configuration file.&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>out_dir<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>Path::new(matches.value_of(<span style="color:#c30">&#34;out_dir&#34;</span>).unwrap());<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>commands::generate::generate_services(service_configs,<span style="color:#bbb"> </span>out_dir);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>We find the service config location from command line arguments, load the files, create a variable for the output directory and pass that all into <code>generate_services</code>.  That function is a bit long at almost 300 lines, but we&rsquo;ll take it a chunk at a time to see what it does.</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #555555">!</span>out_dir.exists()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>fs::create_dir(out_dir).expect(<span style="color: #CC3300">&quot;Unable to create output directory&quot;</span>);<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#555">!</span>out_dir.exists()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>fs::create_dir(out_dir).expect(<span style="color:#c30">&#34;Unable to create output directory&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>First, we create the output directory if it doesn&rsquo;t exist.</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span>services.par_iter().for_each(<span style="color: #555555">|</span>(name,<span style="color: #bbbbbb"> </span>service_config)<span style="color: #555555">|</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-...<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">services.par_iter().for_each(<span style="color:#555">|</span>(name,<span style="color:#bbb"> </span>service_config)<span style="color:#555">|</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span>...</code></pre></div>
 <p>We use <code>par_iter</code> from the <a href="https://github.com/nikomatsakis/rayon">Rayon crate</a>.  This lets us parallelize service generation, allowing us to use all available CPU cores.  A great boon when there&rsquo;s over 70 supported services so far!</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>service<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>service_definition<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>ServiceDefinition::load(name,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>service_config.protocol_version)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>.expect(<span style="color: #555555">&amp;</span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Failed to load service {}. Make sure the botocore submodule has been initialized!&quot;</span>,<span style="color: #bbbbbb"> </span>name));<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span>Service::new(service_config.clone(),<span style="color: #bbbbbb"> </span>service_definition)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>};<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>crate_dir<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>out_dir.join(<span style="color: #555555">&amp;</span>name);<span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>crate_name<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;rusoto_{}&quot;</span>,<span style="color: #bbbbbb"> </span><span style="color: #555555">&amp;</span>name.replace(<span style="color: #CC3300">&#39;-&#39;</span>,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;_&quot;</span>));<span style="color: #bbbbbb"></span>
-
-println<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Generating crate for {} @ {}...&quot;</span>,<span style="color: #bbbbbb"> </span>service.full_name(),<span style="color: #bbbbbb"> </span>service.api_version());<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>service<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>service_definition<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>ServiceDefinition::load(name,<span style="color:#bbb"> </span><span style="color:#555">&amp;</span>service_config.protocol_version)<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>.expect(<span style="color:#555">&amp;</span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Failed to load service {}. Make sure the botocore submodule has been initialized!&#34;</span>,<span style="color:#bbb"> </span>name));<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>Service::new(service_config.clone(),<span style="color:#bbb"> </span>service_definition)<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>};<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>crate_dir<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>out_dir.join(<span style="color:#555">&amp;</span>name);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>crate_name<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;rusoto_{}&#34;</span>,<span style="color:#bbb"> </span><span style="color:#555">&amp;</span>name.replace(<span style="color:#c30">&#39;-&#39;</span>,<span style="color:#bbb"> </span><span style="color:#c30">&#34;_&#34;</span>));<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Generating crate for {} @ {}...&#34;</span>,<span style="color:#bbb"> </span>service.full_name(),<span style="color:#bbb"> </span>service.api_version());</code></pre></div>
 <p>Here&rsquo;s where we load the botocore service definition.  For SQS we load its definition and create a new Rusoto codegen <code>Service</code> object to store it.  Then we create the crate directory.  For SQS it&rsquo;ll be <code>rusoto_sqs</code>.</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #555555">!</span>crate_dir.exists()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>fs::create_dir(<span style="color: #555555">&amp;</span>crate_dir)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>.expect(<span style="color: #555555">&amp;</span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Unable to create directory at {}&quot;</span>,<span style="color: #bbbbbb"> </span>crate_dir.display()));<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>service_dependencies<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>service.get_dependencies();<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>extern_crates<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>service_dependencies.iter().map(<span style="color: #555555">|</span>(k,<span style="color: #bbbbbb"> </span>_)<span style="color: #555555">|</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>k<span style="color: #bbbbbb"> </span><span style="color: #555555">==</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;xml-rs&quot;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">return</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;extern crate xml;&quot;</span>.into();<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>safe_name<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>k.replace(<span style="color: #CC3300">&quot;-&quot;</span>,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;_&quot;</span>);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>use_macro<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>k<span style="color: #bbbbbb"> </span><span style="color: #555555">==</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;serde_derive&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">||</span><span style="color: #bbbbbb"> </span>k<span style="color: #bbbbbb"> </span><span style="color: #555555">==</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;log&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">||</span><span style="color: #bbbbbb"> </span>k<span style="color: #bbbbbb"> </span><span style="color: #555555">==</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;lazy_static&quot;</span>;<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>use_macro<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">return</span><span style="color: #bbbbbb"> </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;#[macro_use]</span><span style="color: #CC3300; font-weight: bold">\n</span><span style="color: #CC3300">extern crate {};&quot;</span>,<span style="color: #bbbbbb"> </span>safe_name);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;extern crate {};&quot;</span>,<span style="color: #bbbbbb"> </span>safe_name)<span style="color: #bbbbbb"></span>
-
-}).collect::<span style="color: #555555">&lt;</span><span style="color: #336666">Vec</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span><span style="color: #555555">&gt;&gt;</span>().join(<span style="color: #CC3300">&quot;</span><span style="color: #CC3300; font-weight: bold">\n</span><span style="color: #CC3300">&quot;</span>);<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#555">!</span>crate_dir.exists()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>fs::create_dir(<span style="color:#555">&amp;</span>crate_dir)<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>.expect(<span style="color:#555">&amp;</span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Unable to create directory at {}&#34;</span>,<span style="color:#bbb"> </span>crate_dir.display()));<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>service_dependencies<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>service.get_dependencies();<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>extern_crates<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>service_dependencies.iter().map(<span style="color:#555">|</span>(k,<span style="color:#bbb"> </span>_)<span style="color:#555">|</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>k<span style="color:#bbb"> </span><span style="color:#555">==</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;xml-rs&#34;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;extern crate xml;&#34;</span>.into();<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>safe_name<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>k.replace(<span style="color:#c30">&#34;-&#34;</span>,<span style="color:#bbb"> </span><span style="color:#c30">&#34;_&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>use_macro<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>k<span style="color:#bbb"> </span><span style="color:#555">==</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;serde_derive&#34;</span><span style="color:#bbb"> </span><span style="color:#555">||</span><span style="color:#bbb"> </span>k<span style="color:#bbb"> </span><span style="color:#555">==</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;log&#34;</span><span style="color:#bbb"> </span><span style="color:#555">||</span><span style="color:#bbb"> </span>k<span style="color:#bbb"> </span><span style="color:#555">==</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;lazy_static&#34;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>use_macro<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;#[macro_use]</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">extern crate {};&#34;</span>,<span style="color:#bbb"> </span>safe_name);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;extern crate {};&#34;</span>,<span style="color:#bbb"> </span>safe_name)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>}).collect::<span style="color:#555">&lt;</span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;</span>().join(<span style="color:#c30">&#34;</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>);</code></pre></div>
 <p>We create the crate directory if it&rsquo;s not present, then get the service dependencies. A quick detour to that definition:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">match</span><span style="color: #bbbbbb"> </span><span style="color: #336666">self</span>.protocol()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #CC3300">&quot;json&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;serde&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;1.0.2&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;serde_derive&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;1.0.2&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;serde_json&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;1.0.1&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>},<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #CC3300">&quot;query&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">|</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;ec2&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;xml-rs&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;0.6&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>},<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #CC3300">&quot;rest-json&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;log&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;0.3.6&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;serde&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;1.0.2&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;serde_derive&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;1.0.2&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;serde_json&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;1.0.1&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>},<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #CC3300">&quot;rest-xml&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>dependencies.insert(<span style="color: #CC3300">&quot;xml-rs&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Simple(<span style="color: #CC3300">&quot;0.6&quot;</span>.into()));<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>},<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>protocol<span style="color: #bbbbbb"> </span><span style="color: #555555">=&gt;</span><span style="color: #bbbbbb"> </span>panic<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Unknown protocol {}&quot;</span>,<span style="color: #bbbbbb"> </span>protocol),<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>self.protocol()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#c30">&#34;json&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;serde&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;1.0.2&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;serde_derive&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;1.0.2&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;serde_json&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;1.0.1&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#c30">&#34;query&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;ec2&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;xml-rs&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;0.6&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#c30">&#34;rest-json&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;log&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;0.3.6&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;serde&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;1.0.2&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;serde_derive&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;1.0.2&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;serde_json&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;1.0.1&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#c30">&#34;rest-xml&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;xml-rs&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;0.6&#34;</span>.into()));<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>protocol<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>panic<span style="color:#555">!</span>(<span style="color:#c30">&#34;Unknown protocol {}&#34;</span>,<span style="color:#bbb"> </span>protocol),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>Here&rsquo;s where we insert dependencies based on the protocol type.  SQS is a <code>query</code> type so it gets <code>xml-rs</code>.</p>
 
 <p>Back to the other code:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span><span style="color: #555555">!</span>crate_dir.exists()<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>fs::create_dir(<span style="color: #555555">&amp;</span>crate_dir)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>.expect(<span style="color: #555555">&amp;</span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;Unable to create directory at {}&quot;</span>,<span style="color: #bbbbbb"> </span>crate_dir.display()));<span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>service_dependencies<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>service.get_dependencies();<span style="color: #bbbbbb"></span>
-
-<span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>extern_crates<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>service_dependencies.iter().map(<span style="color: #555555">|</span>(k,<span style="color: #bbbbbb"> </span>_)<span style="color: #555555">|</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>k<span style="color: #bbbbbb"> </span><span style="color: #555555">==</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;xml-rs&quot;</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">return</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;extern crate xml;&quot;</span>.into();<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>safe_name<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>k.replace(<span style="color: #CC3300">&quot;-&quot;</span>,<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;_&quot;</span>);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>use_macro<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>k<span style="color: #bbbbbb"> </span><span style="color: #555555">==</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;serde_derive&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">||</span><span style="color: #bbbbbb"> </span>k<span style="color: #bbbbbb"> </span><span style="color: #555555">==</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;log&quot;</span><span style="color: #bbbbbb"> </span><span style="color: #555555">||</span><span style="color: #bbbbbb"> </span>k<span style="color: #bbbbbb"> </span><span style="color: #555555">==</span><span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;lazy_static&quot;</span>;<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span><span style="color: #006699; font-weight: bold">if</span><span style="color: #bbbbbb"> </span>use_macro<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span><span style="color: #006699; font-weight: bold">return</span><span style="color: #bbbbbb"> </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;#[macro_use]</span><span style="color: #CC3300; font-weight: bold">\n</span><span style="color: #CC3300">extern crate {};&quot;</span>,<span style="color: #bbbbbb"> </span>safe_name);<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">    </span>}<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">    </span>format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;extern crate {};&quot;</span>,<span style="color: #bbbbbb"> </span>safe_name)<span style="color: #bbbbbb"></span>
-
-}).collect::<span style="color: #555555">&lt;</span><span style="color: #336666">Vec</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span><span style="color: #555555">&gt;&gt;</span>().join(<span style="color: #CC3300">&quot;</span><span style="color: #CC3300; font-weight: bold">\n</span><span style="color: #CC3300">&quot;</span>);<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#555">!</span>crate_dir.exists()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>fs::create_dir(<span style="color:#555">&amp;</span>crate_dir)<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>.expect(<span style="color:#555">&amp;</span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Unable to create directory at {}&#34;</span>,<span style="color:#bbb"> </span>crate_dir.display()));<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>service_dependencies<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>service.get_dependencies();<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>extern_crates<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>service_dependencies.iter().map(<span style="color:#555">|</span>(k,<span style="color:#bbb"> </span>_)<span style="color:#555">|</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>k<span style="color:#bbb"> </span><span style="color:#555">==</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;xml-rs&#34;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;extern crate xml;&#34;</span>.into();<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>safe_name<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>k.replace(<span style="color:#c30">&#34;-&#34;</span>,<span style="color:#bbb"> </span><span style="color:#c30">&#34;_&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>use_macro<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>k<span style="color:#bbb"> </span><span style="color:#555">==</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;serde_derive&#34;</span><span style="color:#bbb"> </span><span style="color:#555">||</span><span style="color:#bbb"> </span>k<span style="color:#bbb"> </span><span style="color:#555">==</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;log&#34;</span><span style="color:#bbb"> </span><span style="color:#555">||</span><span style="color:#bbb"> </span>k<span style="color:#bbb"> </span><span style="color:#555">==</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;lazy_static&#34;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>use_macro<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;#[macro_use]</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">extern crate {};&#34;</span>,<span style="color:#bbb"> </span>safe_name);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;extern crate {};&#34;</span>,<span style="color:#bbb"> </span>safe_name)<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>}).collect::<span style="color:#555">&lt;</span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;</span>().join(<span style="color:#c30">&#34;</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>);</code></pre></div>
 <p><code>service_dependencies</code> uses a sorted data structure so the output code has minimal churn: dependencies will always be in the same spot when we iterate over the collection.  This reduces change in the codegen output and makes code review easier.</p>
 
 <p>For each dependency, we inspect it.  This is to see if we need to allow <code>#[macro_use]</code> or not.  If we bring <code>#[macro_use]</code> and it&rsquo;s not used, our build will fail since we have <code>unused_imports</code> set to fail the build.</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">mut</span><span style="color: #bbbbbb"> </span>cargo_manifest<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>OpenOptions::new()<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>.write(<span style="color: #006699; font-weight: bold">true</span>)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>.truncate(<span style="color: #006699; font-weight: bold">true</span>)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>.create(<span style="color: #006699; font-weight: bold">true</span>)<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>.open(crate_dir.join(<span style="color: #CC3300">&quot;Cargo.toml&quot;</span>))<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>.expect(<span style="color: #CC3300">&quot;Unable to write Cargo.toml&quot;</span>);<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">mut</span><span style="color:#bbb"> </span>cargo_manifest<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>OpenOptions::new()<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>.write(<span style="color:#069;font-weight:bold">true</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>.truncate(<span style="color:#069;font-weight:bold">true</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>.create(<span style="color:#069;font-weight:bold">true</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>.open(crate_dir.join(<span style="color:#c30">&#34;Cargo.toml&#34;</span>))<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>.expect(<span style="color:#c30">&#34;Unable to write Cargo.toml&#34;</span>);</code></pre></div>
 <p>We get ready to write out the Cargo.toml file, truncating it if it exists.</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>manifest<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>cargo::Manifest<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>package: <span style="color: #00AA88; font-weight: bold">cargo</span>::Metadata<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>authors: <span style="color: #336666">Some</span>(vec<span style="color: #555555">!</span>[<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span><span style="color: #CC3300">&quot;Anthony DiMarco &lt;ocramida@gmail.com&gt;&quot;</span>.into(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span><span style="color: #CC3300">&quot;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&quot;</span>.into(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span><span style="color: #CC3300">&quot;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&quot;</span>.into(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span><span style="color: #CC3300">&quot;Nikita Pekin &lt;contact@nikitapek.in&gt;&quot;</span>.into()<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>]),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>description: <span style="color: #336666">Some</span>(format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;AWS SDK for Rust - {} @ {}&quot;</span>,<span style="color: #bbbbbb"> </span>service.full_name(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>service.api_version())),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>documentation: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;https://rusoto.github.io/rusoto/rusoto_core/index.html&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>keywords: <span style="color: #336666">Some</span>(vec<span style="color: #555555">!</span>[<span style="color: #CC3300">&quot;AWS&quot;</span>.into(),<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;Amazon&quot;</span>.into(),<span style="color: #bbbbbb"> </span>name_for_keyword]),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>license: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;MIT&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>name: <span style="color: #00AA88; font-weight: bold">crate_name</span>.clone(),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>readme: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;README.md&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>repository: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;https://github.com/rusoto/rusoto&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>version: <span style="color: #00AA88; font-weight: bold">service_config</span>.version.clone(),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>homepage: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;https://www.rusoto.org/&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>..cargo::Metadata::default()<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>},<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>dependencies: <span style="color: #00AA88; font-weight: bold">service_dependencies</span>,<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span>dev_dependencies: <span style="color: #00AA88; font-weight: bold">vec</span><span style="color: #555555">!</span>[<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>(<span style="color: #CC3300">&quot;rusoto_mock&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Extended<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>path: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;../../../mock&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>version: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;0.25.0&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>optional: <span style="color: #336666">None</span>,<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>default_features: <span style="color: #336666">None</span>,<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>features: <span style="color: #336666">None</span>
-      })<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>].into_iter().collect(),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span>..cargo::Manifest::default()<span style="color: #bbbbbb"></span>
-};<span style="color: #bbbbbb"></span>
-
-cargo_manifest.write_all(toml::to_string(<span style="color: #555555">&amp;</span>manifest).unwrap().as_bytes()).unwrap();<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>manifest<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>cargo::Manifest<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>package: <span style="color:#0a8;font-weight:bold">cargo</span>::Metadata<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>authors: <span style="color:#366">Some</span>(vec<span style="color:#555">!</span>[<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#c30">&#34;Anthony DiMarco &lt;ocramida@gmail.com&gt;&#34;</span>.into(),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#c30">&#34;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&#34;</span>.into(),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#c30">&#34;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&#34;</span>.into(),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#c30">&#34;Nikita Pekin &lt;contact@nikitapek.in&gt;&#34;</span>.into()<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>]),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>description: <span style="color:#366">Some</span>(format<span style="color:#555">!</span>(<span style="color:#c30">&#34;AWS SDK for Rust - {} @ {}&#34;</span>,<span style="color:#bbb"> </span>service.full_name(),<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>service.api_version())),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>documentation: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;https://rusoto.github.io/rusoto/rusoto_core/index.html&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>keywords: <span style="color:#366">Some</span>(vec<span style="color:#555">!</span>[<span style="color:#c30">&#34;AWS&#34;</span>.into(),<span style="color:#bbb"> </span><span style="color:#c30">&#34;Amazon&#34;</span>.into(),<span style="color:#bbb"> </span>name_for_keyword]),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>license: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;MIT&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>name: <span style="color:#0a8;font-weight:bold">crate_name</span>.clone(),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>readme: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;README.md&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>repository: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;https://github.com/rusoto/rusoto&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>version: <span style="color:#0a8;font-weight:bold">service_config</span>.version.clone(),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>homepage: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;https://www.rusoto.org/&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>..cargo::Metadata::default()<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>dependencies: <span style="color:#0a8;font-weight:bold">service_dependencies</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span>dev_dependencies: <span style="color:#0a8;font-weight:bold">vec</span><span style="color:#555">!</span>[<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>(<span style="color:#c30">&#34;rusoto_mock&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Extended<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>path: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;../../../mock&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>version: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;0.25.0&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>optional: <span style="color:#366">None</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>default_features: <span style="color:#366">None</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>features: <span style="color:#366">None</span>
+      })<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>].into_iter().collect(),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span>..cargo::Manifest::default()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>};<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>cargo_manifest.write_all(toml::to_string(<span style="color:#555">&amp;</span>manifest).unwrap().as_bytes()).unwrap();</code></pre></div>
 <p>Here&rsquo;s where we create and write out the Cargo.toml file for our service.  We populate the metadata, dependencies and write it all out.  This uses code we&rsquo;ve created to represent a Cargo file.  Here&rsquo;s an snippet:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #009999">#[derive(Debug, Default, Clone, Deserialize, Serialize)]</span><span style="color: #bbbbbb"></span>
-<span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span><span style="color: #006699; font-weight: bold">struct</span> <span style="color: #00AA88; font-weight: bold">Manifest</span><span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>package: <span style="color: #00AA88; font-weight: bold">Metadata</span>,<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>badges: <span style="color: #336666">Option</span><span style="color: #555555">&lt;</span>BTreeMap<span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span>Badge<span style="color: #555555">&gt;&gt;</span>,<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span><span style="color: #009999">#[serde(rename=</span><span style="color: #CC3300">&quot;build-dependencies&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span><span style="color: #009999">#[serde(serialize_with = </span><span style="color: #CC3300">&quot;toml::ser::tables_last&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>build_dependencies: <span style="color: #00AA88; font-weight: bold">BTreeMap</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span>Dependency<span style="color: #555555">&gt;</span>,<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span><span style="color: #009999">#[serde(serialize_with = </span><span style="color: #CC3300">&quot;toml::ser::tables_last&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>dependencies: <span style="color: #00AA88; font-weight: bold">BTreeMap</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span>Dependency<span style="color: #555555">&gt;</span>,<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span><span style="color: #009999">#[serde(rename=</span><span style="color: #CC3300">&quot;dev-dependencies&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span><span style="color: #009999">#[serde(serialize_with = </span><span style="color: #CC3300">&quot;toml::ser::tables_last&quot;</span><span style="color: #009999">)]</span><span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>dev_dependencies: <span style="color: #00AA88; font-weight: bold">BTreeMap</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span>Dependency<span style="color: #555555">&gt;</span>,<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span><span style="color: #006699; font-weight: bold">pub</span><span style="color: #bbbbbb"> </span>features: <span style="color: #336666">Option</span><span style="color: #555555">&lt;</span>BTreeMap<span style="color: #555555">&lt;</span><span style="color: #336666">String</span>,<span style="color: #bbbbbb"> </span><span style="color: #336666">Vec</span><span style="color: #555555">&lt;</span><span style="color: #336666">String</span><span style="color: #555555">&gt;&gt;&gt;</span><span style="color: #bbbbbb"></span>
-}<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[derive(Debug, Default, Clone, Deserialize, Serialize)]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Manifest</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>package: <span style="color:#0a8;font-weight:bold">Metadata</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>badges: <span style="color:#366">Option</span><span style="color:#555">&lt;</span>BTreeMap<span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span>Badge<span style="color:#555">&gt;&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#099">#[serde(rename=</span><span style="color:#c30">&#34;build-dependencies&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#099">#[serde(serialize_with = </span><span style="color:#c30">&#34;toml::ser::tables_last&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>build_dependencies: <span style="color:#0a8;font-weight:bold">BTreeMap</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span>Dependency<span style="color:#555">&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#099">#[serde(serialize_with = </span><span style="color:#c30">&#34;toml::ser::tables_last&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>dependencies: <span style="color:#0a8;font-weight:bold">BTreeMap</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span>Dependency<span style="color:#555">&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#099">#[serde(rename=</span><span style="color:#c30">&#34;dev-dependencies&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#099">#[serde(serialize_with = </span><span style="color:#c30">&#34;toml::ser::tables_last&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>dev_dependencies: <span style="color:#0a8;font-weight:bold">BTreeMap</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span>Dependency<span style="color:#555">&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>features: <span style="color:#366">Option</span><span style="color:#555">&lt;</span>BTreeMap<span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;&gt;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>}</code></pre></div>
 <p>Note the <code>BTreeMap</code> type used: as mentioned earlier, this ensure stable ordering when iterating through it.  Per the <a href="https://doc.rust-lang.org/std/collections/struct.BTreeMap.html">Rust docs</a>, calling <code>iter</code> on the <code>BTreeMap</code></p>
 
 <pre><code>Gets an iterator over the entries of the map, sorted by key.
 </code></pre>
 
 <p>At this point the Cargo.toml file is all created and populated!  We went from this code:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #006699; font-weight: bold">let</span><span style="color: #bbbbbb"> </span>manifest<span style="color: #bbbbbb"> </span><span style="color: #555555">=</span><span style="color: #bbbbbb"> </span>cargo::Manifest<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>package: <span style="color: #00AA88; font-weight: bold">cargo</span>::Metadata<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>authors: <span style="color: #336666">Some</span>(vec<span style="color: #555555">!</span>[<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span><span style="color: #CC3300">&quot;Anthony DiMarco &lt;ocramida@gmail.com&gt;&quot;</span>.into(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span><span style="color: #CC3300">&quot;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&quot;</span>.into(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span><span style="color: #CC3300">&quot;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&quot;</span>.into(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span><span style="color: #CC3300">&quot;Nikita Pekin &lt;contact@nikitapek.in&gt;&quot;</span>.into()<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>]),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>description: <span style="color: #336666">Some</span>(format<span style="color: #555555">!</span>(<span style="color: #CC3300">&quot;AWS SDK for Rust - {} @ {}&quot;</span>,<span style="color: #bbbbbb"> </span>service.full_name(),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">        </span>service.api_version())),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>documentation: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;https://rusoto.github.io/rusoto/rusoto_core/index.html&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>keywords: <span style="color: #336666">Some</span>(vec<span style="color: #555555">!</span>[<span style="color: #CC3300">&quot;AWS&quot;</span>.into(),<span style="color: #bbbbbb"> </span><span style="color: #CC3300">&quot;Amazon&quot;</span>.into(),<span style="color: #bbbbbb"> </span>name_for_keyword]),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>license: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;MIT&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>name: <span style="color: #00AA88; font-weight: bold">crate_name</span>.clone(),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>readme: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;README.md&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>repository: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;https://github.com/rusoto/rusoto&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>version: <span style="color: #00AA88; font-weight: bold">service_config</span>.version.clone(),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>homepage: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;https://www.rusoto.org/&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">      </span>..cargo::Metadata::default()<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>},<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>dependencies: <span style="color: #00AA88; font-weight: bold">service_dependencies</span>,<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span>dev_dependencies: <span style="color: #00AA88; font-weight: bold">vec</span><span style="color: #555555">!</span>[<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">      </span>(<span style="color: #CC3300">&quot;rusoto_mock&quot;</span>.to_owned(),<span style="color: #bbbbbb"> </span>cargo::Dependency::Extended<span style="color: #bbbbbb"> </span>{<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>path: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;../../../mock&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>version: <span style="color: #336666">Some</span>(<span style="color: #CC3300">&quot;0.25.0&quot;</span>.into()),<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>optional: <span style="color: #336666">None</span>,<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>default_features: <span style="color: #336666">None</span>,<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">          </span>features: <span style="color: #336666">None</span>
-      })<span style="color: #bbbbbb"></span>
-<span style="color: #bbbbbb">  </span>].into_iter().collect(),<span style="color: #bbbbbb"></span>
-
-<span style="color: #bbbbbb">  </span>..cargo::Manifest::default()<span style="color: #bbbbbb"></span>
-};<span style="color: #bbbbbb"></span>
-
-cargo_manifest.write_all(toml::to_string(<span style="color: #555555">&amp;</span>manifest).unwrap().as_bytes()).unwrap();<span style="color: #bbbbbb"></span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>manifest<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>cargo::Manifest<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>package: <span style="color:#0a8;font-weight:bold">cargo</span>::Metadata<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>authors: <span style="color:#366">Some</span>(vec<span style="color:#555">!</span>[<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#c30">&#34;Anthony DiMarco &lt;ocramida@gmail.com&gt;&#34;</span>.into(),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#c30">&#34;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&#34;</span>.into(),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#c30">&#34;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&#34;</span>.into(),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span><span style="color:#c30">&#34;Nikita Pekin &lt;contact@nikitapek.in&gt;&#34;</span>.into()<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>]),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>description: <span style="color:#366">Some</span>(format<span style="color:#555">!</span>(<span style="color:#c30">&#34;AWS SDK for Rust - {} @ {}&#34;</span>,<span style="color:#bbb"> </span>service.full_name(),<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>service.api_version())),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>documentation: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;https://rusoto.github.io/rusoto/rusoto_core/index.html&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>keywords: <span style="color:#366">Some</span>(vec<span style="color:#555">!</span>[<span style="color:#c30">&#34;AWS&#34;</span>.into(),<span style="color:#bbb"> </span><span style="color:#c30">&#34;Amazon&#34;</span>.into(),<span style="color:#bbb"> </span>name_for_keyword]),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>license: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;MIT&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>name: <span style="color:#0a8;font-weight:bold">crate_name</span>.clone(),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>readme: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;README.md&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>repository: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;https://github.com/rusoto/rusoto&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>version: <span style="color:#0a8;font-weight:bold">service_config</span>.version.clone(),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>homepage: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;https://www.rusoto.org/&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">      </span>..cargo::Metadata::default()<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>dependencies: <span style="color:#0a8;font-weight:bold">service_dependencies</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span>dev_dependencies: <span style="color:#0a8;font-weight:bold">vec</span><span style="color:#555">!</span>[<span style="color:#bbb">
+</span><span style="color:#bbb">      </span>(<span style="color:#c30">&#34;rusoto_mock&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Extended<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>path: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;../../../mock&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>version: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;0.25.0&#34;</span>.into()),<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>optional: <span style="color:#366">None</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>default_features: <span style="color:#366">None</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">          </span>features: <span style="color:#366">None</span>
+      })<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>].into_iter().collect(),<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">  </span>..cargo::Manifest::default()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>};<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span>cargo_manifest.write_all(toml::to_string(<span style="color:#555">&amp;</span>manifest).unwrap().as_bytes()).unwrap();</code></pre></div>
 <p>to this Cargo.toml:</p>
-<div class="highlight" style="background: #f0f3f3"><pre style="line-height: 125%"><span></span><span style="color: #555555">[</span>package<span style="color: #555555">]</span>
-<span style="color: #003333">authors</span> <span style="color: #555555">=</span> <span style="color: #555555">[</span><span style="color: #CC3300">&quot;Anthony DiMarco &lt;ocramida@gmail.com&gt;&quot;</span>, <span style="color: #CC3300">&quot;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&quot;</span>, <span style="color: #CC3300">&quot;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&quot;</span>, <span style="color: #CC3300">&quot;Nikita Pekin &lt;contact@nikitapek.in&gt;&quot;</span><span style="color: #555555">]</span>
-<span style="color: #003333">description</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;AWS SDK for Rust - Amazon Simple Queue Service @ 2012-11-05&quot;</span>
-<span style="color: #003333">documentation</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;https://rusoto.github.io/rusoto/rusoto_core/index.html&quot;</span>
-<span style="color: #003333">keywords</span> <span style="color: #555555">=</span> <span style="color: #555555">[</span><span style="color: #CC3300">&quot;AWS&quot;</span>, <span style="color: #CC3300">&quot;Amazon&quot;</span>, <span style="color: #CC3300">&quot;sqs&quot;</span><span style="color: #555555">]</span>
-<span style="color: #003333">license</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;MIT&quot;</span>
-<span style="color: #003333">name</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;rusoto_sqs&quot;</span>
-<span style="color: #003333">readme</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;README.md&quot;</span>
-<span style="color: #003333">repository</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;https://github.com/rusoto/rusoto&quot;</span>
-<span style="color: #003333">version</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.27.0&quot;</span>
-<span style="color: #003333">homepage</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;https://www.rusoto.org/&quot;</span>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#555">[</span>package<span style="color:#555">]</span>
+<span style="color:#033">authors</span> <span style="color:#555">=</span> <span style="color:#555">[</span><span style="color:#c30">&#34;Anthony DiMarco &lt;ocramida@gmail.com&gt;&#34;</span>, <span style="color:#c30">&#34;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&#34;</span>, <span style="color:#c30">&#34;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&#34;</span>, <span style="color:#c30">&#34;Nikita Pekin &lt;contact@nikitapek.in&gt;&#34;</span><span style="color:#555">]</span>
+<span style="color:#033">description</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;AWS SDK for Rust - Amazon Simple Queue Service @ 2012-11-05&#34;</span>
+<span style="color:#033">documentation</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;https://rusoto.github.io/rusoto/rusoto_core/index.html&#34;</span>
+<span style="color:#033">keywords</span> <span style="color:#555">=</span> <span style="color:#555">[</span><span style="color:#c30">&#34;AWS&#34;</span>, <span style="color:#c30">&#34;Amazon&#34;</span>, <span style="color:#c30">&#34;sqs&#34;</span><span style="color:#555">]</span>
+<span style="color:#033">license</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;MIT&#34;</span>
+<span style="color:#033">name</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;rusoto_sqs&#34;</span>
+<span style="color:#033">readme</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;README.md&#34;</span>
+<span style="color:#033">repository</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;https://github.com/rusoto/rusoto&#34;</span>
+<span style="color:#033">version</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.27.0&#34;</span>
+<span style="color:#033">homepage</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;https://www.rusoto.org/&#34;</span>
 
-<span style="color: #555555">[</span>build-dependencies<span style="color: #555555">]</span>
+<span style="color:#555">[</span>build-dependencies<span style="color:#555">]</span>
 
-<span style="color: #555555">[</span>dependencies<span style="color: #555555">]</span>
-<span style="color: #003333">hyper</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.10.0&quot;</span>
-xml-rs <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.6&quot;</span>
+<span style="color:#555">[</span>dependencies<span style="color:#555">]</span>
+<span style="color:#033">hyper</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.10.0&#34;</span>
+xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;</span>
 
-<span style="color: #555555">[</span>dependencies.rusoto_core<span style="color: #555555">]</span>
-<span style="color: #003333">version</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.27.0&quot;</span>
-<span style="color: #003333">path</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;../../core&quot;</span>
-<span style="color: #555555">[</span>dev-dependencies.rusoto_mock<span style="color: #555555">]</span>
-<span style="color: #003333">version</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;0.25.0&quot;</span>
-<span style="color: #003333">path</span> <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;../../../mock&quot;</span>
-</pre></div>
-
+<span style="color:#555">[</span>dependencies.rusoto_core<span style="color:#555">]</span>
+<span style="color:#033">version</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.27.0&#34;</span>
+<span style="color:#033">path</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;../../core&#34;</span>
+<span style="color:#555">[</span>dev-dependencies.rusoto_mock<span style="color:#555">]</span>
+<span style="color:#033">version</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;0.25.0&#34;</span>
+<span style="color:#033">path</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;../../../mock&#34;</span></code></pre></div>
 <p>The README file is generated in a similar manner, using the <code>format!</code> macro to populate the service-specific parts, such as the header, <code>Rusoto Sqs</code>.</p>
 
 <p>The <code>lib.rs</code> file follows the same pattern: create the file if it doesn&rsquo;t exist, open it and overwrite the contents with output from codegen.</p>
@@ -516,7 +478,7 @@ xml-rs <span style="color: #555555">=</span> <span style="color: #CC3300">&quot;
                     The source code and content of this website are free and available under the MIT license.
                 </div>
                 <div class="li-page-footer-theme">
-                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a>, a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
                 </div>
             </div>
         </div>
