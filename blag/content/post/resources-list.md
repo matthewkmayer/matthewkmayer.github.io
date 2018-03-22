@@ -44,4 +44,6 @@ List of links for topics including:
 ## Cloud and AWS
 
 * [Getting Started on AWS](https://aws.amazon.com/getting-started/)
+* [This Is My Architecture](https://aws.amazon.com/this-is-my-architecture/)
 * [A Cloud Guru](https://acloud.guru/)
+* [Linux Academy](https://linuxacademy.com/)
