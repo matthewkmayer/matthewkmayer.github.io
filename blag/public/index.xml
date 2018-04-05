@@ -6,10 +6,21 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 18 Mar 2018 21:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Mon, 02 Apr 2018 00:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Taking a break</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/2018-break/</link>
+      <pubDate>Mon, 02 Apr 2018 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/2018-break/</guid>
+      <description>&lt;p&gt;After three years maintaining an open source project, it&amp;rsquo;s time to take a few months of me time.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Curated list of resources for software engineering</title>
