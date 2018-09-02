@@ -20,9 +20,11 @@ Let's define and explore the concepts of:
 
 **Continuous Integration** and **Continuous Delivery** are both processes, guiding humans on what to do.
 
-## Build server (build service?)
+## Build server (or build service)
 
 What it does:
+
+Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests. The exact build and run steps depend on the language being used in the repo. For a Go project, the server may run `go build` followed by `go test ./...` and report back success or failure. This ensures what's checked in to source control can be built by someone else, not just the person who wrote the code.
 
 Examples:
 
@@ -36,29 +38,46 @@ Examples:
 
 Guideline: branches are short lived. If a branch lives longer than a day or two, it's not continuous integration.
 
+This process is for *continuously integrating* code back into the main branch. Keeping branches short lived prevents them from drifting out of date, causing merge conflicts or massive amounts of code to review. The bigger a team gets, the more likely two people are going to change something in the same spot, causing a merge conflict.
+
 Examples:
+
+* commit directly to master (careful!)
+* github flow with short lived branches
 
 Counter-examples:
 
-git flow
+* git flow: lots of moving pieces makes it difficult to integrate to the *release* branch every day or two.
 
 ## Continuous delivery
 
 Guideline: code gets delivered to production within a day or two of it being approved.
 
+Once code is accepted to the "main" branch, it should be shipped to production within a day or two. This requires deployments to be a polished, every day event. There are tricks that can be used to deliver code without having it available for use: feature flags are one technique to ship code but not make it available to consumers of the code.
+
 Examples:
 
-github flow
-what ion does
+* github flow
 
 Counter-examples:
 
-git flow
+* git flow: again, lots of moving pieces complicates release process
+* cargo-cult scrum: the guide doesn't preclude shipping during an iteration
 
 ## Separation of concepts
 
-Build server by itself.
+Now that we have an understanding of what each concept it, we can see how it can be used by itself: no part needs the other. To make this clearer, let's use a theoretical Go project on GitHub as a thought experiment.
 
-CI by itself.
+One could have a build server by itself. In our theoretical example, we'll hook up TravisCI and configure it to run `go build && go test ./...`. Whenever code is pushed to github, the TravisCI job will run and report back if it succeeded or failed.
 
-CD by itself.
+To get CI by itself, a simple example is to commit directly to the `master` branch. The changes are continually integrated back into `master` because they are committed right there. No chance of branches getting out of date or having merge conflicts.
+
+For doing CD by itself. one way is to have a shell script checked into the repository. This script can do the repetitive work of creating a build and deploying it. The code can be continuously delivered if the committer runs the script after seeing the build pass, or perhaps in a post-commit hook with source control. The point to grasp is there is no requirement of the above two concepts to get continuous delivery: it can stand alone.
+
+## Wrapup
+
+**Continuous Integration** and **Continuous Delivery** are processes that tell humans what techniques to use with source control.
+
+**Build server** is a server, servers or a system that automatically builds and tests code.
+
+A followup blog post will show how these separate concepts can be put together and create an advantage bigger than the sum of its parts.
