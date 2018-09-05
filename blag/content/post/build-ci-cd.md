@@ -16,15 +16,13 @@ Let's define and explore the concepts of:
 
 ## Three separate ideas
 
-**Build server** is a server, servers or a system that automatically builds and tests code.
+*Build server* is a server, servers or a system that automatically builds and tests code.
 
-**Continuous Integration** and **Continuous Delivery** are both processes, guiding humans on what to do.
+*Continuous Integration* and *Continuous Delivery* are both processes, guiding humans on what to do.
 
 ## Build server (or build service)
 
-What it does:
-
-Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests. The exact build and run steps depend on the language being used in the repo. For a Go project, the server may run `go build` followed by `go test ./...` and report back success or failure. This ensures what's checked in to source control can be built by someone else, not just the person who wrote the code.
+Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests. The exact build and run steps depend on the language being used. For a Go project, the server may run `go build` followed by `go test ./...` and report back success or failure. This ensures what's checked in to source control can be built by someone else, not just the person who wrote the code.
 
 Examples:
 
@@ -40,14 +38,17 @@ Guideline: branches are short lived. If a branch lives longer than a day or two,
 
 This process is for *continuously integrating* code back into the main branch. Keeping branches short lived prevents them from drifting out of date, causing merge conflicts or massive amounts of code to review. The bigger a team gets, the more likely two people are going to change something in the same spot, causing a merge conflict.
 
+Usually this is a one time setup. After that, builds run automatically and report success or failure.
+
 Examples:
 
 * commit directly to master (careful!)
-* github flow with short lived branches
+* [GitHub Flow](https://scottchacon.com/2011/08/31/github-flow.html) with short lived branches
+* [Trunk Based Development](https://trunkbaseddevelopment.com/)
 
 Counter-examples:
 
-* git flow: lots of moving pieces makes it difficult to integrate to the *release* branch every day or two.
+* [git flow](https://nvie.com/posts/a-successful-git-branching-model/): lots of moving pieces makes it difficult to integrate to the *release* branch every day or two.
 
 ## Continuous delivery
 
@@ -57,22 +58,22 @@ Once code is accepted to the "main" branch, it should be shipped to production w
 
 Examples:
 
-* github flow
+* [GitHub Flow](https://scottchacon.com/2011/08/31/github-flow.html)
 
 Counter-examples:
 
-* git flow: again, lots of moving pieces complicates release process
-* cargo-cult scrum: the guide doesn't preclude shipping during an iteration
+* [git flow](https://nvie.com/posts/a-successful-git-branching-model/): again, lots of moving pieces complicates release process
+* cargo-cult scrum: the [scrum guide](https://www.scrumguides.org/scrum-guide.html) doesn't preclude shipping during an iteration
 
 ## Separation of concepts
 
 Now that we have an understanding of what each concept it, we can see how it can be used by itself: no part needs the other. To make this clearer, let's use a theoretical Go project on GitHub as a thought experiment.
 
-One could have a build server by itself. In our theoretical example, we'll hook up TravisCI and configure it to run `go build && go test ./...`. Whenever code is pushed to github, the TravisCI job will run and report back if it succeeded or failed.
+One could have a build server by itself. In our theoretical example, we'll hook up TravisCI and configure it to run `go build && go test ./...`. Whenever code is pushed to GitHub, the TravisCI job will run and report back if it succeeded or failed.
 
 To get CI by itself, a simple example is to commit directly to the `master` branch. The changes are continually integrated back into `master` because they are committed right there. No chance of branches getting out of date or having merge conflicts.
 
-For doing CD by itself. one way is to have a shell script checked into the repository. This script can do the repetitive work of creating a build and deploying it. The code can be continuously delivered if the committer runs the script after seeing the build pass, or perhaps in a post-commit hook with source control. The point to grasp is there is no requirement of the above two concepts to get continuous delivery: it can stand alone.
+One way of doing CD by itself is to have a shell script checked into the repository. This script can do the repetitive work of creating a build and deploying it. The code can be continuously delivered if the committer runs the script after each commit.
 
 ## Wrapup
 
