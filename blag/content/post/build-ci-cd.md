@@ -75,10 +75,20 @@ To get CI by itself, a simple example is to commit directly to the `master` bran
 
 One way of doing CD by itself is to have a shell script checked into the repository. This script can do the repetitive work of creating a build and deploying it. The code can be continuously delivered if the committer runs the script after each commit.
 
+## A real world example of separation
+
+These concepts scale from single developer projects to massive corporations with a single repository for all projects. For example, I have a solo developer project that uses all three of these concepts separately.
+
+For Continuous Integration I either commit directly to the `master` branch or make a branch that lives for a few hours, then merge it back to `master`.
+
+I use [AWS CodeBuild](https://aws.amazon.com/codebuild/) to build, test and push a new Docker container of my code.
+
+Continuous Deployment is done manually: when the new Docker image is ready, I do a manual deploy on [AWS ECS](https://aws.amazon.com/ecs/) to push my changes to production.
+
 ## Wrapup
 
 **Continuous Integration** and **Continuous Delivery** are processes that tell humans what techniques to use with source control.
 
 **Build server** is a server, servers or a system that automatically builds and tests code.
 
-A followup blog post will show how these separate concepts can be put together and create an advantage bigger than the sum of its parts.
+A followup blog post will show how these separate concepts can be put together and create an advantage bigger than the sum of its parts: a true *CI/CD pipeline*.
