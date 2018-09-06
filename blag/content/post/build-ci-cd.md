@@ -67,7 +67,7 @@ Counter-examples:
 
 ## Separation of concepts
 
-Now that we have an understanding of what each concept it, we can see how it can be used by itself: no part needs the other. To make this clearer, let's use a theoretical Go project on GitHub as a thought experiment.
+Now that we have an understanding of what each concept is, we can see how it can be used by itself: no part needs the other. To make this clearer, let's use a theoretical Go project on GitHub as a thought experiment.
 
 One could have a build server by itself. In our theoretical example, we'll hook up TravisCI and configure it to run `go build && go test ./...`. Whenever code is pushed to GitHub, the TravisCI job will run and report back if it succeeded or failed.
 
