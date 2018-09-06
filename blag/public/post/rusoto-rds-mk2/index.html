@@ -90,21 +90,25 @@ rusoto_rds = {version = &quot;0.25.0&quot;}
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto;<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto::rds::{RdsClient,<span style="color:#bbb"> </span>CreateDBInstanceMessage,<span style="color:#bbb"> </span>DescribeDBInstancesMessage};<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto::{DefaultCredentialsProvider,<span style="color:#bbb"> </span>Region,<span style="color:#bbb"> </span>default_tls_client};</code></pre></div>
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto::{DefaultCredentialsProvider,<span style="color:#bbb"> </span>Region,<span style="color:#bbb"> </span>default_tls_client};<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>After:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto_core;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto_rds;<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rds::{Rds,<span style="color:#bbb"> </span>RdsClient,<span style="color:#bbb"> </span>CreateDBInstanceMessage,<span style="color:#bbb"> </span>DescribeDBInstancesMessage};<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::{DefaultCredentialsProvider,<span style="color:#bbb"> </span>Region,<span style="color:#bbb"> </span>default_tls_client};</code></pre></div>
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::{DefaultCredentialsProvider,<span style="color:#bbb"> </span>Region,<span style="color:#bbb"> </span>default_tls_client};<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>We&rsquo;re bringing in both <code>rusoto_core</code> and <code>rusoto_rds</code> crates.  We&rsquo;re also bringing in <code>rusoto_rds::Rds</code> which is a trait for the RDS client.</p>
 
 <p>The only other change in the code is changing the RDS endpoint type.</p>
 
 <p>Before:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto</span>::rds::Endpoint;</code></pre></div>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto</span>::rds::Endpoint;<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>After:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto_rds</span>::Endpoint;</code></pre></div>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto_rds</span>::Endpoint;<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>That&rsquo;s all we need to change for migrating to Rusoto 0.25.0.  Let&rsquo;s move on to cleaning up other parts of the code.</p>
 
 <h3 id="making-unwrap-behavior-slightly-nicer">Making unwrap behavior slightly nicer</h3>
@@ -113,13 +117,16 @@ rusoto_rds = {version = &quot;0.25.0&quot;}
 
 <p>Before:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new()<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>.unwrap();</code></pre></div>
+</span><span style="color:#bbb">    </span>.unwrap();<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>After:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new()<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t create AWS credentials provider.&#34;</span>);</code></pre></div>
+</span><span style="color:#bbb">    </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t create AWS credentials provider.&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Knowing when to use <code>expect</code> instead of matching against Result or Option is worth understanding.  In our sample code, panicking if we can&rsquo;t get AWS credentials is probably what we want to do.  But what about calls to AWS?</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_creation_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request)<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.expect(<span style="color:#c30">&#34;Error sending create DB instance request&#34;</span>);</code></pre></div>
+</span><span style="color:#bbb">        </span>.expect(<span style="color:#c30">&#34;Error sending create DB instance request&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p><a href="http://rusoto.github.io/rusoto/rusoto_rds/trait.Rds.html#tymethod.create_db_instance">create_db_instance</a> returns a type of <code>Result&lt;CreateDBInstanceResult, CreateDBInstanceError&gt;</code>.  If we use <code>expect</code> we throw away the <code>CreateDBInstanceError</code> which would allow us to see why Rusoto or AWS couldn&rsquo;t fulfill our request.  If we get this error result, let&rsquo;s print out what it says for debugging:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_creation_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#366">Ok</span>(db_create_result)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>db_create_result,<span style="color:#bbb">
@@ -127,7 +134,8 @@ rusoto_rds = {version = &quot;0.25.0&quot;}
 </span><span style="color:#bbb">        </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Error making database instance: {}&#34;</span>,<span style="color:#bbb"> </span>e);<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>panic<span style="color:#555">!</span>(<span style="color:#c30">&#34;No go on database creation.&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>},<span style="color:#bbb">
-</span><span style="color:#bbb"></span>};</code></pre></div>
+</span><span style="color:#bbb"></span>};<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>This is better: the happy path set the <code>db_creation_result</code> variable with the result.  The unhappy path still panics, but we now have information on <em>why</em> it happened.  If we don&rsquo;t want to panic, we can modify this more:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_call_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>db_call_result.is_err()<span style="color:#bbb"> </span>{<span style="color:#bbb">
@@ -136,7 +144,8 @@ rusoto_rds = {version = &quot;0.25.0&quot;}
 </span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// Since it didn&#39;t succeed, we can look at the error and see if we should retry or not.
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// For our sample, we&#39;ll panic.
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>panic<span style="color:#555">!</span>(<span style="color:#c30">&#34;Error making DB instance creation request.&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Yes, we&rsquo;re still panicking in this example, but it shows we could do something else such as retrying the request.  We can look at the error and determine if it&rsquo;s a transient error and should be retried or if we should stop trying.</p>
 
 <h3 id="nightly-compiler-reminder">Nightly compiler reminder</h3>
@@ -169,7 +178,8 @@ rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(<
 
 <p>First we&rsquo;ll add <code>numeric_expr!(hits::hits_so_far);</code> to the schema.rs file:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">infer_schema<span style="color:#555">!</span>(<span style="color:#c30">&#34;dotenv:DATABASE_URL&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb"></span>numeric_expr<span style="color:#555">!</span>(hits::hits_so_far);</code></pre></div>
+</span><span style="color:#bbb"></span>numeric_expr<span style="color:#555">!</span>(hits::hits_so_far);<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>This uses the <a href="http://docs.diesel.rs/diesel/macro.numeric_expr.html">numeric_expr macro</a> to allow numeric operators.  We&rsquo;ll use the <code>+</code> operator to increment.</p>
 
 <p>Back in <code>main.rs</code> for <code>rusoto-rocket-mk2</code> we&rsquo;ll make some changes.  We&rsquo;ll start with <code>increment_hits</code>.</p>
@@ -187,7 +197,8 @@ rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(<
 </span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>};<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>This does the increment of the value.  We&rsquo;ll want to do the increment and return of the new value, like so:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">increment_hit</span>(conn: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">PgConnection</span>,<span style="color:#bbb"> </span>hit_id: <span style="color:#078;font-weight:bold">i32</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span><span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb"> </span>diesel::result::Error<span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
@@ -205,7 +216,8 @@ rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(<
 </span><span style="color:#bbb">            </span><span style="color:#366">Err</span>(e)<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>}<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>}<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>The main changes are using <code>get_result</code> instead of <code>execute</code> and setting the <code>hits_so_far</code> field to <code>hits_so_far + 1</code>.  This sets the incremented value and returns the updated value from the database.  We also change the function signature to return a <code>Result&lt;i32, diesel::result::Error&gt;</code>.  Before, it was a fire and forget, but now we use that for reporting the hits so far.</p>
 
 <p>In the index function, we move from this:</p>
@@ -221,7 +233,8 @@ rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(<
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits_from_db.first().unwrap().hits_so_far;<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>increment_hit(<span style="color:#555">&amp;</span>my_db_conn,<span style="color:#bbb"> </span><span style="color:#f60">1</span>,<span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Hello, world!  Hits: {:?}&#34;</span>,<span style="color:#bbb"> </span>hits_weve_seen).to_string()<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>to this:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[get(</span><span style="color:#c30">&#34;/&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">index</span>(db_conn: <span style="color:#0a8;font-weight:bold">State</span><span style="color:#555">&lt;</span>DbConn<span style="color:#555">&gt;</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
@@ -234,7 +247,8 @@ rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(<
 </span><span style="color:#bbb">        </span>},<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>};<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Hello, world!  Hits: {:?}&#34;</span>,<span style="color:#bbb"> </span>hits_from_db).to_string()<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>We&rsquo;ve removed the database call to get the current state and instead match on the returned <code>Result</code> from <code>increment_hit</code>.  As a bonus, this fixes the off-by-one error in the original example where we&rsquo;d see the page report 0 hits on our first visit.  The error branch of the <code>match</code> exposes the error state by reporting -1 hits if something goes wrong.</p>
 
 <h3 id="doing-local-testing-with-docker-instead-of-rds">Doing local testing with Docker instead of RDS</h3>

@@ -6,10 +6,29 @@
     <description>Recent content in Posts on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 02 Apr 2018 00:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Wed, 05 Sep 2018 00:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Build servers, Continuous Integration, Continuous Delivery</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/build-ci-cd/</link>
+      <pubDate>Wed, 05 Sep 2018 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/build-ci-cd/</guid>
+      <description>&lt;p&gt;Ever hear someone say &amp;ldquo;CI/CD build pipeline&amp;rdquo; and weren&amp;rsquo;t sure that that means, &lt;em&gt;exactly?&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s define and explore the concepts of:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Build server&lt;/li&gt;
+&lt;li&gt;Continuous Integration (CI)&lt;/li&gt;
+&lt;li&gt;Continous Delivery (CD)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Taking a break</title>

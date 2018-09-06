@@ -1,6 +1,6 @@
 +++
-date = "2018-09-02T00:28:53-07:00"
-draft = true
+date = "2018-09-05T00:28:53-07:00"
+draft = false
 title = "Build servers, Continuous Integration, Continuous Delivery"
 +++
 
