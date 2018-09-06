@@ -168,7 +168,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">mod</span> <span style="color:#0cf;font-weight:bold">custom</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>generated::<span style="color:#555">*</span>;<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>custom::<span style="color:#555">*</span>;</code></pre></div>
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>custom::<span style="color:#555">*</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>At the top we have a fancy warning to help guide putting code in the correct spot.  This file is generated from scratch by codegen whenever it&rsquo;s run.  We see the dependencies required by the service and bringing in <code>generated</code> and <code>custom</code> modules, exporting them as public.</p>
 
 <p><code>generated.rs</code> is where the service interaction code lives.  We won&rsquo;t paste it here since it&rsquo;s currently over 4,000 lines long for this relatively simple AWS service.  The file can be <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/src/generated.rs">seen on Github</a> if you&rsquo;d like to peruse it.  It&rsquo;s the output from the code generation we walked through on the previous two posts.</p>
@@ -189,14 +190,17 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>out_dir<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>Path::new(matches.value_of(<span style="color:#c30">&#34;out_dir&#34;</span>).unwrap());<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb">    </span>commands::generate::generate_services(service_configs,<span style="color:#bbb"> </span>out_dir);<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>We find the service config location from command line arguments, load the files, create a variable for the output directory and pass that all into <code>generate_services</code>.  That function is a bit long at almost 300 lines, but we&rsquo;ll take it a chunk at a time to see what it does.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#555">!</span>out_dir.exists()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>fs::create_dir(out_dir).expect(<span style="color:#c30">&#34;Unable to create output directory&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>First, we create the output directory if it doesn&rsquo;t exist.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">services.par_iter().for_each(<span style="color:#555">|</span>(name,<span style="color:#bbb"> </span>service_config)<span style="color:#555">|</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span>...</code></pre></div>
+</span><span style="color:#bbb"></span>...<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>We use <code>par_iter</code> from the <a href="https://github.com/nikomatsakis/rayon">Rayon crate</a>.  This lets us parallelize service generation, allowing us to use all available CPU cores.  A great boon when there&rsquo;s over 70 supported services so far!</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>service<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>service_definition<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>ServiceDefinition::load(name,<span style="color:#bbb"> </span><span style="color:#555">&amp;</span>service_config.protocol_version)<span style="color:#bbb">
@@ -208,7 +212,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>crate_dir<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>out_dir.join(<span style="color:#555">&amp;</span>name);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>crate_name<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;rusoto_{}&#34;</span>,<span style="color:#bbb"> </span><span style="color:#555">&amp;</span>name.replace(<span style="color:#c30">&#39;-&#39;</span>,<span style="color:#bbb"> </span><span style="color:#c30">&#34;_&#34;</span>));<span style="color:#bbb">
 </span><span style="color:#bbb">
-</span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Generating crate for {} @ {}...&#34;</span>,<span style="color:#bbb"> </span>service.full_name(),<span style="color:#bbb"> </span>service.api_version());</code></pre></div>
+</span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Generating crate for {} @ {}...&#34;</span>,<span style="color:#bbb"> </span>service.full_name(),<span style="color:#bbb"> </span>service.api_version());<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Here&rsquo;s where we load the botocore service definition.  For SQS we load its definition and create a new Rusoto codegen <code>Service</code> object to store it.  Then we create the crate directory.  For SQS it&rsquo;ll be <code>rusoto_sqs</code>.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span><span style="color:#555">!</span>crate_dir.exists()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>fs::create_dir(<span style="color:#555">&amp;</span>crate_dir)<span style="color:#bbb">
@@ -230,7 +235,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">
 </span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;extern crate {};&#34;</span>,<span style="color:#bbb"> </span>safe_name)<span style="color:#bbb">
 </span><span style="color:#bbb">
-</span><span style="color:#bbb"></span>}).collect::<span style="color:#555">&lt;</span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;</span>().join(<span style="color:#c30">&#34;</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>);</code></pre></div>
+</span><span style="color:#bbb"></span>}).collect::<span style="color:#555">&lt;</span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;</span>().join(<span style="color:#c30">&#34;</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>We create the crate directory if it&rsquo;s not present, then get the service dependencies. A quick detour to that definition:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>self.protocol()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#c30">&#34;json&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
@@ -251,7 +257,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">        </span>dependencies.insert(<span style="color:#c30">&#34;xml-rs&#34;</span>.to_owned(),<span style="color:#bbb"> </span>cargo::Dependency::Simple(<span style="color:#c30">&#34;0.6&#34;</span>.into()));<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>},<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>protocol<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>panic<span style="color:#555">!</span>(<span style="color:#c30">&#34;Unknown protocol {}&#34;</span>,<span style="color:#bbb"> </span>protocol),<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Here&rsquo;s where we insert dependencies based on the protocol type.  SQS is a <code>query</code> type so it gets <code>xml-rs</code>.</p>
 
 <p>Back to the other code:</p>
@@ -275,7 +282,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">
 </span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;extern crate {};&#34;</span>,<span style="color:#bbb"> </span>safe_name)<span style="color:#bbb">
 </span><span style="color:#bbb">
-</span><span style="color:#bbb"></span>}).collect::<span style="color:#555">&lt;</span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;</span>().join(<span style="color:#c30">&#34;</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>);</code></pre></div>
+</span><span style="color:#bbb"></span>}).collect::<span style="color:#555">&lt;</span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;</span>().join(<span style="color:#c30">&#34;</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p><code>service_dependencies</code> uses a sorted data structure so the output code has minimal churn: dependencies will always be in the same spot when we iterate over the collection.  This reduces change in the codegen output and makes code review easier.</p>
 
 <p>For each dependency, we inspect it.  This is to see if we need to allow <code>#[macro_use]</code> or not.  If we bring <code>#[macro_use]</code> and it&rsquo;s not used, our build will fail since we have <code>unused_imports</code> set to fail the build.</p>
@@ -284,7 +292,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">  </span>.truncate(<span style="color:#069;font-weight:bold">true</span>)<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>.create(<span style="color:#069;font-weight:bold">true</span>)<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>.open(crate_dir.join(<span style="color:#c30">&#34;Cargo.toml&#34;</span>))<span style="color:#bbb">
-</span><span style="color:#bbb">  </span>.expect(<span style="color:#c30">&#34;Unable to write Cargo.toml&#34;</span>);</code></pre></div>
+</span><span style="color:#bbb">  </span>.expect(<span style="color:#c30">&#34;Unable to write Cargo.toml&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>We get ready to write out the Cargo.toml file, truncating it if it exists.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>manifest<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>cargo::Manifest<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>package: <span style="color:#0a8;font-weight:bold">cargo</span>::Metadata<span style="color:#bbb"> </span>{<span style="color:#bbb">
@@ -331,7 +340,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">  </span>..cargo::Manifest::default()<span style="color:#bbb">
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
 </span><span style="color:#bbb">
-</span><span style="color:#bbb"></span>cargo_manifest.write_all(toml::to_string(<span style="color:#555">&amp;</span>manifest).unwrap().as_bytes()).unwrap();</code></pre></div>
+</span><span style="color:#bbb"></span>cargo_manifest.write_all(toml::to_string(<span style="color:#555">&amp;</span>manifest).unwrap().as_bytes()).unwrap();<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Here&rsquo;s where we create and write out the Cargo.toml file for our service.  We populate the metadata, dependencies and write it all out.  This uses code we&rsquo;ve created to represent a Cargo file.  Here&rsquo;s an snippet:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[derive(Debug, Default, Clone, Deserialize, Serialize)]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Manifest</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
@@ -351,7 +361,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>dev_dependencies: <span style="color:#0a8;font-weight:bold">BTreeMap</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span>Dependency<span style="color:#555">&gt;</span>,<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>features: <span style="color:#366">Option</span><span style="color:#555">&lt;</span>BTreeMap<span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;&gt;</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Note the <code>BTreeMap</code> type used: as mentioned earlier, this ensure stable ordering when iterating through it.  Per the <a href="https://doc.rust-lang.org/std/collections/struct.BTreeMap.html">Rust docs</a>, calling <code>iter</code> on the <code>BTreeMap</code></p>
 
 <pre><code>Gets an iterator over the entries of the map, sorted by key.
@@ -403,7 +414,8 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">  </span>..cargo::Manifest::default()<span style="color:#bbb">
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
 </span><span style="color:#bbb">
-</span><span style="color:#bbb"></span>cargo_manifest.write_all(toml::to_string(<span style="color:#555">&amp;</span>manifest).unwrap().as_bytes()).unwrap();</code></pre></div>
+</span><span style="color:#bbb"></span>cargo_manifest.write_all(toml::to_string(<span style="color:#555">&amp;</span>manifest).unwrap().as_bytes()).unwrap();<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>to this Cargo.toml:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#555">[</span>package<span style="color:#555">]</span>
 <span style="color:#033">authors</span> <span style="color:#555">=</span> <span style="color:#555">[</span><span style="color:#c30">&#34;Anthony DiMarco &lt;ocramida@gmail.com&gt;&#34;</span>, <span style="color:#c30">&#34;Jimmy Cuadra &lt;jimmy@jimmycuadra.com&gt;&#34;</span>, <span style="color:#c30">&#34;Matthew Mayer &lt;matthewkmayer@gmail.com&gt;&#34;</span>, <span style="color:#c30">&#34;Nikita Pekin &lt;contact@nikitapek.in&gt;&#34;</span><span style="color:#555">]</span>

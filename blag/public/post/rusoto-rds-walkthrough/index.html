@@ -147,19 +147,21 @@ rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(<
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>rds_client.describe_db_instances(<span style="color:#555">&amp;</span>describe_instances_request).unwrap().db_instances.unwrap()[<span style="color:#f60">0</span>].endpoint<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>endpoint_result)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">            </span>endpoint<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint_result.clone();<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>},<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Waiting for db to be available...&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb">            </span>thread::sleep(ten_seconds);<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">continue</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">continue</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>},<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>};<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>A lot to unravel.</p>
 
 <p>The first thing we do is create an AWS credential object:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new().unwrap();</code></pre></div>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new().unwrap();<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>This creates a Rusoto credential chain.  It will source credentials according to <a href="https://github.com/rusoto/rusoto/blob/master/AWS-CREDENTIALS.md">AWS best practices</a>.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>rds_client<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>RdsClient::new(default_tls_client().unwrap(),<span style="color:#bbb"> </span>credentials,<span style="color:#bbb"> </span>Region::UsEast1);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>create_db_instance_request<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>CreateDBInstanceMessage<span style="color:#bbb"> </span>{<span style="color:#bbb">
@@ -174,34 +176,39 @@ rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(<
 </span><span style="color:#bbb">    </span>engine: <span style="color:#c30">&#34;postgres&#34;</span>.to_string(),<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>multi_az: <span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">false</span>),<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
-</span><span style="color:#bbb"></span>};</code></pre></div>
+</span><span style="color:#bbb"></span>};<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>This code creates a Rusoto client for AWS RDS.  Then it makes a new <code>CreateDBInstanceMessage</code>, as specified by the AWS RDS API definition.  We set database storage/disk size, disable backups, use a <code>t2.micro</code> size and we set our username, password and database name, along with setting it to a single availability zone (AZ) since this is a non-production database.  We wrap it up by telling Rusoto to use defaults for the rest of the request.</p>
 
 <p>Finally, we execute the request to create the RDS instance:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_creation_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request).unwrap();</code></pre></div>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_creation_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request).unwrap();<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Since creating the database can take a few minutes, we poll AWS for its status:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>describe_instances_request<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DescribeDBInstancesMessage<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#366">Some</span>(database_instance_name.to_string()),<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
-</span><span style="color:#bbb"></span>};</code></pre></div><div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto</span>::rds::Endpoint;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>};<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div><div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto</span>::rds::Endpoint;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>ten_seconds<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>time::Duration::from_millis(<span style="color:#f60">10000</span>);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">loop</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>rds_client.describe_db_instances(<span style="color:#555">&amp;</span>describe_instances_request).unwrap().db_instances.unwrap()[<span style="color:#f60">0</span>].endpoint<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>endpoint_result)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">            </span>endpoint<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint_result.clone();<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>},<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Waiting for db to be available...&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb">            </span>thread::sleep(ten_seconds);<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">continue</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">continue</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>},<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>};<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>This code waits for the instance to become available by checking for the RDS instance by name.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint_address<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint.address.unwrap();<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint_port<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint.port.unwrap();<span style="color:#bbb">
-</span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;</span><span style="color:#c30;font-weight:bold">\n\n</span><span style="color:#c30">endpoint: {:?}&#34;</span>,<span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;{}:{}&#34;</span>,<span style="color:#bbb"> </span>endpoint_address,<span style="color:#bbb"> </span>endpoint_port));</code></pre></div>
+</span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;</span><span style="color:#c30;font-weight:bold">\n\n</span><span style="color:#c30">endpoint: {:?}&#34;</span>,<span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;{}:{}&#34;</span>,<span style="color:#bbb"> </span>endpoint_address,<span style="color:#bbb"> </span>endpoint_port));<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>When the database is available, we extract the connection string and print it.  Since the DNS name AWS creates for the RDS instance is unique, we&rsquo;ll put that in the <code>.env</code> file in <code>rusoto-rocket</code>.</p>
 
 <p>Example of <code>.env</code>, using <code>localhost</code> instead of the RDS DNS name:</p>
@@ -233,7 +240,8 @@ from your IP address.  If the following <code>diesel</code> commands time out, d
 <p><a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter/down.sql">Down file</a>:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#069;font-weight:bold">DROP</span> <span style="color:#069;font-weight:bold">TABLE</span> hits</code></pre></div>
 <p>The <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/schema.rs">schema file</a> infers the schema via the database:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">infer_schema<span style="color:#555">!</span>(<span style="color:#c30">&#34;dotenv:DATABASE_URL&#34;</span>);</code></pre></div>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">infer_schema<span style="color:#555">!</span>(<span style="color:#c30">&#34;dotenv:DATABASE_URL&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>The ORM models we use are in the <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/models.rs">models file</a>:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
 </span><span style="color:#bbb">
@@ -242,7 +250,8 @@ from your IP address.  If the following <code>diesel</code> commands time out, d
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Hit</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>hits_so_far: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>We use the type <code>Hit</code> to describe our hit counter.  It <code>derive</code>s Queryable, Insertable and Debug, in the table <code>hits</code>.  There&rsquo;s an <code>id</code> field which we gloss over by using a constant and the <code>hits_so_far</code> field where we store the number of hits the site has seen.  Except <code>Debug</code>, the <code>derive</code> fields are used by Diesel.</p>
 
 <p>In the <code>rusoto-rocket</code> directory, run <code>diesel setup</code>.  This will connect to RDS and create the database with the required schema.</p>
@@ -321,7 +330,8 @@ dotenv = &quot;0.8.0&quot;
 </span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>};<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>That&rsquo;s a lot to take in!  Let&rsquo;s break it down:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#![feature(plugin)]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#099">#![plugin(rocket_codegen)]</span><span style="color:#bbb">
@@ -338,7 +348,8 @@ dotenv = &quot;0.8.0&quot;
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>self::rusoto_rocket::<span style="color:#555">*</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>self::rusoto_rocket::models::<span style="color:#555">*</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">type</span> <span style="color:#0a8;font-weight:bold">DbConn</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>Mutex<span style="color:#555">&lt;</span>PgConnection<span style="color:#555">&gt;</span>;</code></pre></div>
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">type</span> <span style="color:#0a8;font-weight:bold">DbConn</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>Mutex<span style="color:#555">&lt;</span>PgConnection<span style="color:#555">&gt;</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>We enable Rust plugins and the Rocket codegen plugin.  Then we bring in the required crates: <code>diesel</code> for database access, <code>dotenv</code> for configuration, <code>rocket</code> for the site and code for this walkthrough, <code>rusoto_rocket</code>.  We <code>use</code> the required modules: <code>diesel</code> boilerplate, Postgres libraries and our <code>rusoto_rocket</code> code and database models.</p>
 
 <p>To keep the same database connection across multiple requests, we&rsquo;ll use Rocket&rsquo;s <code>State</code> functionality.  We&rsquo;ll wrap up the Diesel Postgres connection in a Mutex for thread safety and refer to that as a <code>DbConn</code>.</p>
@@ -364,7 +375,8 @@ dotenv = &quot;0.8.0&quot;
 </span><span style="color:#bbb">        </span>.manage(Mutex::new(connection))<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>.mount(<span style="color:#c30">&#34;/&#34;</span>,<span style="color:#bbb"> </span>routes<span style="color:#555">!</span>[index])<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>.launch();<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Starting with <code>main</code>, we establish a connection to the database.  Then we create our first <code>hit</code> record with an <code>id</code> of <code>1</code>.  Then we bind our Rocket site to <code>/</code> with the <code>index</code> route as the only route.  The <code>.manage</code> line tells Rocket to manage the database connection for us.  It&rsquo;s a <code>Mutex::new(PgConnection)</code> which is translated to a <code>DbConn</code> we defined earlier.</p>
 
 <p>The <code>index</code> route is defined by the <code>fn index()</code> function and the <code>#[get(&quot;/&quot;)]</code> tells Rocket to map it to the root URL: no path required for that endpoint.</p>
@@ -380,7 +392,8 @@ dotenv = &quot;0.8.0&quot;
 </span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>};<span style="color:#bbb">
-</span><span style="color:#bbb"></span>}</code></pre></div>
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span></code></pre></div>
 <p>Finally, our <code>increment_hit</code> function: this uses Diesel to update the database record.  We reference the required schema item, rename the Diesel DSL <code>hits</code> as <code>myhits</code> and run an update.  The actual integer increment happens in the <code>index</code> function.  More on this in the Diesel section.</p>
 
 <h2 id="connecting-it-all">Connecting it all</h2>
