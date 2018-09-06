@@ -87,8 +87,8 @@ Continuous Deployment is done manually: when the new Docker image is ready, I do
 
 ## Wrapup
 
-**Continuous Integration** and **Continuous Delivery** are processes that tell humans what techniques to use with source control.
+*Continuous Integration* and *Continuous Delivery* are processes that tell humans what techniques to use with source control.
 
-**Build server** is a server, servers or a system that automatically builds and tests code.
+*Build server* is a server, servers or a system that automatically builds and tests code.
 
 A followup blog post will show how these separate concepts can be put together and create an advantage bigger than the sum of its parts: a true *CI/CD pipeline*.
