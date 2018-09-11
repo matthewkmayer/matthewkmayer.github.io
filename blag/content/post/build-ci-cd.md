@@ -24,6 +24,8 @@ Let's define and explore the concepts of:
 
 Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests. The exact build and run steps depend on the language being used. For a Go project, the server may run `go build` followed by `go test ./...` and report back success or failure. This ensures what's checked in to source control can be built by someone else, not just the person who wrote the code.
 
+Usually this is a one time setup. After that, builds run automatically and report success or failure.
+
 Examples:
 
 * Jenkins
@@ -37,8 +39,6 @@ Examples:
 Guideline: branches are short lived. If a branch lives longer than a day or two, it's not continuous integration.
 
 This process is for *continuously integrating* code back into the main branch. Keeping branches short lived prevents them from drifting out of date, causing merge conflicts or massive amounts of code to review. The bigger a team gets, the more likely two people are going to change something in the same spot, causing a merge conflict.
-
-Usually this is a one time setup. After that, builds run automatically and report success or failure.
 
 Examples:
 
@@ -92,3 +92,5 @@ Continuous Deployment is done manually: when the new Docker image is ready, I do
 *Build server* is a server, servers or a system that automatically builds and tests code.
 
 A followup blog post will show how these separate concepts can be put together and create an advantage bigger than the sum of its parts: a true *CI/CD pipeline*.
+
+*Updated 9/10/2018: corrected a sentence in the wrong section*
