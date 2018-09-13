@@ -6,10 +6,21 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 05 Sep 2018 00:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Wed, 12 Sep 2018 00:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CI/CD Pipeline</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/</link>
+      <pubDate>Wed, 12 Sep 2018 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://matthewkmayer.github.io/blag/public/post/build-ci-cd/&#34;&gt;Previously&lt;/a&gt;, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we&amp;rsquo;ll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Build servers, Continuous Integration, Continuous Delivery</title>
