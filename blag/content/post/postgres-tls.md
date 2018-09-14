@@ -8,6 +8,8 @@ title = "Postgres over TLS with postgres and r2d2_postgres"
 
 In this post we'll go over how to get the [postgres crate](https://crates.io/crates/postgres) and [r2d2_postgres](https://crates.io/crates/r2d2_postgres) working with [openssl](https://crates.io/crates/openssl) for connection pooling with TLS.
 
+Source code is [available](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/postgres-tls-tester).
+
 <!--more-->
 
 ## Goal
