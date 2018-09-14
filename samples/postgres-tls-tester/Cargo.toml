@@ -1,0 +1,11 @@
+[package]
+name = "postgres-tls-tester"
+version = "0.1.0"
+authors = ["Matthew Mayer <matthewkmayer@gmail.com>"]
+
+[dependencies]
+env_logger = "0.5"
+r2d2 = "0.8"
+r2d2_postgres = "0.14"
+openssl = "0.10"
+postgres = { version = "0.15", features = ["with-openssl"] }
