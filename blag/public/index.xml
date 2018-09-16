@@ -6,10 +6,25 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 12 Sep 2018 00:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Thu, 13 Sep 2018 00:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Postgres over TLS with postgres and r2d2_postgres</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/postgres-tls/</link>
+      <pubDate>Thu, 13 Sep 2018 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/postgres-tls/</guid>
+      <description>&lt;p&gt;&amp;ldquo;Dance like nobody&amp;rsquo;s watching. Encrypt like everybody is.&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;In this post we&amp;rsquo;ll go over how to get the &lt;a href=&#34;https://crates.io/crates/postgres&#34;&gt;postgres crate&lt;/a&gt; and &lt;a href=&#34;https://crates.io/crates/r2d2_postgres&#34;&gt;r2d2_postgres&lt;/a&gt; working with &lt;a href=&#34;https://crates.io/crates/openssl&#34;&gt;openssl&lt;/a&gt; for connection pooling with TLS.&lt;/p&gt;
+
+&lt;p&gt;Source code is &lt;a href=&#34;https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/postgres-tls-tester&#34;&gt;available&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>CI/CD Pipeline</title>
