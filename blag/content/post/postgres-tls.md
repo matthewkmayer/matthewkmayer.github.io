@@ -20,7 +20,7 @@ When services launch, their database won't always be available. This scenario sh
 
 ## Ping
 
-The first step is to gather the details needed to start the service. This is usually configuration and credentials from environment variables in [12 Factor App](https://12factor.net/) fashion. After that, the service will ping the database until its available.
+The first step is to gather the details needed to start the service. This is usually configuration and credentials from environment variables in [12 Factor App](https://12factor.net/) fashion. After that, the service will ping the database until it's available.
 
 ```rust
 // Usual web app startup things here: read config from environment variables,
