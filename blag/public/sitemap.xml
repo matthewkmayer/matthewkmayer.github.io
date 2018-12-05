@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/</loc>
+    <lastmod>2018-12-04T00:28:53-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://matthewkmayer.github.io/blag/public/post/postgres-tls/</loc>
     <lastmod>2018-09-13T00:28:53-07:00</lastmod>
   </url>
@@ -84,13 +89,13 @@
   
   <url>
     <loc>https://matthewkmayer.github.io/blag/public/</loc>
-    <lastmod>2018-09-13T00:28:53-07:00</lastmod>
+    <lastmod>2018-12-04T00:28:53-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://matthewkmayer.github.io/blag/public/post/</loc>
-    <lastmod>2018-09-13T00:28:53-07:00</lastmod>
+    <lastmod>2018-12-04T00:28:53-07:00</lastmod>
     <priority>0</priority>
   </url>
   

@@ -6,10 +6,22 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 13 Sep 2018 00:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Tue, 04 Dec 2018 00:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Repos for getting hired</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/</link>
+      <pubDate>Tue, 04 Dec 2018 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m often involved in hiring. When GitHub links are on a resume, I look at pinned repos and source repos.
+Here&amp;rsquo;s a checklist of important items to have in a GitHub public repository to catch the eye of reviewers. Or at least my eye when hiring, and why it&amp;rsquo;s important.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Postgres over TLS with postgres and r2d2_postgres</title>
