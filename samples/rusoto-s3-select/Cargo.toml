@@ -1,0 +1,9 @@
+[package]
+name = "rusoto-s3-select"
+version = "0.1.0"
+authors = ["Matthew Mayer <matthewkmayer@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rusoto_core = "0.35"
+rusoto_s3 = "0.35"
