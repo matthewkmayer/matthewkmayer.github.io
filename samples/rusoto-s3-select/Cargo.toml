@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 rusoto_core = "0.35"
 rusoto_s3 = "0.35"
+futures = "0.1"
