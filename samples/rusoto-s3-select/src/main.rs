@@ -4,7 +4,9 @@ extern crate rusoto_s3;
 
 use futures::{Future, Stream};
 use rusoto_core::Region;
-use rusoto_s3::{S3, S3Client, PutObjectRequest, GetObjectRequest, CreateBucketRequest};
+use rusoto_s3::{S3, S3Client, PutObjectRequest, GetObjectRequest, CreateBucketRequest,
+                SelectObjectContentRequest, InputSerialization, JSONInput, OutputSerialization,
+                JSONOutput};
 
 fn main() {
     println!("Starting up");
@@ -29,13 +31,28 @@ fn main() {
     client.put_object(req).sync().expect("Couldn't PUT object");
 
     // run s3 select query on it, verify it only has the fields we requested
-    let get_req_select = GetObjectRequest {
-        bucket: test_bucket.to_owned(),
-        key: "select-sample.json".to_owned(),
+    // see https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectSELECTContent.html .
+    let input_serialization = InputSerialization { 
+        json: Some(JSONInput {
+            type_: Some("Document".to_owned()),
+            ..Default::default()
+        }),
         ..Default::default()
     };
-    let select_file_response = client.get_object(get_req_select).sync().expect("Couldn't download file");
-    let stream_select = select_file_response.body.unwrap();
+
+    let output_serialization = OutputSerialization { ..Default::default() };
+    
+    let get_req_select = SelectObjectContentRequest {
+        bucket: test_bucket.to_owned(),
+        key: "select-sample.json".to_owned(),
+        expression: "SELECT s._1 FROM S3Object s".to_owned(),
+        expression_type: "SQL".to_owned(),
+        input_serialization: input_serialization,
+        output_serialization: output_serialization,
+        ..Default::default()
+    };
+    let select_file_response = client.select_object_content(get_req_select).sync().expect("Couldn't download file");
+    let stream_select = select_file_response.payload.unwrap();
     let body_select = stream_select.concat2().wait().unwrap();
     println!("body_select is '{}'", String::from_utf8(body_select).unwrap());
 
