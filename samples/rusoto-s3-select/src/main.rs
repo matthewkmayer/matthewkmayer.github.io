@@ -1,15 +1,15 @@
-// use rusoto core and s3
 extern crate rusoto_core;
 extern crate rusoto_s3;
+extern crate env_logger;
 
 use futures::{Future, Stream};
 use rusoto_core::Region;
 use rusoto_s3::{S3, S3Client, PutObjectRequest, GetObjectRequest, CreateBucketRequest,
-                SelectObjectContentRequest, InputSerialization, JSONInput, OutputSerialization,
-                JSONOutput};
+                SelectObjectContentRequest, InputSerialization, JSONInput, OutputSerialization};
 
 fn main() {
     println!("Starting up");
+    let _ = env_logger::try_init();
     
     let client = S3Client::new(Region::UsEast1);
     // create a bucket
@@ -51,10 +51,10 @@ fn main() {
         output_serialization: output_serialization,
         ..Default::default()
     };
-    let select_file_response = client.select_object_content(get_req_select).sync().expect("Couldn't download file");
+    let select_file_response = client.select_object_content(get_req_select).sync().expect("Couldn't download file with select");
     let stream_select = select_file_response.payload.unwrap();
-    let body_select = stream_select.concat2().wait().unwrap();
-    println!("body_select is '{}'", String::from_utf8(body_select).unwrap());
+    let body_select = stream_select.records.unwrap();
+    println!("body_select is '{:?}'", body_select);
 
     // run regular s3 get_object, see it has all the fields
     let get_req = GetObjectRequest {
