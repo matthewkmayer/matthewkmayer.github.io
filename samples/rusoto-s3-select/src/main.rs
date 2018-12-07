@@ -1,21 +1,29 @@
+extern crate env_logger;
 extern crate rusoto_core;
 extern crate rusoto_s3;
-extern crate env_logger;
 
 use futures::{Future, Stream};
 use rusoto_core::Region;
-use rusoto_s3::{S3, S3Client, PutObjectRequest, GetObjectRequest, CreateBucketRequest,
-                SelectObjectContentRequest, InputSerialization, JSONInput, OutputSerialization};
+use rusoto_s3::{
+    CreateBucketRequest, GetObjectRequest, InputSerialization, JSONInput, OutputSerialization,
+    PutObjectRequest, S3Client, SelectObjectContentRequest, S3,
+};
 
 fn main() {
     println!("Starting up");
     let _ = env_logger::try_init();
-    
+
     let client = S3Client::new(Region::UsEast1);
     // create a bucket
     let test_bucket = "rusoto-test-bucket-0123456";
-    let create_bucket_req = CreateBucketRequest { bucket: test_bucket.to_owned(), ..Default::default() };
-    client.create_bucket(create_bucket_req).sync().expect("Couldn't create bucket");
+    let create_bucket_req = CreateBucketRequest {
+        bucket: test_bucket.to_owned(),
+        ..Default::default()
+    };
+    client
+        .create_bucket(create_bucket_req)
+        .sync()
+        .expect("Couldn't create bucket");
 
     // create a sample json file with multiple fields
     let test_json = String::from(r#"{"foo": 1, "bar": 2}"#);
@@ -32,7 +40,7 @@ fn main() {
 
     // run s3 select query on it, verify it only has the fields we requested
     // see https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectSELECTContent.html .
-    let input_serialization = InputSerialization { 
+    let input_serialization = InputSerialization {
         json: Some(JSONInput {
             type_: Some("Document".to_owned()),
             ..Default::default()
@@ -40,8 +48,10 @@ fn main() {
         ..Default::default()
     };
 
-    let output_serialization = OutputSerialization { ..Default::default() };
-    
+    let output_serialization = OutputSerialization {
+        ..Default::default()
+    };
+
     let get_req_select = SelectObjectContentRequest {
         bucket: test_bucket.to_owned(),
         key: "select-sample.json".to_owned(),
@@ -51,7 +61,13 @@ fn main() {
         output_serialization: output_serialization,
         ..Default::default()
     };
-    let select_file_response = client.select_object_content(get_req_select).sync().expect("Couldn't download file with select");
+
+    // This is currently where we fail since we don't set the correct query string parameters.
+    // See https://github.com/rusoto/rusoto/issues/1092 .
+    let select_file_response = client
+        .select_object_content(get_req_select)
+        .sync()
+        .expect("Couldn't download file with select");
     let stream_select = select_file_response.payload.unwrap();
     let body_select = stream_select.records.unwrap();
     println!("body_select is '{:?}'", body_select);
@@ -62,7 +78,10 @@ fn main() {
         key: "select-sample.json".to_owned(),
         ..Default::default()
     };
-    let whole_file_response = client.get_object(get_req).sync().expect("Couldn't download file");
+    let whole_file_response = client
+        .get_object(get_req)
+        .sync()
+        .expect("Couldn't download file");
     let stream = whole_file_response.body.unwrap();
     let body = stream.concat2().wait().unwrap();
     println!("body is '{}'", String::from_utf8(body).unwrap());
