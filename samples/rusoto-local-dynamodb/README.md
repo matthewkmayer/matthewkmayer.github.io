@@ -16,7 +16,7 @@ Supply some fake AWS credentials, as any credentials work for the local version:
 
 ## Custom Region in Rusoto
 
-See source code/here's a snippet.
+See [main.rs](src/main.rs).
 
 ## Deleting the local Dynamo data
 
