@@ -12,8 +12,14 @@ Run it:
 
 Supply some fake AWS credentials, as any credentials work for the local version:
 
-`$ AWS_SECRET_KEY=foo AWS_SECRET_ACCES_KEY=bar cargo run`
+`$ AWS_ACCESS_KEY_ID=foo AWS_SECRET_ACCES_KEY=bar cargo run`
 
 ## Custom Region in Rusoto
 
 See source code/here's a snippet.
+
+## Deleting the local Dynamo data
+
+Where the `java` command was run, delete the `shared-local-instance.db` file:
+
+`$ rm shared-local-instance.db`
