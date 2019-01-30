@@ -1,13 +1,15 @@
+extern crate futures;
 extern crate rusoto_core;
 extern crate rusoto_dynamodb;
-extern crate futures;
+extern crate tokio_core;
 
+use futures::future::Future;
+use tokio_core::reactor::Core;
 use rusoto_core::Region;
 use rusoto_dynamodb::{
     AttributeDefinition, AttributeValue, CreateTableInput, DynamoDb, DynamoDbClient, GetItemInput,
     KeySchemaElement, ProvisionedThroughput, UpdateItemInput,
 };
-use futures::future::Future;
 use std::collections::HashMap;
 
 // Use local dynamodb for testing this out
@@ -22,9 +24,9 @@ fn main() {
 
     // future for creating a table
     let attribute_def = AttributeDefinition {
-                        attribute_name: "foo_name".to_string(),
-                        attribute_type: "S".to_string(),
-                    };
+        attribute_name: "foo_name".to_string(),
+        attribute_type: "S".to_string(),
+    };
     let k_schema = KeySchemaElement {
         attribute_name: "foo_name".to_string(),
         key_type: "HASH".to_string(), // case sensitive
@@ -41,7 +43,10 @@ fn main() {
         ..Default::default()
     };
 
-    let create_table_future = client.create_table(make_table_request).map(|_r| println!("woo done")).map_err(|_e| panic!("no"));
+    let create_table_future = client
+        .create_table(make_table_request)
+        .map(|_r| ())
+        .map_err(|e| panic!("no: {}", e));
 
     // future for upserting an entry
     let mut item = HashMap::new();
@@ -58,7 +63,10 @@ fn main() {
         ..Default::default()
     };
 
-    let upsert_item_future = client.update_item(add_item);
+    let upsert_item_future = client
+        .update_item(add_item)
+        .map(|_| ())
+        .map_err(|e| panic!("Couldn't upsert item: {}", e));
 
     // future for getting the entry
     let get_item_request = GetItemInput {
@@ -69,18 +77,15 @@ fn main() {
     let item_from_dynamo_future = client.get_item(get_item_request);
 
     // tie them together
-    // let chained = create_table_future.and_then(|_| {
-    //     upsert_item_future.and_then(|_| {
-    //         item_from_dynamo_future.map(println!("foo"))
-    //     })
-    // });
+    let chained_futures = create_table_future.and_then(|_| {
+        upsert_item_future.and_then(|_| {
+            item_from_dynamo_future.map(|i| println!("Got item back: {:?}", i)).map_err(|e| panic!("Couldn't get item: {}", e))
+        })
+    });
+
+    // This tokio core will run our futures to completion:
+    let mut core = Core::new().unwrap();
 
     // run 'em
-    tokio::run(create_table_future);
-    // let result = match tokio::run(create_table_future) {
-    //     Ok(o) => format!("Yay: {:?}", o),
-    //     Err(e) => format!("boo error: {}", e),
-    // };
-    // Retrieve the entry
-    
+    core.run(chained_futures).unwrap();
 }
