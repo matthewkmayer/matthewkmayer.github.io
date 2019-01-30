@@ -1,0 +1,11 @@
+[package]
+name = "rusoto-chained-futures"
+version = "0.1.0"
+authors = ["Matthew Mayer <matthewkmayer@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rusoto_core = "0.36"
+rusoto_dynamodb = "0.36"
+futures = "0.1"
+tokio = "0.1"
