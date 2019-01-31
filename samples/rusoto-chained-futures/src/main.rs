@@ -4,14 +4,14 @@ extern crate rusoto_dynamodb;
 extern crate tokio_core;
 
 use futures::future::Future;
-use tokio_core::reactor::Core;
 use rusoto_core::Region;
 use rusoto_dynamodb::{
-    AttributeDefinition, AttributeValue, CreateTableInput, DynamoDb, DynamoDbClient, GetItemInput,
-    KeySchemaElement, ProvisionedThroughput, UpdateItemInput, CreateTableOutput, CreateTableError,
-    UpdateItemOutput, UpdateItemError, GetItemOutput, GetItemError
+    AttributeDefinition, AttributeValue, CreateTableError, CreateTableInput, CreateTableOutput,
+    DynamoDb, DynamoDbClient, GetItemError, GetItemInput, GetItemOutput, KeySchemaElement,
+    ProvisionedThroughput, UpdateItemError, UpdateItemInput, UpdateItemOutput,
 };
 use std::collections::HashMap;
+use tokio_core::reactor::Core;
 
 fn get_dynamodb_local_client() -> DynamoDbClient {
     // Create custom Region
@@ -23,7 +23,9 @@ fn get_dynamodb_local_client() -> DynamoDbClient {
     DynamoDbClient::new(region)
 }
 
-fn make_create_table_future(client: &DynamoDbClient) -> impl Future<Item = CreateTableOutput, Error = CreateTableError> {
+fn make_create_table_future(
+    client: &DynamoDbClient,
+) -> impl Future<Item = CreateTableOutput, Error = CreateTableError> {
     let attribute_def = AttributeDefinition {
         attribute_name: "foo_name".to_string(),
         attribute_type: "S".to_string(),
@@ -44,26 +46,26 @@ fn make_create_table_future(client: &DynamoDbClient) -> impl Future<Item = Creat
         ..Default::default()
     };
 
-    client
-        .create_table(make_table_request)
-        .map(|r| r)
-        .map_err(|e| e)
+    client.create_table(make_table_request)
 }
 
-fn make_upsert_item_future(client: &DynamoDbClient, item: &HashMap<String, AttributeValue>) -> impl Future<Item = UpdateItemOutput, Error = UpdateItemError> {
+fn make_upsert_item_future(
+    client: &DynamoDbClient,
+    item: &HashMap<String, AttributeValue>,
+) -> impl Future<Item = UpdateItemOutput, Error = UpdateItemError> {
     let add_item = UpdateItemInput {
         key: item.clone(),
         table_name: "a-testing-table".to_string(),
         ..Default::default()
     };
 
-    client
-        .update_item(add_item)
-        .map(|r| r)
-        .map_err(|e| e)
+    client.update_item(add_item)
 }
 
-fn make_get_item_future(client: &DynamoDbClient, item: &HashMap<String, AttributeValue>) -> impl Future<Item = GetItemOutput, Error = GetItemError> {
+fn make_get_item_future(
+    client: &DynamoDbClient,
+    item: &HashMap<String, AttributeValue>,
+) -> impl Future<Item = GetItemOutput, Error = GetItemError> {
     // future for getting the entry
     let get_item_request = GetItemInput {
         key: item.clone(),
@@ -89,31 +91,28 @@ fn make_item() -> HashMap<String, AttributeValue> {
 
 // Use local dynamodb for testing this out
 fn main() {
-    let item = make_item();    
-
+    let item = make_item();
     let client = get_dynamodb_local_client();
 
     let create_table_future = make_create_table_future(&client);
-
     let upsert_item_future = make_upsert_item_future(&client, &item);
-
     let item_from_dynamo_future = make_get_item_future(&client, &item);
 
     // tie them together
     let chained_futures = create_table_future
-        .map(|_| {
-            upsert_item_future.and_then(|_| {
-                item_from_dynamo_future.map(|i| println!("Got item back: {:?}", i)).map_err(|e| panic!("Couldn't get item: {}", e))
-            })
-            })
-        .map_err(|e| panic!("noooo {}", e));
+        .map_err(|_| ())
+        .and_then(|_| upsert_item_future.map_err(|_| ()))
+        .and_then(|_| item_from_dynamo_future.map_err(|_| ()));
 
     // This tokio core will run our futures to completion:
     let mut core = Core::new().unwrap();
 
     // run 'em
-    match core.run(chained_futures).unwrap().wait() {
-        Ok(_) => println!("Everything worked!"),
-        Err(e) => println!("Error completing futures: {}", e),
-    }
+    let item_from_dynamo = match core.run(chained_futures) {
+        Ok(item) => item,
+        Err(_) => panic!("Error completing futures: {}"),
+    };
+
+    println!("item_from_dynamo is {:?}", item_from_dynamo);
+    println!("Done");
 }
