@@ -6,26 +6,41 @@ extern crate tokio_core;
 use futures::future::Future;
 use rusoto_core::Region;
 use rusoto_dynamodb::{
-    AttributeDefinition, AttributeValue, CreateTableError, CreateTableInput, CreateTableOutput,
-    DynamoDb, DynamoDbClient, GetItemError, GetItemInput, GetItemOutput, KeySchemaElement,
-    ProvisionedThroughput, UpdateItemError, UpdateItemInput, UpdateItemOutput,
+    AttributeDefinition, AttributeValue, CreateTableInput, CreateTableOutput, DynamoDb,
+    DynamoDbClient, GetItemError, GetItemInput, GetItemOutput, KeySchemaElement,
+    ProvisionedThroughput, UpdateItemInput, UpdateItemOutput,
 };
 use std::collections::HashMap;
 use tokio_core::reactor::Core;
 
-fn get_dynamodb_local_client() -> DynamoDbClient {
-    // Create custom Region
-    let region = Region::Custom {
-        name: "us-east-1".to_owned(),
-        endpoint: "http://localhost:8000".to_owned(),
+fn main() {
+    let item = make_item();
+    let client = get_dynamodb_local_client();
+
+    let create_table_future = make_create_table_future(&client);
+    let upsert_item_future = make_upsert_item_future(&client, &item);
+    let item_from_dynamo_future = make_get_item_future(&client, &item);
+
+    // tie them together
+    let chained_futures = create_table_future
+        .map_err(|_| ()) // throw away any error from creating the table (such as it already exists)
+        .and_then(|_| upsert_item_future.map_err(|_| ())) // toss out any error on upsert
+        .then(|_| item_from_dynamo_future.map_err(|e| e)); // return get_item error if it happens
+
+    // This tokio core will run our futures to completion:
+    let mut core = Core::new().unwrap();
+
+    // run 'em
+    let item_from_dynamo = match core.run(chained_futures) {
+        Ok(item) => item,
+        Err(_) => panic!("Error completing futures: {}"),
     };
 
-    DynamoDbClient::new(region)
+    println!("item_from_dynamo is {:?}", item_from_dynamo);
+    println!("Done");
 }
 
-fn make_create_table_future(
-    client: &DynamoDbClient,
-) -> impl Future<Item = CreateTableOutput, Error = CreateTableError> {
+fn make_create_table_future(client: &DynamoDbClient) -> impl Future<Item = CreateTableOutput> {
     let attribute_def = AttributeDefinition {
         attribute_name: "foo_name".to_string(),
         attribute_type: "S".to_string(),
@@ -52,7 +67,7 @@ fn make_create_table_future(
 fn make_upsert_item_future(
     client: &DynamoDbClient,
     item: &HashMap<String, AttributeValue>,
-) -> impl Future<Item = UpdateItemOutput, Error = UpdateItemError> {
+) -> impl Future<Item = UpdateItemOutput> {
     let add_item = UpdateItemInput {
         key: item.clone(),
         table_name: "a-testing-table".to_string(),
@@ -89,30 +104,12 @@ fn make_item() -> HashMap<String, AttributeValue> {
     item
 }
 
-// Use local dynamodb for testing this out
-fn main() {
-    let item = make_item();
-    let client = get_dynamodb_local_client();
-
-    let create_table_future = make_create_table_future(&client);
-    let upsert_item_future = make_upsert_item_future(&client, &item);
-    let item_from_dynamo_future = make_get_item_future(&client, &item);
-
-    // tie them together
-    let chained_futures = create_table_future
-        .map_err(|_| ())
-        .and_then(|_| upsert_item_future.map_err(|_| ()))
-        .and_then(|_| item_from_dynamo_future.map_err(|_| ()));
-
-    // This tokio core will run our futures to completion:
-    let mut core = Core::new().unwrap();
-
-    // run 'em
-    let item_from_dynamo = match core.run(chained_futures) {
-        Ok(item) => item,
-        Err(_) => panic!("Error completing futures: {}"),
+fn get_dynamodb_local_client() -> DynamoDbClient {
+    // Create custom Region
+    let region = Region::Custom {
+        name: "us-east-1".to_owned(),
+        endpoint: "http://localhost:8000".to_owned(),
     };
 
-    println!("item_from_dynamo is {:?}", item_from_dynamo);
-    println!("Done");
+    DynamoDbClient::new(region)
 }
