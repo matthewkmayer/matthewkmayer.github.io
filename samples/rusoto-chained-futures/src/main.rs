@@ -23,9 +23,8 @@ fn main() {
 
     // tie them together
     let chained_futures = create_table_future
-        .map_err(|_| ()) // throw away any error from creating the table (such as it already exists)
-        .and_then(|_| upsert_item_future.map_err(|_| ())) // toss out any error on upsert
-        .then(|_| item_from_dynamo_future.map_err(|e| e)); // return get_item error if it happens
+        .then(|_| upsert_item_future)
+        .then(|_| item_from_dynamo_future);
 
     // This tokio core will run our futures to completion:
     let mut core = Core::new().unwrap();
