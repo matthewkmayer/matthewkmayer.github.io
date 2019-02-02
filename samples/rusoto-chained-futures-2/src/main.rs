@@ -6,9 +6,9 @@ extern crate tokio_core;
 use futures::future::Future;
 use rusoto_core::Region;
 use rusoto_dynamodb::{
-    AttributeDefinition, AttributeValue, CreateTableInput, CreateTableOutput, DynamoDb,
-    DynamoDbClient, GetItemError, GetItemInput, GetItemOutput, KeySchemaElement,
-    ProvisionedThroughput, UpdateItemInput, UpdateItemOutput,
+    AttributeDefinition, AttributeValue, CreateTableError, CreateTableInput, CreateTableOutput,
+    DynamoDb, DynamoDbClient, GetItemError, GetItemInput, GetItemOutput, KeySchemaElement,
+    ProvisionedThroughput,
 };
 use std::collections::HashMap;
 use tokio_core::reactor::Core;
@@ -19,29 +19,49 @@ fn main() {
     // This tokio core will run our futures to completion:
     let mut core = Core::new().unwrap();
 
-    // These two Futures don't return an error:
-    let create_table_future = make_create_table_future(&client);
-    let upsert_item_future = make_upsert_item_future(&client, &item);
-    // This Future returns a result: it's similar to calling
-    // client.get_item(get_item_request).sync()
-    let item_from_dynamo_future = make_get_item_future(&client, &item);
+    let make_table_future_the_second = create_table_future_with_error_handling(&client);
+    let get_item_future = make_get_item_future_with_error_handling(&client, &item);
 
-    // tie them together, ignoring any output from the previous futures:
-    let chained_futures = create_table_future
-        .then(|_| upsert_item_future)
-        .then(|_| item_from_dynamo_future);
+    let chained = make_table_future_the_second
+        .map_err(|e| {
+            println!("We could do something with the table creation error here.");
+            // We need to make any error return look like the innermost error returned.
+            // Let's create a GetItemError:
+            GetItemError::InternalServerError(format!(
+                "Actually from us! Real error from attempting to making the table: {}",
+                e
+            ))
+        })
+        .and_then(|r| {
+            // If we're here, we successfully made the new table.
+            // r will be the CreateTableOutput:
+            println!("r is {:?}\n\n", r);
 
-    let item_from_dynamo = match core.run(chained_futures) {
-        Ok(item) => item,
-        Err(e) => panic!("Error completing futures: {}", e),
+            // Finally, call the get_item_future and return the Result<GetItemOutput, GetItemError>
+            // and we can match on that later.
+            get_item_future
+        });
+
+    // `core.run(chained)` will look like the innermost future we called, which will get an item.
+    // This is just like a synchronous Rusoto call of client.get_item(get_item_request).sync():
+    let chained_with_failure_handling = match core.run(chained) {
+        Ok(result) => format!("Got item: {:?}", result),
+        Err(e) => format!("Didn't get item: {}", e),
     };
 
-    println!("item_from_dynamo is {:?}", item_from_dynamo);
+    // Since Rusoto returns success on fetching an item that doesn't exist, we'll see a blank item:
+    // `GetItemOutput { consumed_capacity: None, item: None }`
+    println!(
+        "chained_with_failure_handling is {}",
+        chained_with_failure_handling
+    );
 
     println!("Done");
 }
 
-fn make_create_table_future(client: &DynamoDbClient) -> impl Future<Item = CreateTableOutput> {
+fn create_table_future_with_error_handling(
+    client: &DynamoDbClient,
+) -> impl Future<Item = CreateTableOutput, Error = CreateTableError> {
     let attribute_def = AttributeDefinition {
         attribute_name: "foo_name".to_string(),
         attribute_type: "S".to_string(),
@@ -65,20 +85,7 @@ fn make_create_table_future(client: &DynamoDbClient) -> impl Future<Item = Creat
     client.create_table(make_table_request)
 }
 
-fn make_upsert_item_future(
-    client: &DynamoDbClient,
-    item: &HashMap<String, AttributeValue>,
-) -> impl Future<Item = UpdateItemOutput> {
-    let add_item = UpdateItemInput {
-        key: item.clone(),
-        table_name: "a-testing-table".to_string(),
-        ..Default::default()
-    };
-
-    client.update_item(add_item)
-}
-
-fn make_get_item_future(
+fn make_get_item_future_with_error_handling(
     client: &DynamoDbClient,
     item: &HashMap<String, AttributeValue>,
 ) -> impl Future<Item = GetItemOutput, Error = GetItemError> {
