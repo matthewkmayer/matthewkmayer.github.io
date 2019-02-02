@@ -8,13 +8,15 @@ Rusoto supports asynchronously running commands to AWS. While immediately making
 
 If a project sets up infrastructure on AWS, the actions that don't depend on others to finish can run concurrently. For example: creating an S3 bucket and an SQS queue. Instead of creating a bucket and waiting for the request to finish, then moving on to creating the queue, one can put the Rusoto `Futures` together and concurrently run them.
 
+In this post we'll explore to examples of using futures and the Rusoto DynamoDB client.
+
 <!--more-->
 
 ## Samples
 
-There are two companion projects for this blog post: [rusoto-chained-futures]() and [rusoto-chained-futures-2](). These projects use [local DynamoDB]() so they can be run without an AWS account.
+There are two companion projects for this blog post: [rusoto-chained-futures](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-chained-futures) and [rusoto-chained-futures-2](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-chained-futures-2). These projects use [local DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html) so they can be run without an AWS account.
 
-Basic knowledge of `futures` and `tokio` are suggested. The [tokio site](https://tokio.rs/docs/futures/overview/) is a good resource to gain an understanding. Experience with Rusoto is also recommended since its API is very AWS flavored and isn't necessarily idiomatic Rust. Check [rusoto.org]() for samples and links to API documentation.
+Basic knowledge of `futures` and `tokio` are suggested. The [tokio site](https://tokio.rs/docs/futures/overview/) is a good resource to gain an understanding. Experience with Rusoto is also recommended since its API is very AWS flavored and isn't necessarily idiomatic Rust. Check [rusoto.org](https://rusoto.org/) for samples and links to API documentation.
 
 ## First sample: throwing away errors
 
@@ -72,7 +74,8 @@ let mut core = Core::new().unwrap();
 The next few lines create the Rusoto futures and saves them in variables. Looking at the create_table_future, we see the function has this signature:
 
 ```rust
-fn make_create_table_future(client: &DynamoDbClient) -> impl Future<Item = CreateTableOutput>
+fn make_create_table_future(client: &DynamoDbClient)
+  -> impl Future<Item = CreateTableOutput>
 ```
 
 Taking a reference to the DynamoDbClient, it returns a Future with an expected `Item` of `CreateTableOutput`. Nothing else can happen in this future: it can't return an error.
@@ -83,7 +86,7 @@ let chained_futures = create_table_future
   .then(|_| item_from_dynamo_future);
 ```
 
-We use [.then]() to pass the successful result from `create_table_future` to `upsert_item_future`. Then we do the same with `upsert_item_future`'s success and pass it to `item_from_dynamo_future`. Since we use the underscore, `_`, for the success returned by the future, it's ignored. This lets us ignore error handling for problems creating the table or upserting the item.
+We use [.then()](https://docs.rs/futures/0.1/futures/future/trait.Future.html#method.then) to pass the successful result from `create_table_future` to `upsert_item_future`. Then we do the same with `upsert_item_future`'s success and pass it to `item_from_dynamo_future`. Since we use the underscore, `_`, for the success returned by the future, it's ignored. This lets us ignore error handling for problems creating the table or upserting the item.
 
 ```rust
 let item_from_dynamo = match core.run(chained_futures) {
@@ -122,7 +125,7 @@ We've successfully run the commands asynchronously! The project can be run multi
 
 ## Second sample: mapping an error
 
-If we want to do something with an error, we need to return it from the future. The [second sample project]() shows examples of that.
+If we want to do something with an error, we need to return it from the future. The [second sample project](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-chained-futures-2) shows examples of that.
 
 ```rust
 let make_table_future_the_second = create_table_future_with_error_handling(&client);
@@ -180,7 +183,9 @@ Since `.and_then()` will only run on successful, non-error completion of the fut
 ```
 We could do something with the table creation error here.
 
-chained_with_failure_handling is Didn't get item: Actually from us! Real error from attempting to making the table: an error occurred trying to connect: Connection refused (os error 61)
+chained_with_failure_handling is Didn't get item: 
+Actually from us! Real error from attempting to making the table: 
+an error occurred trying to connect: Connection refused (os error 61)
 ```
 
 That's both our print statement and the error returned by running the `chained` future.
@@ -188,10 +193,10 @@ That's both our print statement and the error returned by running the `chained` 
 If the table was successfully created, we see this output:
 
 ```
-r is CreateTableOutput { table_description: Some(TableDescription { attribute_definitions: Some([AttributeDefinition { attribute_name: "foo_name", attribute_type: "S" }]), creation_date_time: Some(1549129879.97), global_secondary_indexes: None, item_count: Some(0), key_schema: Some([KeySchemaElement { attribute_name: "foo_name", key_type: "HASH" }]), latest_stream_arn: None, latest_stream_label: None, local_secondary_indexes: None, provisioned_throughput: Some(ProvisionedThroughputDescription { last_decrease_date_time: Some(0.0), last_increase_date_time: Some(0.0), number_of_decreases_today: Some(0), read_capacity_units: Some(1), write_capacity_units: Some(1) }), restore_summary: None, sse_description: None, stream_specification: None, table_arn: Some("arn:aws:dynamodb:ddblocal:000000000000:table/a-testing-table"), table_id: None, table_name: Some("a-testing-table"), table_size_bytes: Some(0), table_status: Some("ACTIVE") }) }
+r is CreateTableOutput { table_description:...table_status: Some("ACTIVE") }) }
 
-
-chained_with_failure_handling is Got item: GetItemOutput { consumed_capacity: None, item: None }
+chained_with_failure_handling is Got item: 
+GetItemOutput { consumed_capacity: None, item: None }
 ```
 
 The future ran successfully! We printed the result of the table creation call in the closure we provided `.and_then()`:
