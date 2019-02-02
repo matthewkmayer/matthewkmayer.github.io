@@ -122,6 +122,96 @@ We've successfully run the commands asynchronously! The project can be run multi
 
 ## Second sample: mapping an error
 
+If we want to do something with an error, we need to return it from the future. The [second sample project]() shows examples of that.
+
+```rust
+let make_table_future_the_second = create_table_future_with_error_handling(&client);
+let get_item_future = make_get_item_future_with_error_handling(&client, &item);
+```
+
+We need to use a different function signature to return a future that can return an error. `create_table_future_with_error_handling` looks like this:
+
+```rust
+fn create_table_future_with_error_handling(
+    client: &DynamoDbClient,
+) -> impl Future<Item = CreateTableOutput, Error = CreateTableError>
+```
+
+The difference here is we specify both `Future<Item>` and `Future<Error>`. Let's chain the futures and see what we can do with the error type available. We'll run the chained/combined future the same way as before:
+
+```rust
+let chained_with_failure_handling = match core.run(chained) {
+  Ok(result) => format!("Got item: {:?}", result),
+  Err(e) => format!("Didn't get item: {}", e),
+};
+
+println!(
+  "chained_with_failure_handling is {}",
+  chained_with_failure_handling
+);
+```
+
+```rust
+let chained = make_table_future_the_second
+  .map_err(|e| {
+    println!("We could do something with the table creation error here.");
+    // We need to make any error return look like the innermost error returned.
+    // Let's create a GetItemError:
+    GetItemError::InternalServerError(format!(
+      "Actually from us! Real error from attempting to making the table: {}",
+      e
+    ))
+  })
+  .and_then(|r| {
+    // If we're here, we successfully made the new table.
+    // r will be the CreateTableOutput:
+    println!("r is {:?}\n\n", r);
+
+    // Finally, call the get_item_future and return the Result<GetItemOutput, GetItemError>
+    // and we can match on that later.
+    get_item_future
+  });
+```
+
+`make_table_future_the_second` uses `map_err()` to map the error result to the closure, which is just code to run if an error happens. In the code block, we print a notice something went wrong then make a new `GetItemError`. We have to create a `GetItemError` because that's what the combined future, `chained`, requires as its type. It's a `Future<Item = GetItemOutput, Error = GetItemError>` because the last future, `get_item_future`, has that type.
+
+Since `.and_then()` will only run on successful, non-error completion of the future it's called on, we won't call `get_item_future` if we couldn't create the table. For example, if we run the project and the table is already created, we see this output:
+
+```
+We could do something with the table creation error here.
+
+chained_with_failure_handling is Didn't get item: Actually from us! Real error from attempting to making the table: an error occurred trying to connect: Connection refused (os error 61)
+```
+
+That's both our print statement and the error returned by running the `chained` future.
+
+If the table was successfully created, we see this output:
+
+```
+r is CreateTableOutput { table_description: Some(TableDescription { attribute_definitions: Some([AttributeDefinition { attribute_name: "foo_name", attribute_type: "S" }]), creation_date_time: Some(1549129879.97), global_secondary_indexes: None, item_count: Some(0), key_schema: Some([KeySchemaElement { attribute_name: "foo_name", key_type: "HASH" }]), latest_stream_arn: None, latest_stream_label: None, local_secondary_indexes: None, provisioned_throughput: Some(ProvisionedThroughputDescription { last_decrease_date_time: Some(0.0), last_increase_date_time: Some(0.0), number_of_decreases_today: Some(0), read_capacity_units: Some(1), write_capacity_units: Some(1) }), restore_summary: None, sse_description: None, stream_specification: None, table_arn: Some("arn:aws:dynamodb:ddblocal:000000000000:table/a-testing-table"), table_id: None, table_name: Some("a-testing-table"), table_size_bytes: Some(0), table_status: Some("ACTIVE") }) }
+
+
+chained_with_failure_handling is Got item: GetItemOutput { consumed_capacity: None, item: None }
+```
+
+The future ran successfully! We printed the result of the table creation call in the closure we provided `.and_then()`:
+
+```rust
+.and_then(|r| {
+  // If we're here, we successfully made the new table.
+  // r will be the CreateTableOutput:
+  println!("r is {:?}\n\n", r);
+
+  // Finally, call the get_item_future and return the Result<GetItemOutput, GetItemError>
+  // and we can match on that later.
+  get_item_future
+})
+```
+
+The `|r|` syntax is how we passed it into our closure to run on successful completion of the first future.
+
 ## Give it a try
+
+While these examples don't execute much differently than using Rusoto's `.sync()` command, they show what can be done with creating futures and chaining them together. Maybe futures can be created on a different thread and passed to a `tokio::Core` instance so all async commands are run through a single tokio core, leaving the main thread open to handling other events coming in. An event of "An S3 bucket has been requested" could be turned into a create bucket future and sent to the tokio core to be executed. Non-blocking IO!
 
 If you're running into issues with Rusoto futures, please make an issue on the [Rusoto repo]() on GitHub.
