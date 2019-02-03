@@ -118,7 +118,9 @@ println!("item_from_dynamo is {:?}", item_from_dynamo);
 Printing the result shows this:
 
 ```
-item_from_dynamo is GetItemOutput { consumed_capacity: None, item: Some({"foo_name": AttributeValue { b: None, bool: None, bs: None, l: None, m: None, n: None, ns: None, null: None, s: Some("baz"), ss: None }}) }
+item_from_dynamo is GetItemOutput 
+{ consumed_capacity: None, item: Some({"foo_name": AttributeValue 
+{ b: None,..., s: Some("baz"), ss: None } }) }
 ```
 
 We've successfully run the commands asynchronously! The project can be run multiple times and will succeed despite the create table call failing due to the table already existing: we throw away the error from that call and move forward.
@@ -178,7 +180,7 @@ let chained = make_table_future_the_second
 
 `make_table_future_the_second` uses `map_err()` to map the error result to the closure, which is just code to run if an error happens. In the code block, we print a notice something went wrong then make a new `GetItemError`. We have to create a `GetItemError` because that's what the combined future, `chained`, requires as its type. It's a `Future<Item = GetItemOutput, Error = GetItemError>` because the last future, `get_item_future`, has that type.
 
-Since `.and_then()` will only run on successful, non-error completion of the future it's called on, we won't call `get_item_future` if we couldn't create the table. For example, if we run the project and the table is already created, we see this output:
+Since `.and_then()` will only run on successful, non-error completion of the future it's called on, we won't call `get_item_future` if we couldn't create the table. For example, if we run the project and local DynamoDB isn't running, we see this output:
 
 ```
 We could do something with the table creation error here.
@@ -219,4 +221,4 @@ The `|r|` syntax is how we passed it into our closure to run on successful compl
 
 While these examples don't execute much differently than using Rusoto's `.sync()` command, they show what can be done with creating futures and chaining them together. Maybe futures can be created on a different thread and passed to a `tokio::Core` instance so all async commands are run through a single tokio core, leaving the main thread open to handling other events coming in. An event of "An S3 bucket has been requested" could be turned into a create bucket future and sent to the tokio core to be executed. Non-blocking IO!
 
-If you're running into issues with Rusoto futures, please make an issue on the [Rusoto repo]() on GitHub.
+If you're running into issues with Rusoto futures, please make an issue on the [Rusoto repo](https://github.com/rusoto/rusoto) on GitHub.
