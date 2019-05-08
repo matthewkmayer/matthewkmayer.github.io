@@ -115,7 +115,7 @@
 </span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Postgres TLS tester, connected!&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#09f;font-style:italic">// After we exit the loop, the connection we made should drop and disconnect.
-</span><span style="color:#09f;font-style:italic"></span></code></pre></div>
+</span></code></pre></div>
 <p>As the comments point out, we look at what the <code>sslmode</code> settings are to determine how picky we are about encryption and certificates. For more details, review <a href="https://www.postgresql.org/docs/current/static/libpq-ssl.html">the official Postgres docs on libpq-ssl</a>.</p>
 
 <p>Rephrased: if the connection specifies <code>require</code>, <code>prefer</code> or <code>allow</code>, we construct our <code>SslConnectorBuilder</code> to not verify the certificates the Postgres server returns. Later we use that if <code>require</code>, <code>verify-ca</code> or <code>verify-full</code> is specified. Otherwise we disable TLS when talking to the database.</p>
@@ -140,7 +140,7 @@
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>manager<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>PostgresConnectionManager::new(conn_string.as_ref(),<span style="color:#bbb"> </span>db_ssl_mode)<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t make postgres connection manager&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>pool<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>r2d2::Pool::new(manager).expect(<span style="color:#c30">&#34;Couldn&#39;t make pool from pg connection manager&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>This is very similar, but has some tricky parts in it. Specifically, many <code>openssl</code> items are re-exported from the <code>postgres</code> crate and collide with ones from our <code>openssl</code> import but are not compatible. To get around that, we fully specify which structs and functions we want. We also <code>Box</code> our openssl connection to put it on the heap, since we&rsquo;ll be passing the connection pool into our actix-web handlers.</p>
 
 <p>In my web app, I take the <code>pool</code> variable and put it into the actix-web server&rsquo;s application state for access in its handlers.</p>
@@ -167,7 +167,7 @@
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/"> Repos for getting hired</a>
+                        <a href="https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/"> CI/CD Pipeline</a>
                     
                 </div>
             </div>
@@ -175,7 +175,7 @@
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/"> CI/CD Pipeline</a>
+                        <a href="https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/"> Repos for getting hired</a>
                     
                 </div>
             </div>

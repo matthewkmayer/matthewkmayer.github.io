@@ -101,37 +101,37 @@ tokio<span style="color:#a00;background-color:#faa">-</span>core = <span style="
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;item_from_dynamo is {:?}&#34;</span>,<span style="color:#bbb"> </span>item_from_dynamo);<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>To improve clarity, functions have been extracted.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>item<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>make_item();<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>client<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>get_dynamodb_local_client();<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>The first line makes a DynamoDB item for us to use for insertion and retrieval. The second line creates a DynamoDB client configured to point at local DynamoDB instead of Amazon&rsquo;s DynamoDB.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">mut</span><span style="color:#bbb"> </span>core<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>Core::new().unwrap();<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p><code>Core</code> is a <code>tokio_core::reactor::Core</code> object. It&rsquo;s what we&rsquo;ll hand the futures to in order to run asynchronously.</p>
 
 <p>The next few lines create the Rusoto futures and saves them in variables. Looking at the create_table_future, we see the function has this signature:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">make_create_table_future</span>(client: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">DynamoDbClient</span>)<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>-&gt; <span style="color:#0a8;font-weight:bold">impl</span><span style="color:#bbb"> </span>Future<span style="color:#555">&lt;</span>Item<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>CreateTableOutput<span style="color:#555">&gt;</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>Taking a reference to the DynamoDbClient, it returns a Future with an expected <code>Item</code> of <code>CreateTableOutput</code>. Nothing else can happen in this future: it can&rsquo;t return an error.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>chained_futures<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>create_table_future<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>.then(<span style="color:#555">|</span>_<span style="color:#555">|</span><span style="color:#bbb"> </span>upsert_item_future)<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>.then(<span style="color:#555">|</span>_<span style="color:#555">|</span><span style="color:#bbb"> </span>item_from_dynamo_future);<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>We use <a href="https://docs.rs/futures/0.1/futures/future/trait.Future.html#method.then">.then()</a> to pass the successful result from <code>create_table_future</code> to <code>upsert_item_future</code>. Then we do the same with <code>upsert_item_future</code>&rsquo;s success and pass it to <code>item_from_dynamo_future</code>. Since we use the underscore, <code>_</code>, for the success returned by the future, it&rsquo;s ignored. This lets us ignore error handling for problems creating the table or upserting the item.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>item_from_dynamo<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>core.run(chained_futures)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#366">Ok</span>(item)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>item,<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>panic<span style="color:#555">!</span>(<span style="color:#c30">&#34;Error completing futures: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>With our chained, or combined, future as a new variable, we can pass it to <code>core.run()</code>. The type <code>core.run()</code> returns is the type <code>item_from_dynamo_future</code> is. The signature for the function that created the variable:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">make_get_item_future</span>(<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>client: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">DynamoDbClient</span>,<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>item: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">HashMap</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span>AttributeValue<span style="color:#555">&gt;</span>,<span style="color:#bbb">
 </span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#0a8;font-weight:bold">impl</span><span style="color:#bbb"> </span>Future<span style="color:#555">&lt;</span>Item<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>GetItemOutput,<span style="color:#bbb"> </span>Error<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>GetItemError<span style="color:#555">&gt;</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>This returns a <code>Result</code> after running. It&rsquo;s similar to calling <code>client.get_item(get_item_request).sync()</code> for synchronously running the command, but we&rsquo;ll only get it after the previously chained futures complete.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>item_from_dynamo<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>core.run(chained_futures)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#366">Ok</span>(item)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>item,<span style="color:#bbb">
@@ -139,7 +139,7 @@ tokio<span style="color:#a00;background-color:#faa">-</span>core = <span style="
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;item_from_dynamo is {:?}&#34;</span>,<span style="color:#bbb"> </span>item_from_dynamo);<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>Printing the result shows this:</p>
 
 <pre><code>item_from_dynamo is GetItemOutput 
@@ -154,12 +154,12 @@ tokio<span style="color:#a00;background-color:#faa">-</span>core = <span style="
 <p>If we want to do something with an error, we need to return it from the future. The <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-chained-futures-2">second sample project</a> shows examples of that.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>make_table_future_the_second<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>create_table_future_with_error_handling(<span style="color:#555">&amp;</span>client);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>get_item_future<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>make_get_item_future_with_error_handling(<span style="color:#555">&amp;</span>client,<span style="color:#bbb"> </span><span style="color:#555">&amp;</span>item);<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>We need to use a different function signature to return a future that can return an error. <code>create_table_future_with_error_handling</code> looks like this:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">create_table_future_with_error_handling</span>(<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>client: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">DynamoDbClient</span>,<span style="color:#bbb">
 </span><span style="color:#bbb"></span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#0a8;font-weight:bold">impl</span><span style="color:#bbb"> </span>Future<span style="color:#555">&lt;</span>Item<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>CreateTableOutput,<span style="color:#bbb"> </span>Error<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>CreateTableError<span style="color:#555">&gt;</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>The difference here is we specify both <code>Future&lt;Item&gt;</code> and <code>Future&lt;Error&gt;</code>. Let&rsquo;s chain the futures and see what we can do with the error type available. We&rsquo;ll run the chained/combined future the same way as before:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>chained_with_failure_handling<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>core.run(chained)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#366">Ok</span>(result)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Got item: {:?}&#34;</span>,<span style="color:#bbb"> </span>result),<span style="color:#bbb">
@@ -170,7 +170,7 @@ tokio<span style="color:#a00;background-color:#faa">-</span>core = <span style="
 </span><span style="color:#bbb">  </span><span style="color:#c30">&#34;chained_with_failure_handling is {}&#34;</span>,<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>chained_with_failure_handling<span style="color:#bbb">
 </span><span style="color:#bbb"></span>);<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div><div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>chained<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>make_table_future_the_second<span style="color:#bbb">
+</span></code></pre></div><div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>chained<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>make_table_future_the_second<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>.map_err(<span style="color:#555">|</span>e<span style="color:#555">|</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;We could do something with the table creation error here.&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// We need to make any error return look like the innermost error returned.
@@ -183,13 +183,13 @@ tokio<span style="color:#a00;background-color:#faa">-</span>core = <span style="
 </span><span style="color:#bbb">  </span>.and_then(<span style="color:#555">|</span>r<span style="color:#555">|</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// If we&#39;re here, we successfully made the new table.
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// r will be the CreateTableOutput:
-</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;r is {:?}</span><span style="color:#c30;font-weight:bold">\n\n</span><span style="color:#c30">&#34;</span>,<span style="color:#bbb"> </span>r);<span style="color:#bbb">
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;r is {:?}\n\n&#34;</span>,<span style="color:#bbb"> </span>r);<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// Finally, call the get_item_future and return the Result&lt;GetItemOutput, GetItemError&gt;
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// and we can match on that later.
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>get_item_future<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>});<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p><code>make_table_future_the_second</code> uses <code>map_err()</code> to map the error result to the closure, which is just code to run if an error happens. In the code block, we print a notice something went wrong then make a new <code>GetItemError</code>. We have to create a <code>GetItemError</code> because that&rsquo;s what the combined future, <code>chained</code>, requires as its type. It&rsquo;s a <code>Future&lt;Item = GetItemOutput, Error = GetItemError&gt;</code> because the last future, <code>get_item_future</code>, has that type.</p>
 
 <p>Since <code>.and_then()</code> will only run on successful, non-error completion of the future it&rsquo;s called on, we won&rsquo;t call <code>get_item_future</code> if we couldn&rsquo;t create the table. For example, if we run the project and local DynamoDB isn&rsquo;t running, we see this output:</p>
@@ -215,13 +215,13 @@ GetItemOutput { consumed_capacity: None, item: None }
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">.and_then(<span style="color:#555">|</span>r<span style="color:#555">|</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">// If we&#39;re here, we successfully made the new table.
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">// r will be the CreateTableOutput:
-</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">  </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;r is {:?}</span><span style="color:#c30;font-weight:bold">\n\n</span><span style="color:#c30">&#34;</span>,<span style="color:#bbb"> </span>r);<span style="color:#bbb">
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">  </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;r is {:?}\n\n&#34;</span>,<span style="color:#bbb"> </span>r);<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">// Finally, call the get_item_future and return the Result&lt;GetItemOutput, GetItemError&gt;
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">// and we can match on that later.
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">  </span>get_item_future<span style="color:#bbb">
 </span><span style="color:#bbb"></span>})<span style="color:#bbb">
-</span><span style="color:#bbb"></span></code></pre></div>
+</span></code></pre></div>
 <p>The <code>|r|</code> syntax is how we passed it into our closure to run on successful completion of the first future.</p>
 
 <h2 id="give-it-a-try">Give it a try</h2>
@@ -245,7 +245,8 @@ GetItemOutput { consumed_capacity: None, item: None }
             <div class="eight columns">
                 <div class="li-pagination-previous">
                     
-                        &nbsp;
+                        Later article<br />
+                        <a href="https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/"> Repos for getting hired</a>
                     
                 </div>
             </div>
@@ -253,7 +254,7 @@ GetItemOutput { consumed_capacity: None, item: None }
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/"> Repos for getting hired</a>
+                        <a href="https://matthewkmayer.github.io/blag/public/post/dont-hotpatch/"> Don&#39;t hot patch</a>
                     
                 </div>
             </div>

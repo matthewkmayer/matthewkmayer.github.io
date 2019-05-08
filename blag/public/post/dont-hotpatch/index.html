@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Don&#39;t hot patch &middot; Matthew Mayer&#39;s tech blog</title>
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://matthewkmayer.github.io/blag/public/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-144-precomposed.png" sizes="144x144" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://matthewkmayer.github.io/blag/public">Matthew Mayer&#39;s tech blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Don&#39;t hot patch</h1>
+                        <span class="li-article-taxonomies">
+                            
+
+                            
+                        </span>
+                        
+                        <time class="li-article-date">Tuesday, May 7, 2019</time>
+                    </header>
+                    <section>
+                        <p>A hot take on hot patching/fixing.</p>
+
+<h2 id="definitions">Definitions</h2>
+
+<p>A hot patch, or hot fix, is a method of fixing a critical bug found in production by following a branching strategy that&rsquo;s outside the norm of software development. Specifically called out in <a href="https://nvie.com/posts/a-successful-git-branching-model/">Gitflow</a>, this process is more complex and error prone than treating a critical bug as a regular bug or feature.</p>
+
+<p>When following Gitflow, a hot patch can get a fix to production faster by making the change off the master branch, which is then also applied to the release branch. When releases are slow and expensive, this can be successful. However, there are simpler approaches available.</p>
+
+<h2 id="hot-patching">Hot patching</h2>
+
+<p>The usual approach for writing a new feature or fixing a bug in Gitflow is to make a new branch off the <code>develop</code> branch, do work then merge it back to <code>develop</code>. Straightforward enough. But when a new release requires merging the <code>develop</code> branch into the <code>release</code> branch, then cutting a new release by merging <code>release</code> into <code>master</code>, it can bring along other changes into the new release, which may not be desired.</p>
+
+<p>Since a Gitflow hot patch is branched off <code>master</code> the change can be smaller and only bring along the fix.</p>
+
+<p>A major downside is requiring the person writing the patch to merge their hotfix branch into both <code>master</code> and <code>develop</code>. If the patch isn&rsquo;t merged into <code>develop</code> as well, it&rsquo;s possible to introduce a regression on the next release.</p>
+
+<p>When a critical bug is found in production, there&rsquo;s a higher level of stress present than everyday coding. Requiring a stressed human to remember an infrequently used workflow is very likely to result in a step of the workflow to be missed. The bug bites twice when the next release has a regression.</p>
+
+<h2 id="don-t-have-that-problem">Don&rsquo;t have that problem</h2>
+
+<p>A patch for a bug should follow the same process as feature work, regardless of bug severity. This reduces the cognitive load of the humans involved, who are already stressed enough about a critical bug.</p>
+
+<h2 id="trunk-based-development">Trunk based development</h2>
+
+<p><a href="https://trunkbaseddevelopment.com/">Trunk based development</a> (TBD) is a well thought out and battle tested method to use source control. When a bug is found in TBD, <a href="https://trunkbaseddevelopment.com/branch-for-release/">the reproduction test and fix is applied to the trunk/master branch</a> and cherry picked to the release branch, if used.</p>
+
+<p>The upside to this approach is a regression is not possible: the fix is already in the main branch, so the next release will receive the fix. It also achieves the goal of only bringing the critical bug fix into a quick bug fix release.</p>
+
+<h2 id="gitlab-flow">GitLab flow</h2>
+
+<p><a href="https://docs.gitlab.com/ee/workflow/gitlab_flow.html">GitLab flow</a> is another branching strategy to use. One can use GitLab flow to closely mirror how trunk based development works, or it can be used closer to Gitflow.</p>
+
+<p>When a critical bug is found in GitLab flow, the fix is made in a short lived branch off <code>master</code>. This is merged back into master, ensuring future releases will not have a regression. Note this is the same way all bug fixes or feature work is done. If needed, the commit with the critical bug fix can be applied to an existing release branch to get the fix out sooner.</p>
+
+<h2 id="out-of-the-ordinary-or-business-as-usual">Out of the ordinary or business as usual?</h2>
+
+<p>Both trunk based development and GitLab flow have the option of quickly and easily cutting a new release to get a critical bug fix deployed. With a <a href="https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/">strong CI/CD pipeline</a>, a bug fix can be released with other features and bug fixes with little fuss. This is much harder to do with Gitflow, where releases require careful thinking and source control commands.</p>
+
+<h2 id="don-t-spend-time-wrangling-source-control">Don&rsquo;t spend time wrangling source control</h2>
+
+<p>Relying on stressed humans to perfectly execute a rarely used workflow is a recipe for sadness and regressions. Letting developers use the same process they always use is one less moving piece for them to keep track of while fixing a bug.</p>
+
+<p>Spend time fixing bugs instead of cherry picking commits or manually applying code changes.</p>
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Matthew Mayer</strong>
+    </div>
+</div>
+
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://matthewkmayer.github.io/blag/public/post/chaining-rusoto-futures/"> Chaining Rusoto Futures</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    The source code and content of this website are free and available under the MIT license.
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="https://github.com/eliasson/liquorice/">Fork of liquorice</a>, a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
