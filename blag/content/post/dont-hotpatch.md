@@ -24,6 +24,16 @@ A major downside is requiring the person writing the patch to merge their hotfix
 
 When a critical bug is found in production, there's a higher level of stress present than everyday coding. Requiring a stressed human to remember an infrequently used workflow is very likely to result in a step of the workflow to be missed. The bug bites twice when the next release has a regression.
 
+## Gitflow example
+
+Here's a quick example of a full lifecycle of Gitflow: it has the required `master`, `develop` and `release-1.0.0` branches with a single feature branch. This example takes the feature branch and merges it into `develop`, then into `release-1.0.0` for the release candidate/pending release, then into `master` for the actual release.
+
+![Gitflow](https://github.com/matthewkmayer/matthewkmayer.github.io/raw/master/images/gitflow-before-hotfix.png)
+
+If a bug if found at this point, the workflow must change. A new branch is created off `master` and is merged into `master` and `develop`:
+
+![Gitflow hotfix](https://github.com/matthewkmayer/matthewkmayer.github.io/raw/master/images/gitflow-after-hotfix.png)
+
 ## Don't have that problem
 
 A patch for a bug should follow the same process as feature work, regardless of bug severity. This reduces the cognitive load of the humans involved, who are already stressed enough about a critical bug.
@@ -40,9 +50,17 @@ The upside to this approach is a regression is not possible: the fix is already 
 
 When a critical bug is found in GitLab flow, the fix is made in a short lived branch off `master`. This is merged back into master, ensuring future releases will not have a regression. Note this is the same way all bug fixes or feature work is done. If needed, the commit with the critical bug fix can be applied to an existing release branch to get the fix out sooner.
 
+Here's how a git history would look following this example:
+
+![GitLab flow bug fix](https://github.com/matthewkmayer/matthewkmayer.github.io/raw/master/images/gitlab-flow-bugfix.png)
+
+Note the critical bug fix is applied in the same manner as feature development or other bug fixes: branch off `master`, make the fix with tests, merge back into `master`.
+
 ## Out of the ordinary or business as usual?
 
 Both trunk based development and GitLab flow have the option of quickly and easily cutting a new release to get a critical bug fix deployed. With a [strong CI/CD pipeline](https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/), a bug fix can be released with other features and bug fixes with little fuss. This is much harder to do with Gitflow, where releases require careful thinking and source control commands.
+
+The sample git histories in the post highlight the differences between a special workflow and business as usual. The GitLab flow example is much easier to follow, especially during times of high stress.
 
 ## Don't spend time wrangling source control
 
