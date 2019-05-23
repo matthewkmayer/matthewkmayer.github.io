@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 May 2019 00:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Fri, 10 May 2019 00:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How much testing is enough?</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/how-much-testing/</link>
+      <pubDate>Fri, 10 May 2019 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/how-much-testing/</guid>
+      <description>&lt;p&gt;Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? &lt;em&gt;What&lt;/em&gt; types of tests should be written? Here are some guidelines for determining what a team&amp;rsquo;s &amp;ldquo;enough&amp;rdquo; level of testing is.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Don&#39;t hot patch</title>
