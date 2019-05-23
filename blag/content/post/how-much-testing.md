@@ -23,7 +23,7 @@ These should be *fast*. Most of a codebase's tests should be unit tests. I've he
 
 ## Functional tests
 
-Testing the function of the code can be performed at the API layer. For backend HTTP services, this means using the HTTP calls the consumers of the service would call. Using an in-memory story instead of an external store such as a database means these can quickly run. 100ms each should be an easy level to reach; 25ms is probably closer to what one should aim for. 1,000 functional tests can run in 25 seconds with 25ms per test.
+Testing the function of the code can be performed at the API layer. For backend HTTP services, this means using the HTTP calls the consumers of the service would call. Using an in-memory store instead of an external store such as a database means these can quickly run. 100ms each should be an easy level to reach; 25ms is probably closer to what one should aim for. 1,000 functional tests can run in 25 seconds with 25ms per test.
 
 ## Integration tests
 
@@ -37,7 +37,7 @@ Smoke tests tend to be expensive. It may take one to ten seconds for each test. 
 
 ## Ok, but how many tests? Really?
 
-My personal line in the sand is all happy paths should be tested. For every feature and behavior the project has, the path where everything works right *must* be tested. This is the bare, bare minimum. Anything less means writing tests to cover this minimum requirement.
+My personal line in the sand is all happy paths should be tested. For every feature and behavior the project has, the path where everything works right *must* be tested. This is the bare, bare minimum. Anything less requires a shift from new features toward writing tests to achieve this minimum requirement.
 
 My comfort level is when bug fixes have regression tests. Keeping a bug from happening twice is important: reproduce the bug with a test, show the broken behavior, then fix it.
 
@@ -57,7 +57,7 @@ Think of the build pipeline as a series of steps, left to right:
 
 `compile => unit test => functional test => integration test => smoke test`
 
-Turning a bug test from a smoke test taking one second to run to a unit test that takes one millisecond to run is a huge win. This prevents the urge to remove a slow moving test that always passes.
+Turning a bug fix test from a smoke test taking one second to run to a unit test that takes one millisecond to run is a huge win. This prevents the urge to remove a slow moving test that always passes.
 
 ## Reuse tests
 
