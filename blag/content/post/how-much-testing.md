@@ -9,7 +9,7 @@ Most software developers will tell you that tests are good. More tests are bette
 ## Definitions and goals
 
 * unit test: tests a single unit of code. Think a single function or method. If there are more than one or three mocks being used, it's probably not a unit test
-* functional test: tests behavior of code, staying withing a single process
+* functional test: tests behavior of code, staying within a single process
 * integration test: a test that crosses a process boundary. For example: code that talks to a real database
 * end to end/smoke test: test the entire stack: apply power and see if any smoke comes out
 
