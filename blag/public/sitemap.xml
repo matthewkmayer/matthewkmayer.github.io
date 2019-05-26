@@ -110,6 +110,10 @@
   </url>
   
   <url>
+    <loc>https://matthewkmayer.github.io/blag/public/about/</loc>
+  </url>
+  
+  <url>
     <loc>https://matthewkmayer.github.io/blag/public/categories/</loc>
     <priority>0</priority>
   </url>
