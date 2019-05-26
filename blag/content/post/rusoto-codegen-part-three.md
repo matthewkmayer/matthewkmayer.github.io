@@ -7,8 +7,6 @@ title = "Rusoto codegen, part three"
 This is part three of Rusoto code generation.  The first two parts went over how code inside a crate is generated.
 In this post, we'll take a look at how we make the crate for an AWS service.
 
-<!--more-->
-
 ## Parts one and two recap
 
 In the previous two posts, we followed code generation from the Simple Queue Service (SQS) botocore service definition to Rust code.

@@ -7,8 +7,6 @@ title = "Repos for getting hired"
 I'm often involved in hiring. When GitHub links are on a resume, I look at pinned repos and source repos.
 Here's a checklist of important items to have in a GitHub public repository to catch the eye of reviewers. Or at least my eye when hiring, and why it's important.
 
-<!--more-->
-
 ## Your goal, my goal
 
 Yours: get hired. Mine: make an informed decision about hiring someone who can do the job.

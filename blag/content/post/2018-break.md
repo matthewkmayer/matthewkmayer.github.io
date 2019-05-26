@@ -6,8 +6,6 @@ title = "Taking a break"
 
 After three years maintaining an open source project, it's time to take a few months of me time.
 
-<!--more-->
-
 ## TL;DR
 
 I'm taking a break to do things I've been missing. I *will* be back, no later than September 1st, 2018.

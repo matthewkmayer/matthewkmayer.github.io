@@ -8,8 +8,6 @@ title = "Test driven development with Rust"
 
 Let's take a look at using TDD with Rust, using [release-party](https://github.com/matthewkmayer/release-party-BR) as an example.
 
-<!--more-->
-
 ## What we're changing
 
 Release-party is a command line tool I made for my day job.  We've got a fair amount of repositories on GitHub: one for each microservice.  Our deployments are automated through TravisCI: the `master` branch is deployed to our testing environment and the `release` branch is deployed to production.  

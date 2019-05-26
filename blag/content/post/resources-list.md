@@ -13,8 +13,6 @@ List of links for topics including:
 * Testing
 * Cloud and AWS
 
-<!--more-->
-
 ## Git
 
 * [Think like a Git](http://think-like-a-git.net/)

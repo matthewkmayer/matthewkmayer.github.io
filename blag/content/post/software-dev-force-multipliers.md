@@ -8,8 +8,6 @@ While a software enginerd/pixie wrangler at heart, I've discovered the stereotyp
 
 My code writing speed has peaked: I can't write code any faster.  But I've found new tools and methods to maximize my efficiency.  Let's go over a sampling of the more important ones.
 
-<!--more-->
-
 ## Overview and influences
 
 The following ideas are nothing new.  Most of the influences come from the [Agile Manifesto](http://agilemanifesto.org/), especially the [12 principles page](http://agilemanifesto.org/principles.html), [kanban](<https://en.wikipedia.org/wiki/Kanban_(development)>) and years of interacting with the wonderful [AgilePDX](http://agilepdx.org/) community.

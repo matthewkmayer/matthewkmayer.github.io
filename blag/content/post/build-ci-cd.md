@@ -12,8 +12,6 @@ Let's define and explore the concepts of:
 * Continuous Integration (CI)
 * Continous Delivery (CD)
 
-<!--more-->
-
 ## Three separate ideas
 
 *Build server* is a server, servers or a system that automatically builds and tests code.

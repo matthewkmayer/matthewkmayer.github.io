@@ -50,7 +50,8 @@
         <div class="catalogue-line"></div>
 
         <p>
-            <p>Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? <em>What</em> types of tests should be written? Here are some guidelines for determining what a team&rsquo;s &ldquo;enough&rdquo; level of testing is.</p>
+            Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? What types of tests should be written? Here are some guidelines for determining what a team&rsquo;s &ldquo;enough&rdquo; level of testing is.
+Definitions and goals  unit test: tests a single unit of code. Think a single function or method. If there are more than one or three mocks being used, it&rsquo;s probably not a unit test functional test: tests behavior of code, staying withing a single process integration test: a test that crosses a process boundary.
         </p>
     </div>
 </a>
@@ -63,7 +64,9 @@
         <div class="catalogue-line"></div>
 
         <p>
-            <p>A hot take on hot patching/fixing.</p>
+            A hot take on hot patching/fixing.
+Definitions A hot patch, or hot fix, is a method of fixing a critical bug found in production by following a branching strategy that&rsquo;s outside the norm of software development. Specifically called out in Gitflow, this process is more complex and error prone than treating a critical bug as a regular bug or feature.
+When following Gitflow, a hot patch can get a fix to production faster by making the change off the master branch, which is then also applied to the release branch.
         </p>
     </div>
 </a>
@@ -93,8 +96,8 @@
         <div class="catalogue-line"></div>
 
         <p>
-            <p>I&rsquo;m often involved in hiring. When GitHub links are on a resume, I look at pinned repos and source repos.
-Here&rsquo;s a checklist of important items to have in a GitHub public repository to catch the eye of reviewers. Or at least my eye when hiring, and why it&rsquo;s important.</p>
+            I&rsquo;m often involved in hiring. When GitHub links are on a resume, I look at pinned repos and source repos. Here&rsquo;s a checklist of important items to have in a GitHub public repository to catch the eye of reviewers. Or at least my eye when hiring, and why it&rsquo;s important.
+Your goal, my goal Yours: get hired. Mine: make an informed decision about hiring someone who can do the job.
         </p>
     </div>
 </a>
@@ -107,11 +110,11 @@ Here&rsquo;s a checklist of important items to have in a GitHub public repositor
         <div class="catalogue-line"></div>
 
         <p>
-            <p>&ldquo;Dance like nobody&rsquo;s watching. Encrypt like everybody is.&rdquo;</p>
-
-<p>In this post we&rsquo;ll go over how to get the <a href="https://crates.io/crates/postgres">postgres crate</a> and <a href="https://crates.io/crates/r2d2_postgres">r2d2_postgres</a> working with <a href="https://crates.io/crates/openssl">openssl</a> for connection pooling with TLS.</p>
-
-<p>Source code is <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/postgres-tls-tester">available</a>.</p>
+            &ldquo;Dance like nobody&rsquo;s watching. Encrypt like everybody is.&rdquo;
+In this post we&rsquo;ll go over how to get the postgres crate and r2d2_postgres working with openssl for connection pooling with TLS.
+Source code is available.
+Goal Modern web applications are built with resiliency and fault tolerance in mind. For our example, we&rsquo;ll be examining parts of a web application backed by a Postgres database.
+When services launch, their database won&rsquo;t always be available.
         </p>
     </div>
 </a>
@@ -124,7 +127,10 @@ Here&rsquo;s a checklist of important items to have in a GitHub public repositor
         <div class="catalogue-line"></div>
 
         <p>
-            <p><a href="https://matthewkmayer.github.io/blag/public/post/build-ci-cd/">Previously</a>, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we&rsquo;ll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.</p>
+            Previously, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we&rsquo;ll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.
+Continuous Integration and Continuous Delivery are processes that tell humans what techniques to use with source control.
+Build server is a server, servers or a system that automatically builds and tests code.
+Putting these concepts together require people following processes so automated tasks execute well.
         </p>
     </div>
 </a>
@@ -137,15 +143,11 @@ Here&rsquo;s a checklist of important items to have in a GitHub public repositor
         <div class="catalogue-line"></div>
 
         <p>
-            <p>Ever hear someone say &ldquo;CI/CD build pipeline&rdquo; and weren&rsquo;t sure that that means, <em>exactly?</em></p>
-
-<p>Let&rsquo;s define and explore the concepts of:</p>
-
-<ul>
-<li>Build server</li>
-<li>Continuous Integration (CI)</li>
-<li>Continous Delivery (CD)</li>
-</ul>
+            Ever hear someone say &ldquo;CI/CD build pipeline&rdquo; and weren&rsquo;t sure that that means, exactly?
+Let&rsquo;s define and explore the concepts of:
+ Build server Continuous Integration (CI) Continous Delivery (CD)  Three separate ideas Build server is a server, servers or a system that automatically builds and tests code.
+Continuous Integration and Continuous Delivery are both processes, guiding humans on what to do.
+Build server (or build service) Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests.
         </p>
     </div>
 </a>
@@ -158,7 +160,9 @@ Here&rsquo;s a checklist of important items to have in a GitHub public repositor
         <div class="catalogue-line"></div>
 
         <p>
-            <p>After three years maintaining an open source project, it&rsquo;s time to take a few months of me time.</p>
+            After three years maintaining an open source project, it&rsquo;s time to take a few months of me time.
+TL;DR I&rsquo;m taking a break to do things I&rsquo;ve been missing. I will be back, no later than September 1st, 2018.
+Rusoto history and running an open source project Back in early 2015, Anthony DiMarco and I started Rusoto. Rust&rsquo;s promises of performance and correctness looked like a perfect match for cloud computing.
         </p>
     </div>
 </a>
@@ -171,16 +175,8 @@ Here&rsquo;s a checklist of important items to have in a GitHub public repositor
         <div class="catalogue-line"></div>
 
         <p>
-            <p>List of links for topics including:</p>
-
-<ul>
-<li>Git</li>
-<li>Branching strategies</li>
-<li>Ruby</li>
-<li>Go</li>
-<li>Testing</li>
-<li>Cloud and AWS</li>
-</ul>
+             List of links for topics including:
+ Git Branching strategies Ruby Go Testing Cloud and AWS  Git  Think like a Git Pro Git  Branching strategies  GitHub flow Trunk based Development  Ruby  Learn Ruby the Hard Way  Go  Effective Go Golang Tripping Hazards  Testing  Practical Test Pyramid https://en.wikipedia.org/wiki/Test-driven_development Red Green Refactor Repeat Cucumber general reference  Cloud and AWS  Getting Started on AWS This Is My Architecture A Cloud Guru Linux Academy  
         </p>
     </div>
 </a>
@@ -193,7 +189,8 @@ Here&rsquo;s a checklist of important items to have in a GitHub public repositor
         <div class="catalogue-line"></div>
 
         <p>
-            <p>Per the <a href="https://blog.rust-lang.org/2018/01/03/new-years-rust-a-call-for-community-blogposts.html">call for blog posts</a>, I&rsquo;ve got thoughts and ideas on where Rust can go in the upcoming year. My wants haven&rsquo;t changed much over the last year or so: give me non-embarassing compilation speed! 😁</p>
+            Per the call for blog posts, I&rsquo;ve got thoughts and ideas on where Rust can go in the upcoming year. My wants haven&rsquo;t changed much over the last year or so: give me non-embarassing compilation speed! 😁
+Before getting started, I&rsquo;m very appreciative of the hard work put into the overall Rust community and ecosystem, including the behind-the-scenes work. It&rsquo;s difficult to understate just how much time and energy people volunteer in pursuit of a better, Rust-ier world.
         </p>
     </div>
 </a>
@@ -214,7 +211,7 @@ Here&rsquo;s a checklist of important items to have in a GitHub public repositor
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-05-25 19:23:49.419342 -0700 PDT m=&#43;0.269128399">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2019-05-25 19:37:36.888584 -0700 PDT m=&#43;0.094579172">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

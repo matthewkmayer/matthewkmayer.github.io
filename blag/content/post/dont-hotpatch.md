@@ -6,8 +6,6 @@ title = "Don't hot patch"
 
 A hot take on hot patching/fixing.
 
-<!--more-->
-
 ## Definitions
 
 A hot patch, or hot fix, is a method of fixing a critical bug found in production by following a branching strategy that's outside the norm of software development. Specifically called out in [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/), this process is more complex and error prone than treating a critical bug as a regular bug or feature.

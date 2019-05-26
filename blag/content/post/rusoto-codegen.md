@@ -6,8 +6,6 @@ title = "Rusoto codegen"
 
 Writing a software development kit (SDK) is a challenge.  Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and "other."  [Rusoto](https://github.com/rusoto/rusoto) uses the [botocore](https://github.com/boto/botocore) service definitions to create Rust code to interact with Amazon Web Services.  Let's dive into how it's done!
 
-<!--more-->
-
 ## Using Simple Queue Service as an example
 
 To make this post clearer, we'll follow the Simple Queue Service (SQS) from botocore service definition to the [rusoto_sqs crate](https://crates.io/crates/rusoto_sqs).

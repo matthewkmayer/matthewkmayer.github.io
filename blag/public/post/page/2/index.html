@@ -45,7 +45,8 @@
         <div class="catalogue-line"></div>
 
         <p>
-            <p><a href="https://github.com/rusoto/rusoto">Rusoto</a>, an unofficial SDK for <a href="https://aws.amazon.com/">Amazon Web Services</a>, had a wonderful year! We made great strides in improving functionality, increasing the number of services covered and making various ergonomic changes.</p>
+            Rusoto, an unofficial SDK for Amazon Web Services, had a wonderful year! We made great strides in improving functionality, increasing the number of services covered and making various ergonomic changes.
+Improved functionality  Added all publicly available AWS regions Custom endpoint support HTTP connection pools for connecting to services S3 supports streaming responses: no more loading the entire file to download into a Vector  More supported services A non-exhaustive list:
         </p>
     </div>
 </a>
@@ -58,9 +59,9 @@
         <div class="catalogue-line"></div>
 
         <p>
-            <p><a href="https://en.wikipedia.org/wiki/Test-driven_development">Test Driven Development</a> (TDD) encourages better software design. When the desired behavior is known and expressible, it&rsquo;s highly effective to make modular and easily tested code.</p>
-
-<p>Let&rsquo;s take a look at using TDD with Rust, using <a href="https://github.com/matthewkmayer/release-party-BR">release-party</a> as an example.</p>
+            Test Driven Development (TDD) encourages better software design. When the desired behavior is known and expressible, it&rsquo;s highly effective to make modular and easily tested code.
+Let&rsquo;s take a look at using TDD with Rust, using release-party as an example.
+What we&rsquo;re changing Release-party is a command line tool I made for my day job. We&rsquo;ve got a fair amount of repositories on GitHub: one for each microservice. Our deployments are automated through TravisCI: the master branch is deployed to our testing environment and the release branch is deployed to production.
         </p>
     </div>
 </a>
@@ -73,9 +74,8 @@
         <div class="catalogue-line"></div>
 
         <p>
-            <p>While a software enginerd/pixie wrangler at heart, I&rsquo;ve discovered the stereotypical developer path of <em>grabbing a ticket from Jira, working on it, shoving the results to QA and repeat</em> isn&rsquo;t for me.  The biggest reason is how this leaves a tremendous amount of efficiency on the table. This inefficient approach is difficult to reconcile with empathy for the customer buying and using the product.</p>
-
-<p>My code writing speed has peaked: I can&rsquo;t write code any faster.  But I&rsquo;ve found new tools and methods to maximize my efficiency.  Let&rsquo;s go over a sampling of the more important ones.</p>
+            While a software enginerd/pixie wrangler at heart, I&rsquo;ve discovered the stereotypical developer path of grabbing a ticket from Jira, working on it, shoving the results to QA and repeat isn&rsquo;t for me. The biggest reason is how this leaves a tremendous amount of efficiency on the table. This inefficient approach is difficult to reconcile with empathy for the customer buying and using the product.
+My code writing speed has peaked: I can&rsquo;t write code any faster.
         </p>
     </div>
 </a>
@@ -88,7 +88,8 @@
         <div class="catalogue-line"></div>
 
         <p>
-            <p>My recap of RustConf 2017 in Portland, Oregon.  Or: how I avoided hotel surge pricing during the eclipse weekend!</p>
+            My recap of RustConf 2017 in Portland, Oregon. Or: how I avoided hotel surge pricing during the eclipse weekend!
+RustConf the second I&rsquo;ve been told the first conference for community or technology is the best. I&rsquo;m happy to report I don&rsquo;t believe it applies in this case! The first RustConf set a tone of possibility and potentials whereas RustConf 2017 focused more on the progress made in the language, ecosystem and community.
         </p>
     </div>
 </a>
@@ -101,8 +102,8 @@
         <div class="catalogue-line"></div>
 
         <p>
-            <p>This is part three of Rusoto code generation.  The first two parts went over how code inside a crate is generated.
-In this post, we&rsquo;ll take a look at how we make the crate for an AWS service.</p>
+            This is part three of Rusoto code generation. The first two parts went over how code inside a crate is generated. In this post, we&rsquo;ll take a look at how we make the crate for an AWS service.
+Parts one and two recap In the previous two posts, we followed code generation from the Simple Queue Service (SQS) botocore service definition to Rust code. We glossed over where the generated code went in order to concentrate on the generation itself.
         </p>
     </div>
 </a>
@@ -115,7 +116,9 @@ In this post, we&rsquo;ll take a look at how we make the crate for an AWS servic
         <div class="catalogue-line"></div>
 
         <p>
-            <p>In the <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/">previous post</a> we took a quick tour of the major pieces of <a href="https://github.com/rusoto/rusoto">Rusoto</a> code generation.  In this post we&rsquo;ll get deeper into code generation for the Simple Queue Service.</p>
+            In the previous post we took a quick tour of the major pieces of Rusoto code generation. In this post we&rsquo;ll get deeper into code generation for the Simple Queue Service.
+Picking up from part one Part one described a few parts of Rusoto codegen:
+ Finding which services to generate Making the service&rsquo;s crate Generating the service and placing it inside its crate rustfmt the generated code to make it look pretty  Step three is where this post will concentrate.
         </p>
     </div>
 </a>
@@ -128,7 +131,8 @@ In this post, we&rsquo;ll take a look at how we make the crate for an AWS servic
         <div class="catalogue-line"></div>
 
         <p>
-            <p>Writing a software development kit (SDK) is a challenge.  Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &ldquo;other.&rdquo;  <a href="https://github.com/rusoto/rusoto">Rusoto</a> uses the <a href="https://github.com/boto/botocore">botocore</a> service definitions to create Rust code to interact with Amazon Web Services.  Let&rsquo;s dive into how it&rsquo;s done!</p>
+            Writing a software development kit (SDK) is a challenge. Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &ldquo;other.&rdquo; Rusoto uses the botocore service definitions to create Rust code to interact with Amazon Web Services. Let&rsquo;s dive into how it&rsquo;s done!
+Using Simple Queue Service as an example To make this post clearer, we&rsquo;ll follow the Simple Queue Service (SQS) from botocore service definition to the rusoto_sqs crate.
         </p>
     </div>
 </a>
@@ -141,7 +145,9 @@ In this post, we&rsquo;ll take a look at how we make the crate for an AWS servic
         <div class="catalogue-line"></div>
 
         <p>
-            <p>Since the publication of <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/">Rusoto RDS walkthrough</a>, a new version of Rusoto has been released: <a href="https://github.com/rusoto/rusoto/releases/tag/rusoto-v0.25.0">0.25.0</a>.  This includes some breaking changes so let&rsquo;s work through those.  We&rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.</p>
+            Since the publication of Rusoto RDS walkthrough, a new version of Rusoto has been released: 0.25.0. This includes some breaking changes so let&rsquo;s work through those. We&rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.
+rusoto-rds-mk2 The previous project&rsquo;s source code is on github. We&rsquo;ll be making a new project based off that one. You can see the final product in rusoto-rds-mk2 folder.
+Cargo.toml changes required for Rusoto 0.
         </p>
     </div>
 </a>
@@ -154,8 +160,8 @@ In this post, we&rsquo;ll take a look at how we make the crate for an AWS servic
         <div class="catalogue-line"></div>
 
         <p>
-            <p>Let&rsquo;s tie some great Rust crates together!  In this walkthrough, we&rsquo;ll use <a href="https://github.com/rusoto/rusoto">Rusoto</a> to create a Postgres RDS database instance,
-<a href="https://github.com/SergioBenitez/Rocket">Rocket.rs</a> to make a web server and <a href="https://github.com/diesel-rs/diesel">Diesel</a> to talk to the database on AWS to make a proof of concept hit counter.</p>
+            Let&rsquo;s tie some great Rust crates together! In this walkthrough, we&rsquo;ll use Rusoto to create a Postgres RDS database instance, Rocket.rs to make a web server and Diesel to talk to the database on AWS to make a proof of concept hit counter.
+Walkthrough overview There are two projects in this walkthrough. First is rusoto-rds. This creates the Amazon Web Services (AWS) Relational Database Service (RDS) instance and should be run first.
         </p>
     </div>
 </a>
@@ -176,7 +182,7 @@ In this post, we&rsquo;ll take a look at how we make the crate for an AWS servic
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-05-25 19:23:49.544927 -0700 PDT m=&#43;0.394709494">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2019-05-25 19:37:37.053239 -0700 PDT m=&#43;0.259224783">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

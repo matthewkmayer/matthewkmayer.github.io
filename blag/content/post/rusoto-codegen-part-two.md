@@ -6,8 +6,6 @@ title = "Rusoto codegen, part two"
 
 In the [previous post](https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/) we took a quick tour of the major pieces of [Rusoto](https://github.com/rusoto/rusoto) code generation.  In this post we'll get deeper into code generation for the Simple Queue Service.
 
-<!--more-->
-
 ## Picking up from part one
 
 Part one described a few parts of Rusoto codegen:
