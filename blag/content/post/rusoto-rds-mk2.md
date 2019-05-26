@@ -6,8 +6,6 @@ title = "Rusoto RDS walkthrough, mk 2"
 
 Since the publication of [Rusoto RDS walkthrough](https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/), a new version of Rusoto has been released: [0.25.0](https://github.com/rusoto/rusoto/releases/tag/rusoto-v0.25.0).  This includes some breaking changes so let's work through those.  We'll also be cleaning up some of the rougher edges in the previous walkthrough.
 
-<!--more-->
-
 ### rusoto-rds-mk2
 
 The previous project's [source code is on github](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds).  We'll be making a new project based off that one.  You can see the final product [in rusoto-rds-mk2 folder](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds-mk2).

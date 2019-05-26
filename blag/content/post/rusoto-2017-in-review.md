@@ -6,8 +6,6 @@ title = "Rusoto: 2017 in review"
 
 [Rusoto](https://github.com/rusoto/rusoto), an unofficial SDK for [Amazon Web Services](https://aws.amazon.com/), had a wonderful year! We made great strides in improving functionality, increasing the number of services covered and making various ergonomic changes.
 
-<!--more-->
-
 ## Improved functionality
 
 * Added all publicly available AWS regions

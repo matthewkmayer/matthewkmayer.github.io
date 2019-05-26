@@ -10,8 +10,6 @@ In this post we'll go over how to get the [postgres crate](https://crates.io/cra
 
 Source code is [available](https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/postgres-tls-tester).
 
-<!--more-->
-
 ## Goal
 
 Modern web applications are built with resiliency and fault tolerance in mind. For our example, we'll be examining parts of a web application backed by a Postgres database.

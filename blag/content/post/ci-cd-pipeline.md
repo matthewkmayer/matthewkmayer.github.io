@@ -6,10 +6,6 @@ title = "CI/CD Pipeline"
 
 [Previously](https://matthewkmayer.github.io/blag/public/post/build-ci-cd/), we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we'll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.
 
-<!--more-->
-
-## Previously covered
-
 *Continuous Integration* and *Continuous Delivery* are processes that tell humans what techniques to use with source control.
 
 *Build server* is a server, servers or a system that automatically builds and tests code.

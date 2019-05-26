@@ -6,8 +6,6 @@ title = "How much testing is enough?"
 
 Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? *What* types of tests should be written? Here are some guidelines for determining what a team's "enough" level of testing is.
 
-<!--more-->
-
 ## Definitions and goals
 
 * unit test: tests a single unit of code. Think a single function or method. If there are more than one or three mocks being used, it's probably not a unit test

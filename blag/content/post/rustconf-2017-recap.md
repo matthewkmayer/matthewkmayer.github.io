@@ -6,8 +6,6 @@ title = "RustConf 2017 recap"
 
 My recap of RustConf 2017 in Portland, Oregon.  Or: how I avoided hotel surge pricing during the eclipse weekend!
 
-<!--more-->
-
 ## RustConf the second
 
 I've been told the first conference for community or technology is the best.  I'm happy to report I don't believe it applies in this case!  The first RustConf set a tone of possibility and potentials whereas RustConf 2017 focused more on the progress made in the language, ecosystem and community.  As a whole, the conference was a great reflection of the language and community: where we've come from, where we're at and what's next.

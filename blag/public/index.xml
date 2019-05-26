@@ -17,7 +17,8 @@
       <pubDate>Fri, 10 May 2019 00:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/how-much-testing/</guid>
-      <description>&lt;p&gt;Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? &lt;em&gt;What&lt;/em&gt; types of tests should be written? Here are some guidelines for determining what a team&amp;rsquo;s &amp;ldquo;enough&amp;rdquo; level of testing is.&lt;/p&gt;</description>
+      <description>Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? What types of tests should be written? Here are some guidelines for determining what a team&amp;rsquo;s &amp;ldquo;enough&amp;rdquo; level of testing is.
+Definitions and goals  unit test: tests a single unit of code. Think a single function or method. If there are more than one or three mocks being used, it&amp;rsquo;s probably not a unit test functional test: tests behavior of code, staying withing a single process integration test: a test that crosses a process boundary.</description>
     </item>
     
     <item>
@@ -26,7 +27,9 @@
       <pubDate>Tue, 07 May 2019 00:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/dont-hotpatch/</guid>
-      <description>&lt;p&gt;A hot take on hot patching/fixing.&lt;/p&gt;</description>
+      <description>A hot take on hot patching/fixing.
+Definitions A hot patch, or hot fix, is a method of fixing a critical bug found in production by following a branching strategy that&amp;rsquo;s outside the norm of software development. Specifically called out in Gitflow, this process is more complex and error prone than treating a critical bug as a regular bug or feature.
+When following Gitflow, a hot patch can get a fix to production faster by making the change off the master branch, which is then also applied to the release branch.</description>
     </item>
     
     <item>
@@ -48,8 +51,8 @@
       <pubDate>Tue, 04 Dec 2018 00:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/</guid>
-      <description>&lt;p&gt;I&amp;rsquo;m often involved in hiring. When GitHub links are on a resume, I look at pinned repos and source repos.
-Here&amp;rsquo;s a checklist of important items to have in a GitHub public repository to catch the eye of reviewers. Or at least my eye when hiring, and why it&amp;rsquo;s important.&lt;/p&gt;</description>
+      <description>I&amp;rsquo;m often involved in hiring. When GitHub links are on a resume, I look at pinned repos and source repos. Here&amp;rsquo;s a checklist of important items to have in a GitHub public repository to catch the eye of reviewers. Or at least my eye when hiring, and why it&amp;rsquo;s important.
+Your goal, my goal Yours: get hired. Mine: make an informed decision about hiring someone who can do the job.</description>
     </item>
     
     <item>
@@ -58,11 +61,11 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Thu, 13 Sep 2018 00:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/postgres-tls/</guid>
-      <description>&lt;p&gt;&amp;ldquo;Dance like nobody&amp;rsquo;s watching. Encrypt like everybody is.&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;In this post we&amp;rsquo;ll go over how to get the &lt;a href=&#34;https://crates.io/crates/postgres&#34;&gt;postgres crate&lt;/a&gt; and &lt;a href=&#34;https://crates.io/crates/r2d2_postgres&#34;&gt;r2d2_postgres&lt;/a&gt; working with &lt;a href=&#34;https://crates.io/crates/openssl&#34;&gt;openssl&lt;/a&gt; for connection pooling with TLS.&lt;/p&gt;
-
-&lt;p&gt;Source code is &lt;a href=&#34;https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/postgres-tls-tester&#34;&gt;available&lt;/a&gt;.&lt;/p&gt;</description>
+      <description>&amp;ldquo;Dance like nobody&amp;rsquo;s watching. Encrypt like everybody is.&amp;rdquo;
+In this post we&amp;rsquo;ll go over how to get the postgres crate and r2d2_postgres working with openssl for connection pooling with TLS.
+Source code is available.
+Goal Modern web applications are built with resiliency and fault tolerance in mind. For our example, we&amp;rsquo;ll be examining parts of a web application backed by a Postgres database.
+When services launch, their database won&amp;rsquo;t always be available.</description>
     </item>
     
     <item>
@@ -71,7 +74,10 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Wed, 12 Sep 2018 00:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://matthewkmayer.github.io/blag/public/post/build-ci-cd/&#34;&gt;Previously&lt;/a&gt;, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we&amp;rsquo;ll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.&lt;/p&gt;</description>
+      <description>Previously, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we&amp;rsquo;ll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.
+Continuous Integration and Continuous Delivery are processes that tell humans what techniques to use with source control.
+Build server is a server, servers or a system that automatically builds and tests code.
+Putting these concepts together require people following processes so automated tasks execute well.</description>
     </item>
     
     <item>
@@ -80,15 +86,11 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Wed, 05 Sep 2018 00:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/build-ci-cd/</guid>
-      <description>&lt;p&gt;Ever hear someone say &amp;ldquo;CI/CD build pipeline&amp;rdquo; and weren&amp;rsquo;t sure that that means, &lt;em&gt;exactly?&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Let&amp;rsquo;s define and explore the concepts of:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Build server&lt;/li&gt;
-&lt;li&gt;Continuous Integration (CI)&lt;/li&gt;
-&lt;li&gt;Continous Delivery (CD)&lt;/li&gt;
-&lt;/ul&gt;</description>
+      <description>Ever hear someone say &amp;ldquo;CI/CD build pipeline&amp;rdquo; and weren&amp;rsquo;t sure that that means, exactly?
+Let&amp;rsquo;s define and explore the concepts of:
+ Build server Continuous Integration (CI) Continous Delivery (CD)  Three separate ideas Build server is a server, servers or a system that automatically builds and tests code.
+Continuous Integration and Continuous Delivery are both processes, guiding humans on what to do.
+Build server (or build service) Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests.</description>
     </item>
     
     <item>
@@ -97,7 +99,9 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Mon, 02 Apr 2018 00:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/2018-break/</guid>
-      <description>&lt;p&gt;After three years maintaining an open source project, it&amp;rsquo;s time to take a few months of me time.&lt;/p&gt;</description>
+      <description>After three years maintaining an open source project, it&amp;rsquo;s time to take a few months of me time.
+TL;DR I&amp;rsquo;m taking a break to do things I&amp;rsquo;ve been missing. I will be back, no later than September 1st, 2018.
+Rusoto history and running an open source project Back in early 2015, Anthony DiMarco and I started Rusoto. Rust&amp;rsquo;s promises of performance and correctness looked like a perfect match for cloud computing.</description>
     </item>
     
     <item>
@@ -106,16 +110,8 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Sun, 18 Mar 2018 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/resources-list/</guid>
-      <description>&lt;p&gt;List of links for topics including:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Git&lt;/li&gt;
-&lt;li&gt;Branching strategies&lt;/li&gt;
-&lt;li&gt;Ruby&lt;/li&gt;
-&lt;li&gt;Go&lt;/li&gt;
-&lt;li&gt;Testing&lt;/li&gt;
-&lt;li&gt;Cloud and AWS&lt;/li&gt;
-&lt;/ul&gt;</description>
+      <description> List of links for topics including:
+ Git Branching strategies Ruby Go Testing Cloud and AWS  Git  Think like a Git Pro Git  Branching strategies  GitHub flow Trunk based Development  Ruby  Learn Ruby the Hard Way  Go  Effective Go Golang Tripping Hazards  Testing  Practical Test Pyramid https://en.wikipedia.org/wiki/Test-driven_development Red Green Refactor Repeat Cucumber general reference  Cloud and AWS  Getting Started on AWS This Is My Architecture A Cloud Guru Linux Academy  </description>
     </item>
     
     <item>
@@ -124,7 +120,8 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Sun, 07 Jan 2018 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rust-2018/</guid>
-      <description>&lt;p&gt;Per the &lt;a href=&#34;https://blog.rust-lang.org/2018/01/03/new-years-rust-a-call-for-community-blogposts.html&#34;&gt;call for blog posts&lt;/a&gt;, I&amp;rsquo;ve got thoughts and ideas on where Rust can go in the upcoming year. My wants haven&amp;rsquo;t changed much over the last year or so: give me non-embarassing compilation speed! 😁&lt;/p&gt;</description>
+      <description>Per the call for blog posts, I&amp;rsquo;ve got thoughts and ideas on where Rust can go in the upcoming year. My wants haven&amp;rsquo;t changed much over the last year or so: give me non-embarassing compilation speed! 😁
+Before getting started, I&amp;rsquo;m very appreciative of the hard work put into the overall Rust community and ecosystem, including the behind-the-scenes work. It&amp;rsquo;s difficult to understate just how much time and energy people volunteer in pursuit of a better, Rust-ier world.</description>
     </item>
     
     <item>
@@ -133,7 +130,8 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Sun, 31 Dec 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-2017-in-review/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt;, an unofficial SDK for &lt;a href=&#34;https://aws.amazon.com/&#34;&gt;Amazon Web Services&lt;/a&gt;, had a wonderful year! We made great strides in improving functionality, increasing the number of services covered and making various ergonomic changes.&lt;/p&gt;</description>
+      <description>Rusoto, an unofficial SDK for Amazon Web Services, had a wonderful year! We made great strides in improving functionality, increasing the number of services covered and making various ergonomic changes.
+Improved functionality  Added all publicly available AWS regions Custom endpoint support HTTP connection pools for connecting to services S3 supports streaming responses: no more loading the entire file to download into a Vector  More supported services A non-exhaustive list:</description>
     </item>
     
     <item>
@@ -142,9 +140,9 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Thu, 19 Oct 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/tdd-with-rust/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Test-driven_development&#34;&gt;Test Driven Development&lt;/a&gt; (TDD) encourages better software design. When the desired behavior is known and expressible, it&amp;rsquo;s highly effective to make modular and easily tested code.&lt;/p&gt;
-
-&lt;p&gt;Let&amp;rsquo;s take a look at using TDD with Rust, using &lt;a href=&#34;https://github.com/matthewkmayer/release-party-BR&#34;&gt;release-party&lt;/a&gt; as an example.&lt;/p&gt;</description>
+      <description>Test Driven Development (TDD) encourages better software design. When the desired behavior is known and expressible, it&amp;rsquo;s highly effective to make modular and easily tested code.
+Let&amp;rsquo;s take a look at using TDD with Rust, using release-party as an example.
+What we&amp;rsquo;re changing Release-party is a command line tool I made for my day job. We&amp;rsquo;ve got a fair amount of repositories on GitHub: one for each microservice. Our deployments are automated through TravisCI: the master branch is deployed to our testing environment and the release branch is deployed to production.</description>
     </item>
     
     <item>
@@ -153,9 +151,8 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Wed, 20 Sep 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/software-dev-force-multipliers/</guid>
-      <description>&lt;p&gt;While a software enginerd/pixie wrangler at heart, I&amp;rsquo;ve discovered the stereotypical developer path of &lt;em&gt;grabbing a ticket from Jira, working on it, shoving the results to QA and repeat&lt;/em&gt; isn&amp;rsquo;t for me.  The biggest reason is how this leaves a tremendous amount of efficiency on the table. This inefficient approach is difficult to reconcile with empathy for the customer buying and using the product.&lt;/p&gt;
-
-&lt;p&gt;My code writing speed has peaked: I can&amp;rsquo;t write code any faster.  But I&amp;rsquo;ve found new tools and methods to maximize my efficiency.  Let&amp;rsquo;s go over a sampling of the more important ones.&lt;/p&gt;</description>
+      <description>While a software enginerd/pixie wrangler at heart, I&amp;rsquo;ve discovered the stereotypical developer path of grabbing a ticket from Jira, working on it, shoving the results to QA and repeat isn&amp;rsquo;t for me. The biggest reason is how this leaves a tremendous amount of efficiency on the table. This inefficient approach is difficult to reconcile with empathy for the customer buying and using the product.
+My code writing speed has peaked: I can&amp;rsquo;t write code any faster.</description>
     </item>
     
     <item>
@@ -164,7 +161,8 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Sun, 20 Aug 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rustconf-2017-recap/</guid>
-      <description>&lt;p&gt;My recap of RustConf 2017 in Portland, Oregon.  Or: how I avoided hotel surge pricing during the eclipse weekend!&lt;/p&gt;</description>
+      <description>My recap of RustConf 2017 in Portland, Oregon. Or: how I avoided hotel surge pricing during the eclipse weekend!
+RustConf the second I&amp;rsquo;ve been told the first conference for community or technology is the best. I&amp;rsquo;m happy to report I don&amp;rsquo;t believe it applies in this case! The first RustConf set a tone of possibility and potentials whereas RustConf 2017 focused more on the progress made in the language, ecosystem and community.</description>
     </item>
     
     <item>
@@ -173,8 +171,8 @@ Here&amp;rsquo;s a checklist of important items to have in a GitHub public repos
       <pubDate>Tue, 11 Jul 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-three/</guid>
-      <description>&lt;p&gt;This is part three of Rusoto code generation.  The first two parts went over how code inside a crate is generated.
-In this post, we&amp;rsquo;ll take a look at how we make the crate for an AWS service.&lt;/p&gt;</description>
+      <description>This is part three of Rusoto code generation. The first two parts went over how code inside a crate is generated. In this post, we&amp;rsquo;ll take a look at how we make the crate for an AWS service.
+Parts one and two recap In the previous two posts, we followed code generation from the Simple Queue Service (SQS) botocore service definition to Rust code. We glossed over where the generated code went in order to concentrate on the generation itself.</description>
     </item>
     
     <item>
@@ -183,7 +181,9 @@ In this post, we&amp;rsquo;ll take a look at how we make the crate for an AWS se
       <pubDate>Fri, 16 Jun 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-two/</guid>
-      <description>&lt;p&gt;In the &lt;a href=&#34;https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/&#34;&gt;previous post&lt;/a&gt; we took a quick tour of the major pieces of &lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt; code generation.  In this post we&amp;rsquo;ll get deeper into code generation for the Simple Queue Service.&lt;/p&gt;</description>
+      <description>In the previous post we took a quick tour of the major pieces of Rusoto code generation. In this post we&amp;rsquo;ll get deeper into code generation for the Simple Queue Service.
+Picking up from part one Part one described a few parts of Rusoto codegen:
+ Finding which services to generate Making the service&amp;rsquo;s crate Generating the service and placing it inside its crate rustfmt the generated code to make it look pretty  Step three is where this post will concentrate.</description>
     </item>
     
     <item>
@@ -192,7 +192,8 @@ In this post, we&amp;rsquo;ll take a look at how we make the crate for an AWS se
       <pubDate>Fri, 09 Jun 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/</guid>
-      <description>&lt;p&gt;Writing a software development kit (SDK) is a challenge.  Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &amp;ldquo;other.&amp;rdquo;  &lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt; uses the &lt;a href=&#34;https://github.com/boto/botocore&#34;&gt;botocore&lt;/a&gt; service definitions to create Rust code to interact with Amazon Web Services.  Let&amp;rsquo;s dive into how it&amp;rsquo;s done!&lt;/p&gt;</description>
+      <description>Writing a software development kit (SDK) is a challenge. Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &amp;ldquo;other.&amp;rdquo; Rusoto uses the botocore service definitions to create Rust code to interact with Amazon Web Services. Let&amp;rsquo;s dive into how it&amp;rsquo;s done!
+Using Simple Queue Service as an example To make this post clearer, we&amp;rsquo;ll follow the Simple Queue Service (SQS) from botocore service definition to the rusoto_sqs crate.</description>
     </item>
     
     <item>
@@ -201,7 +202,9 @@ In this post, we&amp;rsquo;ll take a look at how we make the crate for an AWS se
       <pubDate>Tue, 23 May 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-mk2/</guid>
-      <description>&lt;p&gt;Since the publication of &lt;a href=&#34;https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/&#34;&gt;Rusoto RDS walkthrough&lt;/a&gt;, a new version of Rusoto has been released: &lt;a href=&#34;https://github.com/rusoto/rusoto/releases/tag/rusoto-v0.25.0&#34;&gt;0.25.0&lt;/a&gt;.  This includes some breaking changes so let&amp;rsquo;s work through those.  We&amp;rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.&lt;/p&gt;</description>
+      <description>Since the publication of Rusoto RDS walkthrough, a new version of Rusoto has been released: 0.25.0. This includes some breaking changes so let&amp;rsquo;s work through those. We&amp;rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.
+rusoto-rds-mk2 The previous project&amp;rsquo;s source code is on github. We&amp;rsquo;ll be making a new project based off that one. You can see the final product in rusoto-rds-mk2 folder.
+Cargo.toml changes required for Rusoto 0.</description>
     </item>
     
     <item>
@@ -210,8 +213,8 @@ In this post, we&amp;rsquo;ll take a look at how we make the crate for an AWS se
       <pubDate>Sun, 14 May 2017 21:28:53 -0700</pubDate>
       
       <guid>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/</guid>
-      <description>&lt;p&gt;Let&amp;rsquo;s tie some great Rust crates together!  In this walkthrough, we&amp;rsquo;ll use &lt;a href=&#34;https://github.com/rusoto/rusoto&#34;&gt;Rusoto&lt;/a&gt; to create a Postgres RDS database instance,
-&lt;a href=&#34;https://github.com/SergioBenitez/Rocket&#34;&gt;Rocket.rs&lt;/a&gt; to make a web server and &lt;a href=&#34;https://github.com/diesel-rs/diesel&#34;&gt;Diesel&lt;/a&gt; to talk to the database on AWS to make a proof of concept hit counter.&lt;/p&gt;</description>
+      <description>Let&amp;rsquo;s tie some great Rust crates together! In this walkthrough, we&amp;rsquo;ll use Rusoto to create a Postgres RDS database instance, Rocket.rs to make a web server and Diesel to talk to the database on AWS to make a proof of concept hit counter.
+Walkthrough overview There are two projects in this walkthrough. First is rusoto-rds. This creates the Amazon Web Services (AWS) Relational Database Service (RDS) instance and should be run first.</description>
     </item>
     
   </channel>
