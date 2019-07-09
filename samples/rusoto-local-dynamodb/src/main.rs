@@ -3,8 +3,8 @@ extern crate rusoto_dynamodb;
 
 use rusoto_core::Region;
 use rusoto_dynamodb::{
-    AttributeDefinition, AttributeValue, CreateTableInput, DynamoDb, DynamoDbClient, GetItemInput,
-    KeySchemaElement, ListTablesInput, ProvisionedThroughput, UpdateItemInput,
+    AttributeDefinition, AttributeValue, CreateTableRequest, DynamoDb, DynamoDbClient, GetItemRequest,
+    KeySchemaElement, ListTablesRequest, ProvisionedThroughput, UpdateItemRequest,
 };
 use std::collections::HashMap;
 
@@ -18,7 +18,7 @@ fn main() {
     let client = DynamoDbClient::new(region);
 
     // List tables
-    let list_tables_request = ListTablesInput::default();
+    let list_tables_request = ListTablesRequest::default();
     let tables = client.list_tables(list_tables_request).sync();
 
     println!("Tables found: {:?}", tables);
@@ -43,11 +43,11 @@ fn main() {
                         read_capacity_units: 1,
                         write_capacity_units: 1,
                     };
-                    let make_table_request = CreateTableInput {
+                    let make_table_request = CreateTableRequest {
                         table_name: "a-testing-table".to_string(),
                         attribute_definitions: vec![attribute_def],
                         key_schema: vec![k_schema],
-                        provisioned_throughput: p_throughput,
+                        provisioned_throughput: Some(p_throughput),
                         ..Default::default()
                     };
 
@@ -73,7 +73,7 @@ fn main() {
             ..Default::default()
         },
     );
-    let add_item = UpdateItemInput {
+    let add_item = UpdateItemRequest {
         key: item.clone(), // cloning so we can reuse the item we're looking for in the GET part
         table_name: "a-testing-table".to_string(),
         ..Default::default()
@@ -86,7 +86,7 @@ fn main() {
     println!("Key added or updated!");
 
     // Retrieve the entry
-    let get_item_request = GetItemInput {
+    let get_item_request = GetItemRequest {
         key: item,
         table_name: "a-testing-table".to_string(),
         ..Default::default()

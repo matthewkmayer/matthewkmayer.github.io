@@ -5,5 +5,5 @@ authors = ["Matthew Mayer <matthewkmayer@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-rusoto_core = "0.36"
-rusoto_dynamodb = "0.36"
+rusoto_core = { git = "https://github.com/rusoto/rusoto", branch = "service-request-trait" }
+rusoto_dynamodb = { git = "https://github.com/rusoto/rusoto", branch = "service-request-trait" }
