@@ -12,11 +12,11 @@ Rust is like anti lock brakes (ABS) for motorcycles.
 
 ## Wait, what?
 
-There are a lot more parallels than you'd expect at first glance.
+There are a lot of parallels here!
 
-Bringing a motorcycle to a stop as quickly as possible is a skill. The rider must have knowledge, experience and ability to understand what the motorcycle is doing. When this all lines up, motorcycles can stop in impressively short distances.
+Bringing a motorcycle to a stop as quickly as possible is a skill. The rider must have the knowledge, experience and ability to understand what the motorcycle is doing. When this all lines up, motorcycles can stop in impressively short distances. Imagine a C programmer who really, *really* knows their stuff: they can do things just short of amazing.
 
-Things change when just one item is added to the mix: sand on the road, rider distraction, insufficient knowledge about how to brake. Without ABS, it's difficult to bring the bike to a stop when slowing over pavement with sand on it.
+Things change when just one item is added to the mix: sand on the road, rider distraction, insufficient knowledge about how to brake. Without ABS, it's difficult to bring the bike to a quick stop when slowing over pavement with sand on it. This is similar to most programmers, where they have time constraints, other items on their mind and sometimes we just make mistakes.
 
 ## The professional rider
 
@@ -38,6 +38,4 @@ With C and C++, memory related errors cause security issues. This is true even w
 
 Rust is similar to anti lock brakes. Instead of relying on skill, training and perfect execution, have a backup strategy. Whether it's a computer cycling the brakes faster than a human ever could or leaning on a compiler to prevent a class of errors, it turns a disastrous event into a non-issue.
 
-## The bona fides
-
-Been motorcycling for 15 years, been an instructor for 13 years in multiple states.
+And like modern ABS, Rust is as efficient as the other options.
