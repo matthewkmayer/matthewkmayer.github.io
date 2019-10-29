@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head>
-	<meta name="generator" content="Hugo 0.55.6" />
+	<meta name="generator" content="Hugo 0.58.3" />
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<meta name="description" content="">
@@ -43,155 +43,29 @@
 
 	<div class="catalogue">
 		
-			<a href="https://matthewkmayer.github.io/blag/public/post/2019-break/" class="catalogue-item">
+			<a href="https://matthewkmayer.github.io/blag/public/post/" class="catalogue-item">
     <div>
-        <time datetime="2019-06-11 00:28:53 -0700 PDT" class="catalogue-time">June 11, 2019</time>
-        <h1 class="catalogue-title">Taking a break, 2019</h1>
+        <time datetime="0001-01-01 00:00:00 &#43;0000 UTC" class="catalogue-time">January 1, 0001</time>
+        <h1 class="catalogue-title">Posts</h1>
         <div class="catalogue-line"></div>
 
         <p>
-            Like last year I&rsquo;m taking a summer break from open source, including Rusoto.
-Outside time is good for me I&rsquo;ll be spending more time outside and less time on a computer until September 2019. There won&rsquo;t be a disappearing act but I&rsquo;ll be significantly reducing the amount of time spent on computers for the next few months.
-Until then!
+            
         </p>
     </div>
 </a>
 
 		
-			<a href="https://matthewkmayer.github.io/blag/public/post/how-much-testing/" class="catalogue-item">
+			<a href="https://matthewkmayer.github.io/blag/public/about/" class="catalogue-item">
     <div>
-        <time datetime="2019-05-10 00:28:53 -0700 PDT" class="catalogue-time">May 10, 2019</time>
-        <h1 class="catalogue-title">How much testing is enough?</h1>
+        <time datetime="0001-01-01 00:00:00 &#43;0000 UTC" class="catalogue-time">January 1, 0001</time>
+        <h1 class="catalogue-title">About</h1>
         <div class="catalogue-line"></div>
 
         <p>
-            Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? What types of tests should be written? Here are some guidelines for determining what a team&rsquo;s &ldquo;enough&rdquo; level of testing is.
-Definitions and goals  unit test: tests a single unit of code. Think a single function or method. If there are more than one or three mocks being used, it&rsquo;s probably not a unit test functional test: tests behavior of code, staying within a single process integration test: a test that crosses a process boundary.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/dont-hotpatch/" class="catalogue-item">
-    <div>
-        <time datetime="2019-05-07 00:28:53 -0700 PDT" class="catalogue-time">May 7, 2019</time>
-        <h1 class="catalogue-title">Don&#39;t hot patch</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            A hot take on hot patching/fixing.
-Definitions A hot patch, or hot fix, is a method of fixing a critical bug found in production by following a branching strategy that&rsquo;s outside the norm of software development. Specifically called out in Gitflow, this process is more complex and error prone than treating a critical bug as a regular bug or feature.
-When following Gitflow, a hot patch can get a fix to production faster by making the change off the master branch, which is then also applied to the release branch.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/chaining-rusoto-futures/" class="catalogue-item">
-    <div>
-        <time datetime="2019-01-02 00:28:53 -0700 -0700" class="catalogue-time">January 2, 2019</time>
-        <h1 class="catalogue-title">Chaining Rusoto Futures</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            <p>Rusoto supports asynchronously running commands to AWS. While immediately making a blocking call to AWS is a common use case, one can create actions to run async and let the <code>tokio</code> runtime handle it. This opens up the ability to run multiple AWS calls concurrently.</p>
-
-<p>If a project sets up infrastructure on AWS, the actions that don&rsquo;t depend on others to finish can run concurrently. For example: creating an S3 bucket and an SQS queue. Instead of creating a bucket and waiting for the request to finish, then moving on to creating the queue, one can put the Rusoto <code>Futures</code> together and concurrently run them.</p>
-
-<p>In this post we&rsquo;ll explore to examples of using futures and the Rusoto DynamoDB client.</p>
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/" class="catalogue-item">
-    <div>
-        <time datetime="2018-12-04 00:28:53 -0700 -0700" class="catalogue-time">December 4, 2018</time>
-        <h1 class="catalogue-title">Repos for getting hired</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            I&rsquo;m often involved in hiring. When GitHub links are on a resume, I look at pinned repos and source repos. Here&rsquo;s a checklist of important items to have in a GitHub public repository to catch the eye of reviewers. Or at least my eye when hiring, and why it&rsquo;s important.
-Your goal, my goal Yours: get hired. Mine: make an informed decision about hiring someone who can do the job.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/postgres-tls/" class="catalogue-item">
-    <div>
-        <time datetime="2018-09-13 00:28:53 -0700 PDT" class="catalogue-time">September 13, 2018</time>
-        <h1 class="catalogue-title">Postgres over TLS with postgres and r2d2_postgres</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            &ldquo;Dance like nobody&rsquo;s watching. Encrypt like everybody is.&rdquo;
-In this post we&rsquo;ll go over how to get the postgres crate and r2d2_postgres working with openssl for connection pooling with TLS.
-Source code is available.
-Goal Modern web applications are built with resiliency and fault tolerance in mind. For our example, we&rsquo;ll be examining parts of a web application backed by a Postgres database.
-When services launch, their database won&rsquo;t always be available.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/" class="catalogue-item">
-    <div>
-        <time datetime="2018-09-12 00:28:53 -0700 PDT" class="catalogue-time">September 12, 2018</time>
-        <h1 class="catalogue-title">CI/CD Pipeline</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            Previously, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we&rsquo;ll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.
-Continuous Integration and Continuous Delivery are processes that tell humans what techniques to use with source control.
-Build server is a server, servers or a system that automatically builds and tests code.
-Putting these concepts together require people following processes so automated tasks execute well.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/build-ci-cd/" class="catalogue-item">
-    <div>
-        <time datetime="2018-09-05 00:28:53 -0700 PDT" class="catalogue-time">September 5, 2018</time>
-        <h1 class="catalogue-title">Build servers, Continuous Integration, Continuous Delivery</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            Ever hear someone say &ldquo;CI/CD build pipeline&rdquo; and weren&rsquo;t sure that that means, exactly?
-Let&rsquo;s define and explore the concepts of:
- Build server Continuous Integration (CI) Continous Delivery (CD)  Three separate ideas Build server is a server, servers or a system that automatically builds and tests code.
-Continuous Integration and Continuous Delivery are both processes, guiding humans on what to do.
-Build server (or build service) Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/2018-break/" class="catalogue-item">
-    <div>
-        <time datetime="2018-04-02 00:28:53 -0700 PDT" class="catalogue-time">April 2, 2018</time>
-        <h1 class="catalogue-title">Taking a break</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            After three years maintaining an open source project, it&rsquo;s time to take a few months of me time.
-TL;DR I&rsquo;m taking a break to do things I&rsquo;ve been missing. I will be back, no later than September 1st, 2018.
-Rusoto history and running an open source project Back in early 2015, Anthony DiMarco and I started Rusoto. Rust&rsquo;s promises of performance and correctness looked like a perfect match for cloud computing.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/resources-list/" class="catalogue-item">
-    <div>
-        <time datetime="2018-03-18 21:28:53 -0700 PDT" class="catalogue-time">March 18, 2018</time>
-        <h1 class="catalogue-title">Curated list of resources for software engineering</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-             List of links for topics including:
- Git Branching strategies Ruby Go Testing Cloud and AWS  Git  Think like a Git Pro Git  Branching strategies  GitHub flow Trunk based Development  Ruby  Learn Ruby the Hard Way  Go  Effective Go Golang Tripping Hazards  Testing  Practical Test Pyramid https://en.wikipedia.org/wiki/Test-driven_development Red Green Refactor Repeat Cucumber general reference  Cloud and AWS  Getting Started on AWS This Is My Architecture A Cloud Guru Linux Academy  
+            Matthew Mayer has been professionally building software since 2006. He&rsquo;s earned a living writing C#, Java, Golang and Ruby. Since 2014 he&rsquo;s focused on cloud native solutions on Amazon Web Services, including achieving the AWS Solutions Architect Professional level certification.
+Matthew was one of the founding maintainers of Rusoto, the community AWS SDK for Rust.
+When not typing on a computer, he can be found touring North America on his motorcycle or sidecar rig.
         </p>
     </div>
 </a>
@@ -202,8 +76,6 @@ Rusoto history and running an open source project Back in early 2015, Anthony Di
 	<div class="pagination">
 		
 		
-			<a href="/blag/public/page/2/" class="right arrow">&#8594;</a>
-		
 	
 		<span>1</span>
 	</div>
@@ -212,7 +84,7 @@ Rusoto history and running an open source project Back in early 2015, Anthony Di
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-06-12 23:15:45.999536 -0700 PDT m=&#43;0.088844849">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2019-10-28 22:22:13.621648 -0700 PDT m=&#43;0.070346945">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

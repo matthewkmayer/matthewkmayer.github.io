@@ -6,10 +6,23 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 11 Jun 2019 00:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Mon, 28 Oct 2019 00:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rust as anti lock brakes</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/rust-as-abs/</link>
+      <pubDate>Mon, 28 Oct 2019 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/rust-as-abs/</guid>
+      <description>Rust: a Language for the Next 40 Years put a seed of an idea on my head. I recommend watching the 55 minute video if you haven&amp;rsquo;t had a chance yet.
+The recent posts on the Microsoft Security Response Center blog helped the pieces click in my head.
+Rust is like anti lock brakes (ABS) for motorcycles.
+Wait, what? There are a lot of parallels here!
+Bringing a motorcycle to a stop as quickly as possible is a skill.</description>
+    </item>
     
     <item>
       <title>Taking a break, 2019</title>

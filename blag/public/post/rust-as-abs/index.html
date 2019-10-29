@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>
+				Rust as anti lock brakes &middot; Matthew Mayer&#39;s tech blog
+		</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    <li><a href="/blag/public/about">About</a></li>
+    <li><a href="/blag/public/">Posts</a></li>
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2019-10-28 00:28:53 -0700 PDT">October 28, 2019</time>
+</div>
+		<h1 class="post-title">Rust as anti lock brakes</h1>
+<div class="post-line"></div>
+
+		
+
+		
+
+<p><a href="https://www.youtube.com/watch?v=A3AdN7U24iU">Rust: a Language for the Next 40 Years</a> put a seed of an idea on my head. I recommend watching the 55 minute video if you haven&rsquo;t had a chance yet.</p>
+
+<p>The <a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">recent posts on the Microsoft Security Response Center blog</a> helped the pieces click in my head.</p>
+
+<p>Rust is like anti lock brakes (ABS) for motorcycles.</p>
+
+<h2 id="wait-what">Wait, what?</h2>
+
+<p>There are a lot of parallels here!</p>
+
+<p>Bringing a motorcycle to a stop as quickly as possible is a skill. The rider must have the knowledge, experience and ability to understand what the motorcycle is doing. When this all lines up, motorcycles can stop in impressively short distances. Imagine a C programmer who really, <em>really</em> knows their stuff: they can do things just short of amazing.</p>
+
+<p>Things change when just one item is added to the mix: sand on the road, rider distraction, insufficient knowledge about how to brake. Without ABS, it&rsquo;s difficult to bring the bike to a quick stop when slowing over pavement with sand on it. This is similar to most programmers, where they have time constraints, other items on their mind and sometimes we just make mistakes.</p>
+
+<h2 id="the-professional-rider">The professional rider</h2>
+
+<p>Until the past few years, ABS equipped bikes took <em>longer</em> to stop than professional riders not using ABS, on perfect surfaces such as race tracks. Many riders assume they can match the professional&rsquo;s performance with inferior tires, training and road surface and eschew ABS for their bikes.</p>
+
+<h2 id="things-go-wrong">Things go wrong</h2>
+
+<p>While ABS can be useful when everything is perfect, it really shines when things go wrong. Surface debris, abrupt inputs from a nervous or new rider, etc&hellip; all happen even though the rider doesn&rsquo;t want it to.</p>
+
+<h2 id="modern-abs">Modern ABS</h2>
+
+<p>A modern motorcycle with ABS can brake about as well as a professional on a closed course/race track. Since it&rsquo;s also effective on the street where things vary and are never in a perfect state, there&rsquo;s nothing to lose to pick a bike with ABS over one that does not.</p>
+
+<h2 id="c-rust-and-abs">C, Rust and ABS</h2>
+
+<p>When everything works perfectly, C and C++ work great. But like motorcycling, most coding isn&rsquo;t done on a closed course: software is released into a world where people intentionally throw sand in front of programs to see what they do.</p>
+
+<p>With C and C++, memory related errors cause security issues. This is true even with training, code review, sanitizing tools, fuzzers and more. About 70% of CVEs Microsoft assigned from 2006 to 2018 were from memory related issues (<a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">source</a>).</p>
+
+<p>Rust is similar to anti lock brakes. Instead of relying on skill, training and perfect execution, have a backup strategy. Whether it&rsquo;s a computer cycling the brakes faster than a human ever could or leaning on a compiler to prevent a class of errors, it turns a potentially disastrous event into a non-issue.</p>
+
+<p>And like modern ABS, Rust is as efficient as the other options.</p>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/2019-break/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2019-10-28 22:22:13.621468 -0700 PDT m=&#43;0.070166307">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
