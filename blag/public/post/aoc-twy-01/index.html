@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>
+				Advent of Code 2019, the wrong way (part one) &middot; Matthew Mayer&#39;s tech blog
+		</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    <li><a href="/blag/public/about">About</a></li>
+    <li><a href="/blag/public/">Posts</a></li>
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2019-12-16 00:28:53 -0700 -0700">December 16, 2019</time>
+</div>
+		<h1 class="post-title">Advent of Code 2019, the wrong way (part one)</h1>
+<div class="post-line"></div>
+
+		
+
+		<p>Per <a href="https://twitter.com/Motoblag/status/1203557633648553984">my tweet</a>: doing Advent of Code 2019 the wrong way. 😁</p>
+<p>Today we're easing into #serverless.</p>
+<h2 id="what-are-we-doing">WHAT are we doing?</h2>
+<p><a href="https://adventofcode.com/2019/about">Advent of Code</a>!</p>
+<p><code>Advent of Code is an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like.</code></p>
+<p>It's an excuse to play around with smaller coding problems and enjoy some recreational coding. In this series of blog posts, we're going to go about solving the problems the wrong way: as much serverless as possible.</p>
+<h2 id="yup-no-servers">Yup, no servers</h2>
+<p>Instead of solving the puzzles on my computer, I'm going to use serverless as much as I can. This theme will certainly create hilariously overbuilt and overly complicated results, but that's going to be part of the fun this year.</p>
+<h2 id="day-one-part-one">Day one, part one</h2>
+<p>There are two parts to day one: reading the problem input and making a function for calculating fuel load: <code> Specifically, to find the fuel required for a module, take its mass, divide by three, round down, and subtract 2.</code></p>
+<p>Let's ease into serverless by starting on <a href="https://play.rust-lang.org/">the Rust playground</a>.</p>
+<p>I like test-first development, especially with these puzzles. Let's do that first:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">main</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;yo&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#09f;font-style:italic">// take its mass, divide by three, round down, and subtract 2
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">fuel_required</span>(mass: <span style="color:#078;font-weight:bold">i64</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">i64</span> {<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>mass;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#099">#[</span><span style="color:#099">cfg(test)</span><span style="color:#099">]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">mod</span> <span style="color:#0cf;font-weight:bold">tests</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">super</span>::<span style="color:#555">*</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#099">#[</span><span style="color:#099">test</span><span style="color:#099">]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">test_fuel</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>assert_eq<span style="color:#555">!</span>(fuel_required(<span style="color:#f60">12</span>),<span style="color:#bbb"> </span><span style="color:#f60">2</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>assert_eq<span style="color:#555">!</span>(fuel_required(<span style="color:#f60">14</span>),<span style="color:#bbb"> </span><span style="color:#f60">2</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>assert_eq<span style="color:#555">!</span>(fuel_required(<span style="color:#f60">1969</span>),<span style="color:#bbb"> </span><span style="color:#f60">654</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>assert_eq<span style="color:#555">!</span>(fuel_required(<span style="color:#f60">100756</span>),<span style="color:#bbb"> </span><span style="color:#f60">33583</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>The test cases in the problem description are converted to a test here. The <code>fuel_required</code> function is stubbed out, and our tests fail:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">failures:
+
+---- tests::test_fuel stdout ----
+thread <span style="color:#c30">&#39;tests::test_fuel&#39;</span> panicked at <span style="color:#c30">&#39;assertion failed: `(left == right)`
+</span><span style="color:#c30">  left: `12`,
+</span><span style="color:#c30"> right: `2`&#39;</span>, src/lib.rs:17:9
+</code></pre></div><p>So far so good. Adding the implementation for <code>fuel_required</code> we get:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#09f;font-style:italic">// take its mass, divide by three, round down, and subtract 2
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">fuel_required</span>(mass: <span style="color:#078;font-weight:bold">i64</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">i64</span> {<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>mass_as_float<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>mass<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">f64</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>m1<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>(mass_as_float<span style="color:#bbb"> </span><span style="color:#555">/</span><span style="color:#bbb"> </span><span style="color:#f60">3.0</span>).floor();<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>(m1<span style="color:#bbb"> </span><span style="color:#555">-</span><span style="color:#bbb"> </span><span style="color:#f60">2.0</span>)<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">i64</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>Results:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">running <span style="color:#f60">1</span> <span style="color:#366">test</span>
+<span style="color:#366">test</span> tests::test_fuel ... ok
+</code></pre></div><p>If we were running locally, we could put our hundred lines of input into a file and read that. Being ~~~serverless let's take a different approach and use a <a href="https://doc.rust-lang.org/rust-by-example/std/str.html">raw string literal</a>:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#09f;font-style:italic">// parts removed for brevity
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">const</span><span style="color:#bbb"> </span>DAYS_INPUT: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span> <span style="color:#555">=</span><span style="color:#bbb"> </span>r<span style="color:#a00;background-color:#faa">#</span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#f60">130762</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#f60">108691</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#f60">131618</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#f60">138163</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#a00;background-color:#faa">#</span>;<span style="color:#bbb">
+</span></code></pre></div><p>Now we can get the strings out, splitting by whitespace:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>string_entries: <span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#555">&amp;</span><span style="color:#078;font-weight:bold">str</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DAYS_INPUT.split_whitespace().collect();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;string entries: {:?}&#34;</span>,<span style="color:#bbb"> </span>string_entries);<span style="color:#bbb">
+</span></code></pre></div><p>That works great, but we need integers for our fuel calculations:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>int_entries: <span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#078;font-weight:bold">i64</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>string_entries.iter().map(<span style="color:#555">|</span>x<span style="color:#555">|</span><span style="color:#bbb"> </span>x.parse::<span style="color:#555">&lt;</span><span style="color:#078;font-weight:bold">i64</span><span style="color:#555">&gt;</span>().unwrap()).collect();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;int entries: {:?}&#34;</span>,<span style="color:#bbb"> </span>int_entries);<span style="color:#bbb">  
+</span></code></pre></div><p>And per the day's instructions, we need to run each entry through the calculation function and get the total:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>total_fuel: <span style="color:#078;font-weight:bold">i64</span> <span style="color:#555">=</span><span style="color:#bbb"> </span>int_entries.iter().map(<span style="color:#555">|</span>x<span style="color:#555">|</span><span style="color:#bbb"> </span>fuel_required(<span style="color:#555">*</span>x)).sum();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;fuel required: {:?}&#34;</span>,<span style="color:#bbb"> </span>total_fuel);<span style="color:#bbb">
+</span></code></pre></div><p>That's it! 🎉 See the entire solution on the Rust Playground: <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=df26e4c4a8d8b7e2fa8c829ebf8b98e3">https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=df26e4c4a8d8b7e2fa8c829ebf8b98e3</a>.</p>
+<p>Day one, part one is complete. Soon we'll get into (ab)using AWS for solving these problems.</p>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/rust-as-abs/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2019-12-16 20:23:11.596706 -0800 PST m=&#43;0.091259983">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>

@@ -38,6 +38,21 @@
 <main>
 	<div class="catalogue">
 		
+			<a href="https://matthewkmayer.github.io/blag/public/post/2018-break/" class="catalogue-item">
+    <div>
+        <time datetime="2018-04-02 00:28:53 -0700 PDT" class="catalogue-time">April 2, 2018</time>
+        <h1 class="catalogue-title">Taking a break</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            After three years maintaining an open source project, it's time to take a few months of me time.
+TL;DR I'm taking a break to do things I've been missing. I will be back, no later than September 1st, 2018.
+Rusoto history and running an open source project Back in early 2015, Anthony DiMarco and I started Rusoto. Rust's promises of performance and correctness looked like a perfect match for cloud computing.
+        </p>
+    </div>
+</a>
+
+		
 			<a href="https://matthewkmayer.github.io/blag/public/post/resources-list/" class="catalogue-item">
     <div>
         <time datetime="2018-03-18 21:28:53 -0700 PDT" class="catalogue-time">March 18, 2018</time>
@@ -45,7 +60,7 @@
         <div class="catalogue-line"></div>
 
         <p>
-             List of links for topics including:
+            List of links for topics including:
  Git Branching strategies Ruby Go Testing Cloud and AWS  Git  Think like a Git Pro Git  Branching strategies  GitHub flow Trunk based Development  Ruby  Learn Ruby the Hard Way  Go  Effective Go Golang Tripping Hazards  Testing  Practical Test Pyramid https://en.wikipedia.org/wiki/Test-driven_development Red Green Refactor Repeat Cucumber general reference  Cloud and AWS  Getting Started on AWS This Is My Architecture A Cloud Guru Linux Academy  
         </p>
     </div>
@@ -59,8 +74,8 @@
         <div class="catalogue-line"></div>
 
         <p>
-            Per the call for blog posts, I&rsquo;ve got thoughts and ideas on where Rust can go in the upcoming year. My wants haven&rsquo;t changed much over the last year or so: give me non-embarassing compilation speed! 😁
-Before getting started, I&rsquo;m very appreciative of the hard work put into the overall Rust community and ecosystem, including the behind-the-scenes work. It&rsquo;s difficult to understate just how much time and energy people volunteer in pursuit of a better, Rust-ier world.
+            Per the call for blog posts, I've got thoughts and ideas on where Rust can go in the upcoming year. My wants haven't changed much over the last year or so: give me non-embarassing compilation speed! 😁
+Before getting started, I'm very appreciative of the hard work put into the overall Rust community and ecosystem, including the behind-the-scenes work. It's difficult to understate just how much time and energy people volunteer in pursuit of a better, Rust-ier world.
         </p>
     </div>
 </a>
@@ -87,9 +102,9 @@ Improved functionality  Added all publicly available AWS regions Custom endpoint
         <div class="catalogue-line"></div>
 
         <p>
-            Test Driven Development (TDD) encourages better software design. When the desired behavior is known and expressible, it&rsquo;s highly effective to make modular and easily tested code.
-Let&rsquo;s take a look at using TDD with Rust, using release-party as an example.
-What we&rsquo;re changing Release-party is a command line tool I made for my day job. We&rsquo;ve got a fair amount of repositories on GitHub: one for each microservice. Our deployments are automated through TravisCI: the master branch is deployed to our testing environment and the release branch is deployed to production.
+            Test Driven Development (TDD) encourages better software design. When the desired behavior is known and expressible, it's highly effective to make modular and easily tested code.
+Let's take a look at using TDD with Rust, using release-party as an example.
+What we're changing Release-party is a command line tool I made for my day job. We've got a fair amount of repositories on GitHub: one for each microservice. Our deployments are automated through TravisCI: the master branch is deployed to our testing environment and the release branch is deployed to production.
         </p>
     </div>
 </a>
@@ -102,8 +117,8 @@ What we&rsquo;re changing Release-party is a command line tool I made for my day
         <div class="catalogue-line"></div>
 
         <p>
-            While a software enginerd/pixie wrangler at heart, I&rsquo;ve discovered the stereotypical developer path of grabbing a ticket from Jira, working on it, shoving the results to QA and repeat isn&rsquo;t for me. The biggest reason is how this leaves a tremendous amount of efficiency on the table. This inefficient approach is difficult to reconcile with empathy for the customer buying and using the product.
-My code writing speed has peaked: I can&rsquo;t write code any faster.
+            While a software enginerd/pixie wrangler at heart, I've discovered the stereotypical developer path of grabbing a ticket from Jira, working on it, shoving the results to QA and repeat isn't for me. The biggest reason is how this leaves a tremendous amount of efficiency on the table. This inefficient approach is difficult to reconcile with empathy for the customer buying and using the product.
+My code writing speed has peaked: I can't write code any faster.
         </p>
     </div>
 </a>
@@ -117,7 +132,7 @@ My code writing speed has peaked: I can&rsquo;t write code any faster.
 
         <p>
             My recap of RustConf 2017 in Portland, Oregon. Or: how I avoided hotel surge pricing during the eclipse weekend!
-RustConf the second I&rsquo;ve been told the first conference for community or technology is the best. I&rsquo;m happy to report I don&rsquo;t believe it applies in this case! The first RustConf set a tone of possibility and potentials whereas RustConf 2017 focused more on the progress made in the language, ecosystem and community.
+RustConf the second I've been told the first conference for community or technology is the best. I'm happy to report I don't believe it applies in this case! The first RustConf set a tone of possibility and potentials whereas RustConf 2017 focused more on the progress made in the language, ecosystem and community.
         </p>
     </div>
 </a>
@@ -130,7 +145,7 @@ RustConf the second I&rsquo;ve been told the first conference for community or t
         <div class="catalogue-line"></div>
 
         <p>
-            This is part three of Rusoto code generation. The first two parts went over how code inside a crate is generated. In this post, we&rsquo;ll take a look at how we make the crate for an AWS service.
+            This is part three of Rusoto code generation. The first two parts went over how code inside a crate is generated. In this post, we'll take a look at how we make the crate for an AWS service.
 Parts one and two recap In the previous two posts, we followed code generation from the Simple Queue Service (SQS) botocore service definition to Rust code. We glossed over where the generated code went in order to concentrate on the generation itself.
         </p>
     </div>
@@ -144,9 +159,9 @@ Parts one and two recap In the previous two posts, we followed code generation f
         <div class="catalogue-line"></div>
 
         <p>
-            In the previous post we took a quick tour of the major pieces of Rusoto code generation. In this post we&rsquo;ll get deeper into code generation for the Simple Queue Service.
+            In the previous post we took a quick tour of the major pieces of Rusoto code generation. In this post we'll get deeper into code generation for the Simple Queue Service.
 Picking up from part one Part one described a few parts of Rusoto codegen:
- Finding which services to generate Making the service&rsquo;s crate Generating the service and placing it inside its crate rustfmt the generated code to make it look pretty  Step three is where this post will concentrate.
+ Finding which services to generate Making the service's crate Generating the service and placing it inside its crate rustfmt the generated code to make it look pretty  Step three is where this post will concentrate.
         </p>
     </div>
 </a>
@@ -159,23 +174,8 @@ Picking up from part one Part one described a few parts of Rusoto codegen:
         <div class="catalogue-line"></div>
 
         <p>
-            Writing a software development kit (SDK) is a challenge. Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &ldquo;other.&rdquo; Rusoto uses the botocore service definitions to create Rust code to interact with Amazon Web Services. Let&rsquo;s dive into how it&rsquo;s done!
-Using Simple Queue Service as an example To make this post clearer, we&rsquo;ll follow the Simple Queue Service (SQS) from botocore service definition to the rusoto_sqs crate.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-mk2/" class="catalogue-item">
-    <div>
-        <time datetime="2017-05-23 21:28:53 -0700 PDT" class="catalogue-time">May 23, 2017</time>
-        <h1 class="catalogue-title">Rusoto RDS walkthrough, mk 2</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            Since the publication of Rusoto RDS walkthrough, a new version of Rusoto has been released: 0.25.0. This includes some breaking changes so let&rsquo;s work through those. We&rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.
-rusoto-rds-mk2 The previous project&rsquo;s source code is on github. We&rsquo;ll be making a new project based off that one. You can see the final product in rusoto-rds-mk2 folder.
-Cargo.toml changes required for Rusoto 0.
+            Writing a software development kit (SDK) is a challenge. Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &ldquo;other.&rdquo; Rusoto uses the botocore service definitions to create Rust code to interact with Amazon Web Services. Let's dive into how it's done!
+Using Simple Queue Service as an example To make this post clearer, we'll follow the Simple Queue Service (SQS) from botocore service definition to the rusoto_sqs crate.
         </p>
     </div>
 </a>
@@ -198,7 +198,7 @@ Cargo.toml changes required for Rusoto 0.
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-10-28 22:22:13.754297 -0700 PDT m=&#43;0.202992234">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2019-12-16 20:23:11.671948 -0800 PST m=&#43;0.166499962">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
