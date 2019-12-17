@@ -48,40 +48,22 @@
 
 		
 
-		
-
-<p><a href="https://matthewkmayer.github.io/blag/public/post/build-ci-cd/">Previously</a>, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we&rsquo;ll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.</p>
-
+		<p><a href="https://matthewkmayer.github.io/blag/public/post/build-ci-cd/">Previously</a>, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we'll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.</p>
 <p><em>Continuous Integration</em> and <em>Continuous Delivery</em> are processes that tell humans what techniques to use with source control.</p>
-
 <p><em>Build server</em> is a server, servers or a system that automatically builds and tests code.</p>
-
 <p>Putting these concepts together require <em>people</em> following <em>processes</em> so automated tasks execute well.</p>
-
 <h2 id="tying-it-together">Tying it together</h2>
-
-<p>By continuously integrating back to a shared or common branch, developers avoid spending time dealing with merge conflicts, or worse: code that&rsquo;s written and thrown away without customers seeing the results.</p>
-
-<p>Continuous deployment reduces lead time for bug fixes and features being available for customers to use. &ldquo;Lead time&rdquo; is from Lean Software Development, which refers to the time between the delivery team knowing about a bug or desired feature and when it&rsquo;s available to customers. Lower lead time is a competetive advantage over other companies.</p>
-
-<p>Build servers can be leaned on for monotonous, repetitive tasks. Computers excel at this whereas people are not as good. Use computers to automatically run unit tests, functional tests, deployments and functional testing of code after deployment. They won&rsquo;t forget to run <code>go test</code> or <code>rspec</code>.</p>
-
+<p>By continuously integrating back to a shared or common branch, developers avoid spending time dealing with merge conflicts, or worse: code that's written and thrown away without customers seeing the results.</p>
+<p>Continuous deployment reduces lead time for bug fixes and features being available for customers to use. &ldquo;Lead time&rdquo; is from Lean Software Development, which refers to the time between the delivery team knowing about a bug or desired feature and when it's available to customers. Lower lead time is a competetive advantage over other companies.</p>
+<p>Build servers can be leaned on for monotonous, repetitive tasks. Computers excel at this whereas people are not as good. Use computers to automatically run unit tests, functional tests, deployments and functional testing of code after deployment. They won't forget to run <code>go test</code> or <code>rspec</code>.</p>
 <h2 id="build-steps-are-the-easiest-part">Build steps are the easiest part</h2>
-
 <p>Getting a build server to do repetitive tasks is the easiest part of making a true CI/CD pipeline. CI is harder and requires discipline and skill. CD is in the middle, requiring tooling to help and getting buy-in from parts of the business. Sometimes, batching CD helps. Think of a metered freeway onramp: things happen at a regular cadence, controlled to prevent massive amounts of change to keep the overall flow working.</p>
-
-<p>In the past few years I&rsquo;ve found good success with a <em>minimum</em> of deploying to production twice a week, using <a href="https://github.com/matthewkmayer/release-party-BR">release-party</a>. Almost all friction is gone from shipping code to production: run the tool on Tuesdays and Thursdays, inform team members there are release pull requests waiting for review, get them approved and merged into our <code>release</code> branch.</p>
-
+<p>In the past few years I've found good success with a <em>minimum</em> of deploying to production twice a week, using <a href="https://github.com/matthewkmayer/release-party-BR">release-party</a>. Almost all friction is gone from shipping code to production: run the tool on Tuesdays and Thursdays, inform team members there are release pull requests waiting for review, get them approved and merged into our <code>release</code> branch.</p>
 <h2 id="where-does-the-delivery-team-spend-its-time">Where does the delivery team spend its time?</h2>
-
 <p>When a team spends its time dealing with merge conflicts or being confused as to which branch bug fixes are applied, they waste time. Make it clear where fixes and features are, and get them to customers after enough testing, as quickly as possible. CI and CD make this easy to achieve.</p>
-
 <h2 id="multiplying-force">Multiplying force</h2>
-
 <p>With the disciple of continuous integration, multiplied by continuous deployment run on a build service, the overall ability to ship bug fixes and new features results in something greater than its parts.</p>
-
 <p>By shipping bug fixes and features faster, reducing or eliminating time wasted by the delivery team and leaning on computers to do repetitive, error-prone tasks, these ideas make a true CI/CD pipeline that is greater than the sum of its parts.</p>
-
 <p>A team putting these all together has a competitive advantage over a bigger and smarter team working on the same problem. More features, less bugs, delivered faster, is an edge to make a company succeed.</p>
 
 
@@ -99,7 +81,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-10-28 22:22:13.624846 -0700 PDT m=&#43;0.073544384">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2019-12-16 20:23:11.596657 -0800 PST m=&#43;0.091210721">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

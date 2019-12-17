@@ -1,5 +1,5 @@
 +++
-date = "2019-12-26T00:28:53-07:00"
+date = "2019-12-16T00:28:53-07:00"
 draft = false
 title = "Advent of Code 2019, the wrong way (part one)"
 +++
@@ -54,7 +54,7 @@ mod tests {
 
 The test cases in the problem description are converted to a test here. The `fuel_required` function is stubbed out, and our tests fail:
 
-```
+```bash
 failures:
 
 ---- tests::test_fuel stdout ----
@@ -76,7 +76,7 @@ fn fuel_required(mass: i64) -> i64 {
 
 Results:
 
-```
+```bash
 running 1 test
 test tests::test_fuel ... ok
 ```

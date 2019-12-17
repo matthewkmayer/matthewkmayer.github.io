@@ -48,368 +48,306 @@
 
 		
 
-		
-
-<p>Let&rsquo;s tie some great Rust crates together!  In this walkthrough, we&rsquo;ll use <a href="https://github.com/rusoto/rusoto">Rusoto</a> to create a Postgres RDS database instance,
+		<p>Let's tie some great Rust crates together!  In this walkthrough, we'll use <a href="https://github.com/rusoto/rusoto">Rusoto</a> to create a Postgres RDS database instance,
 <a href="https://github.com/SergioBenitez/Rocket">Rocket.rs</a> to make a web server and <a href="https://github.com/diesel-rs/diesel">Diesel</a> to talk to the database on AWS to make a proof of concept hit counter.</p>
-
 <h2 id="walkthrough-overview">Walkthrough overview</h2>
-
 <p>There are two projects in this walkthrough.  First is <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds">rusoto-rds</a>.  This creates the Amazon Web Services (AWS) Relational Database Service (RDS) instance and should be run first.</p>
-
 <p>The second is <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket">rusoto-rocket</a>.  This is the Rocket web service sample.  It uses Diesel and Rocket to have a web site that connects to the RDS instance created in <code>rusoto-rds</code> and demonstrates a hit counter.</p>
-
 <h2 id="prerequisites">Prerequisites</h2>
-
 <h4 id="rocket">Rocket</h4>
-
-<p>Starting with the Rocket web site, we&rsquo;ll need to use Rust nightly.  This walkthrough uses <code>rustc 1.18.0-nightly (036983201 2017-04-26)</code>.  To switch to that nightly release, run <code>rustup default nightly-2017-04-26</code>.  The output of that command should look like this:</p>
+<p>Starting with the Rocket web site, we'll need to use Rust nightly.  This walkthrough uses <code>rustc 1.18.0-nightly (036983201 2017-04-26)</code>.  To switch to that nightly release, run <code>rustup default nightly-2017-04-26</code>.  The output of that command should look like this:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">info: syncing channel updates <span style="color:#069;font-weight:bold">for</span> <span style="color:#c30">&#39;nightly-2017-04-26-x86_64-apple-darwin&#39;</span>
 info: downloading component <span style="color:#c30">&#39;rustc&#39;</span>
- <span style="color:#f60">42</span>.3 MiB /  <span style="color:#f60">42</span>.3 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span> <span style="color:#f60">1014</span>.4 KiB/s ETA:   <span style="color:#f60">0</span> s                
+ 42.3 MiB /  42.3 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span> 1014.4 KiB/s ETA:   <span style="color:#f60">0</span> s                
 info: downloading component <span style="color:#c30">&#39;rust-std&#39;</span>
- <span style="color:#f60">58</span>.2 MiB /  <span style="color:#f60">58</span>.2 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   <span style="color:#f60">1</span>.4 MiB/s ETA:   <span style="color:#f60">0</span> s                
+ 58.2 MiB /  58.2 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   1.4 MiB/s ETA:   <span style="color:#f60">0</span> s                
 info: downloading component <span style="color:#c30">&#39;cargo&#39;</span>
-  <span style="color:#f60">3</span>.6 MiB /   <span style="color:#f60">3</span>.6 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   <span style="color:#f60">1</span>.1 MiB/s ETA:   <span style="color:#f60">0</span> s                
+  3.6 MiB /   3.6 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   1.1 MiB/s ETA:   <span style="color:#f60">0</span> s                
 info: downloading component <span style="color:#c30">&#39;rust-docs&#39;</span>
- <span style="color:#f60">11</span>.5 MiB /  <span style="color:#f60">11</span>.5 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   <span style="color:#f60">1</span>.1 MiB/s ETA:   <span style="color:#f60">0</span> s                
+ 11.5 MiB /  11.5 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span>   1.1 MiB/s ETA:   <span style="color:#f60">0</span> s                
 info: installing component <span style="color:#c30">&#39;rustc&#39;</span>
 info: installing component <span style="color:#c30">&#39;rust-std&#39;</span>
 info: installing component <span style="color:#c30">&#39;cargo&#39;</span>
 info: installing component <span style="color:#c30">&#39;rust-docs&#39;</span>
 info: default toolchain <span style="color:#366">set</span> to <span style="color:#c30">&#39;nightly-2017-04-26-x86_64-apple-darwin&#39;</span>
 
-  nightly-2017-04-26-x86_64-apple-darwin installed - rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(</span>2b4c91158 <span style="color:#f60">2017</span>-04-25<span style="color:#555">)</span></code></pre></div>
-<p>Verify <code>rustc</code> is using the right version:</p>
+  nightly-2017-04-26-x86_64-apple-darwin installed - rustc 1.18.0-nightly <span style="color:#555">(</span>2b4c91158 2017-04-25<span style="color:#555">)</span>
+</code></pre></div><p>Verify <code>rustc</code> is using the right version:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ rustc --version
-rustc <span style="color:#f60">1</span>.18.0-nightly <span style="color:#555">(</span>2b4c91158 <span style="color:#f60">2017</span>-04-25<span style="color:#555">)</span></code></pre></div>
-<h4 id="diesel">Diesel</h4>
-
-<p>To set up Diesel, we&rsquo;ll need to <a href="https://wiki.postgresql.org/wiki/Detailed_installation_guides">install Postgres</a> to get the required libraries for Diesel CLI.  The Postgres service doesn&rsquo;t have to be running for this walkthrough.</p>
-
+rustc 1.18.0-nightly <span style="color:#555">(</span>2b4c91158 2017-04-25<span style="color:#555">)</span>
+</code></pre></div><h4 id="diesel">Diesel</h4>
+<p>To set up Diesel, we'll need to <a href="https://wiki.postgresql.org/wiki/Detailed_installation_guides">install Postgres</a> to get the required libraries for Diesel CLI.  The Postgres service doesn't have to be running for this walkthrough.</p>
 <p>Then install the Diesel CLI tool with the Postgres extensions:</p>
-
 <p><code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
-
 <h4 id="rusoto">Rusoto</h4>
-
 <p>For the AWS portions of this walkthrough, ensure AWS access keys are available either in environment variables or AWS credentials file.</p>
-
 <h2 id="creating-a-postgres-rds-instance">Creating a Postgres RDS instance</h2>
-
-<p>See <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rds/src/main.rs">rusoto-rds/src/main.rs</a> for the full code.  We&rsquo;ll be using <a href="https://github.com/rusoto/rusoto/">Rusoto</a> 0.24.0, the latest release as of writing this post.</p>
-
+<p>See <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rds/src/main.rs">rusoto-rds/src/main.rs</a> for the full code.  We'll be using <a href="https://github.com/rusoto/rusoto/">Rusoto</a> 0.24.0, the latest release as of writing this post.</p>
 <p>The meat of the program is this:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>database_instance_name<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;rusototester2&#34;</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new().unwrap();<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#09f;font-style:italic">// Security groups in the default VPC will need modification to let you access this from the internet:
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>rds_client<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>RdsClient::new(default_tls_client().unwrap(),<span style="color:#bbb"> </span>credentials,<span style="color:#bbb"> </span>Region::UsEast1);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>create_db_instance_request<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>CreateDBInstanceMessage<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>allocated_storage: <span style="color:#366">Some</span>(<span style="color:#f60">5</span>),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>backup_retention_period: <span style="color:#366">Some</span>(<span style="color:#f60">0</span>),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#0a8;font-weight:bold">database_instance_name</span>.to_string(),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>db_instance_class: <span style="color:#c30">&#34;db.t2.micro&#34;</span>.to_string(),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// name and login details should match `.env` in rusoto-rocket
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>allocated_storage: <span style="color:#366">Some</span>(<span style="color:#f60">5</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>backup_retention_period: <span style="color:#366">Some</span>(<span style="color:#f60">0</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#0a8;font-weight:bold">database_instance_name</span>.to_string(),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>db_instance_class: <span style="color:#c30">&#34;db.t2.micro&#34;</span>.to_string(),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// name and login details should match `.env` in rusoto-rocket
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>master_user_password: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;TotallySecurePassword501&#34;</span>.to_string()),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>master_username: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;masteruser&#34;</span>.to_string()),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>db_name: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;rusotodb&#34;</span>.to_string()),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>engine: <span style="color:#c30">&#34;postgres&#34;</span>.to_string(),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>multi_az: <span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">false</span>),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>master_username: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;masteruser&#34;</span>.to_string()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>db_name: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;rusotodb&#34;</span>.to_string()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>engine: <span style="color:#c30">&#34;postgres&#34;</span>.to_string(),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>multi_az: <span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">false</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Going to make the database instance.&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_creation_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request).unwrap();<span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Created! \n\n{:?}&#34;</span>,<span style="color:#bbb"> </span>db_creation_result);<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#09f;font-style:italic">// The endpoint isn&#39;t available until the DB is created, let&#39;s wait for it:
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>describe_instances_request<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DescribeDBInstancesMessage<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#366">Some</span>(database_instance_name.to_string()),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#366">Some</span>(database_instance_name.to_string()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto</span>::rds::Endpoint;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>ten_seconds<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>time::Duration::from_millis(<span style="color:#f60">10000</span>);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">loop</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>rds_client.describe_db_instances(<span style="color:#555">&amp;</span>describe_instances_request).unwrap().db_instances.unwrap()[<span style="color:#f60">0</span>].endpoint<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>endpoint_result)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">            </span>endpoint<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint_result.clone();<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>},<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Waiting for db to be available...&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">            </span>thread::sleep(ten_seconds);<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">continue</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>},<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>};<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>rds_client.describe_db_instances(<span style="color:#555">&amp;</span>describe_instances_request).unwrap().db_instances.unwrap()[<span style="color:#f60">0</span>].endpoint<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>endpoint_result)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>endpoint<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint_result.clone();<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>},<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Waiting for db to be available...&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>thread::sleep(ten_seconds);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">continue</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>},<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>};<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div>
-<p>A lot to unravel.</p>
-
+</span></code></pre></div><p>A lot to unravel.</p>
 <p>The first thing we do is create an AWS credential object:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new().unwrap();<span style="color:#bbb">
-</span></code></pre></div>
-<p>This creates a Rusoto credential chain.  It will source credentials according to <a href="https://github.com/rusoto/rusoto/blob/master/AWS-CREDENTIALS.md">AWS best practices</a>.</p>
+</span></code></pre></div><p>This creates a Rusoto credential chain.  It will source credentials according to <a href="https://github.com/rusoto/rusoto/blob/master/AWS-CREDENTIALS.md">AWS best practices</a>.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>rds_client<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>RdsClient::new(default_tls_client().unwrap(),<span style="color:#bbb"> </span>credentials,<span style="color:#bbb"> </span>Region::UsEast1);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>create_db_instance_request<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>CreateDBInstanceMessage<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>allocated_storage: <span style="color:#366">Some</span>(<span style="color:#f60">5</span>),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>backup_retention_period: <span style="color:#366">Some</span>(<span style="color:#f60">0</span>),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#0a8;font-weight:bold">database_instance_name</span>.to_string(),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>db_instance_class: <span style="color:#c30">&#34;db.t2.micro&#34;</span>.to_string(),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// name and login details should match `.env` in rusoto-rocket
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>allocated_storage: <span style="color:#366">Some</span>(<span style="color:#f60">5</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>backup_retention_period: <span style="color:#366">Some</span>(<span style="color:#f60">0</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#0a8;font-weight:bold">database_instance_name</span>.to_string(),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>db_instance_class: <span style="color:#c30">&#34;db.t2.micro&#34;</span>.to_string(),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// name and login details should match `.env` in rusoto-rocket
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>master_user_password: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;TotallySecurePassword501&#34;</span>.to_string()),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>master_username: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;masteruser&#34;</span>.to_string()),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>db_name: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;rusotodb&#34;</span>.to_string()),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>engine: <span style="color:#c30">&#34;postgres&#34;</span>.to_string(),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>multi_az: <span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">false</span>),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>master_username: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;masteruser&#34;</span>.to_string()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>db_name: <span style="color:#366">Some</span>(<span style="color:#c30">&#34;rusotodb&#34;</span>.to_string()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>engine: <span style="color:#c30">&#34;postgres&#34;</span>.to_string(),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>multi_az: <span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">false</span>),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
-</span></code></pre></div>
-<p>This code creates a Rusoto client for AWS RDS.  Then it makes a new <code>CreateDBInstanceMessage</code>, as specified by the AWS RDS API definition.  We set database storage/disk size, disable backups, use a <code>t2.micro</code> size and we set our username, password and database name, along with setting it to a single availability zone (AZ) since this is a non-production database.  We wrap it up by telling Rusoto to use defaults for the rest of the request.</p>
-
+</span></code></pre></div><p>This code creates a Rusoto client for AWS RDS.  Then it makes a new <code>CreateDBInstanceMessage</code>, as specified by the AWS RDS API definition.  We set database storage/disk size, disable backups, use a <code>t2.micro</code> size and we set our username, password and database name, along with setting it to a single availability zone (AZ) since this is a non-production database.  We wrap it up by telling Rusoto to use defaults for the rest of the request.</p>
 <p>Finally, we execute the request to create the RDS instance:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_creation_result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>rds_client.create_db_instance(<span style="color:#555">&amp;</span>create_db_instance_request).unwrap();<span style="color:#bbb">
-</span></code></pre></div>
-<p>Since creating the database can take a few minutes, we poll AWS for its status:</p>
+</span></code></pre></div><p>Since creating the database can take a few minutes, we poll AWS for its status:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>describe_instances_request<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DescribeDBInstancesMessage<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#366">Some</span>(database_instance_name.to_string()),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>db_instance_identifier: <span style="color:#366">Some</span>(database_instance_name.to_string()),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>..<span style="color:#366">Default</span>::default()<span style="color:#bbb">
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
 </span></code></pre></div><div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint<span style="color:#bbb"> </span>: <span style="color:#0a8;font-weight:bold">rusoto</span>::rds::Endpoint;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>ten_seconds<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>time::Duration::from_millis(<span style="color:#f60">10000</span>);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">loop</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>rds_client.describe_db_instances(<span style="color:#555">&amp;</span>describe_instances_request).unwrap().db_instances.unwrap()[<span style="color:#f60">0</span>].endpoint<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>endpoint_result)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">            </span>endpoint<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint_result.clone();<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>},<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Waiting for db to be available...&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">            </span>thread::sleep(ten_seconds);<span style="color:#bbb">
-</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">continue</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>},<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>};<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>rds_client.describe_db_instances(<span style="color:#555">&amp;</span>describe_instances_request).unwrap().db_instances.unwrap()[<span style="color:#f60">0</span>].endpoint<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>endpoint_result)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>endpoint<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint_result.clone();<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>},<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Waiting for db to be available...&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>thread::sleep(ten_seconds);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">continue</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>},<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>};<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div>
-<p>This code waits for the instance to become available by checking for the RDS instance by name.</p>
+</span></code></pre></div><p>This code waits for the instance to become available by checking for the RDS instance by name.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint_address<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint.address.unwrap();<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint_port<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint.port.unwrap();<span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;\n\nendpoint: {:?}&#34;</span>,<span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;{}:{}&#34;</span>,<span style="color:#bbb"> </span>endpoint_address,<span style="color:#bbb"> </span>endpoint_port));<span style="color:#bbb">
-</span></code></pre></div>
-<p>When the database is available, we extract the connection string and print it.  Since the DNS name AWS creates for the RDS instance is unique, we&rsquo;ll put that in the <code>.env</code> file in <code>rusoto-rocket</code>.</p>
-
+</span></code></pre></div><p>When the database is available, we extract the connection string and print it.  Since the DNS name AWS creates for the RDS instance is unique, we'll put that in the <code>.env</code> file in <code>rusoto-rocket</code>.</p>
 <p>Example of <code>.env</code>, using <code>localhost</code> instead of the RDS DNS name:</p>
-
 <p><code>DATABASE_URL=postgres://masteruser:TotallySecurePassword501@localhost/rusoto_rocket</code></p>
-
 <p>Now, to create the database: in the <code>rusoto-rds</code> directory, run <code>cargo run</code> to create a new database and wait for it to be available. Populate <code>.env</code> DNS name the with the output of <code>rusoto-rds</code>, replacing <code>localhost</code> in this example.</p>
-
 <h2 id="security-groups">Security groups</h2>
-
 <p>Using the AWS Console, add a new rule to the security group the RDS instance is using.  Allow inbound traffic on port 5432
 from your IP address.  If the following <code>diesel</code> commands time out, double check you can reach the instance.  A common gotcha is security groups blocking ingress.</p>
-
 <h2 id="diesel-1">Diesel</h2>
-
-<p>We&rsquo;ve already installed the Diesel CLI with <code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
-
+<p>We've already installed the Diesel CLI with <code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
 <p>Ensure the <code>.env</code> file in <code>rusoto-rocket</code> has the connection string from the new RDS instance, including username and password:</p>
-
 <p><code>DATABASE_URL=postgres://postgres:TotallySecurePassword501@localhost/rusoto_rocket</code></p>
-
 <p>The up and down files have been populated in this sample.  They are available at <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter">https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter</a> .</p>
-
 <p><a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter/up.sql">Up file</a>:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> hits (
     id <span style="color:#366">SERIAL</span> <span style="color:#069;font-weight:bold">PRIMARY</span> <span style="color:#069;font-weight:bold">KEY</span>,
     hits_so_far <span style="color:#366">SERIAL</span> <span style="color:#069;font-weight:bold">NOT</span> <span style="color:#069;font-weight:bold">NULL</span>
-)</code></pre></div>
-<p><a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter/down.sql">Down file</a>:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#069;font-weight:bold">DROP</span> <span style="color:#069;font-weight:bold">TABLE</span> hits</code></pre></div>
-<p>The <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/schema.rs">schema file</a> infers the schema via the database:</p>
+)
+</code></pre></div><p><a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter/down.sql">Down file</a>:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-SQL" data-lang="SQL"><span style="color:#069;font-weight:bold">DROP</span> <span style="color:#069;font-weight:bold">TABLE</span> hits
+</code></pre></div><p>The <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/schema.rs">schema file</a> infers the schema via the database:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">infer_schema<span style="color:#555">!</span>(<span style="color:#c30">&#34;dotenv:DATABASE_URL&#34;</span>);<span style="color:#bbb">
-</span></code></pre></div>
-<p>The ORM models we use are in the <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/models.rs">models file</a>:</p>
+</span></code></pre></div><p>The ORM models we use are in the <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/src/models.rs">models file</a>:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#099">#[derive(Queryable, Insertable, Debug)]</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#099">#[table_name=</span><span style="color:#c30">&#34;hits&#34;</span><span style="color:#099">]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#099">#[</span><span style="color:#099">derive(Queryable, Insertable, Debug)</span><span style="color:#099">]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#099">#[</span><span style="color:#099">table_name=</span><span style="color:#c30">&#34;</span><span style="color:#c30">hits</span><span style="color:#c30">&#34;</span><span style="color:#099">]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Hit</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>hits_so_far: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>hits_so_far: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div>
-<p>We use the type <code>Hit</code> to describe our hit counter.  It <code>derive</code>s Queryable, Insertable and Debug, in the table <code>hits</code>.  There&rsquo;s an <code>id</code> field which we gloss over by using a constant and the <code>hits_so_far</code> field where we store the number of hits the site has seen.  Except <code>Debug</code>, the <code>derive</code> fields are used by Diesel.</p>
-
+</span></code></pre></div><p>We use the type <code>Hit</code> to describe our hit counter.  It <code>derive</code>s Queryable, Insertable and Debug, in the table <code>hits</code>.  There's an <code>id</code> field which we gloss over by using a constant and the <code>hits_so_far</code> field where we store the number of hits the site has seen.  Except <code>Debug</code>, the <code>derive</code> fields are used by Diesel.</p>
 <p>In the <code>rusoto-rocket</code> directory, run <code>diesel setup</code>.  This will connect to RDS and create the database with the required schema.</p>
-
 <p>If the command times out, ensure your security groups allow inbound access from your IP address.</p>
-
 <h2 id="making-the-rocket-site">Making the Rocket site</h2>
-
 <p>This sample site follows the guide at <a href="https://rocket.rs/">https://rocket.rs/</a> .  Rocket is why nightly Rust is required: Rusoto and Diesel work on stable Rust.</p>
-
 <p>The source code for the Rocket site is located <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket">on Github</a>.</p>
-
 <p>The <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket/Cargo.toml">Cargo.toml</a> brings in the following dependencies:</p>
-
 <pre><code>[dependencies]
 rocket = &quot;0.2.6&quot;
 rocket_codegen = &quot;0.2.6&quot;
 diesel = { version = &quot;0.11.0&quot;, features = [&quot;postgres&quot;] }
 diesel_codegen = { version = &quot;0.11.0&quot;, features = [&quot;postgres&quot;] }
 dotenv = &quot;0.8.0&quot;
-</code></pre>
-
-<p>We&rsquo;re using Rocket 0.2.6 along with its codegen library, Diesel 0.11.0 with Postgres with its codegen library and dotenv for supplying configuration to Diesel.</p>
-
+</code></pre><p>We're using Rocket 0.2.6 along with its codegen library, Diesel 0.11.0 with Postgres with its codegen library and dotenv for supplying configuration to Diesel.</p>
 <p>In the <code>bin/main</code> directory we have the entirety of the Rocket site:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#![feature(plugin)]</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#099">#![plugin(rocket_codegen)]</span><span style="color:#bbb">
-</span><span style="color:#bbb">
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#![</span><span style="color:#099">feature(plugin)</span><span style="color:#099">]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#099">#![</span><span style="color:#099">plugin(rocket_codegen)</span><span style="color:#099">]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>diesel;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>dotenv;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rocket;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto_rocket;<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::sync::Mutex;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>diesel::prelude::<span style="color:#555">*</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>diesel::pg::PgConnection;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rocket::State;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>self::rusoto_rocket::<span style="color:#555">*</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>self::rusoto_rocket::models::<span style="color:#555">*</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">type</span> <span style="color:#0a8;font-weight:bold">DbConn</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>Mutex<span style="color:#555">&lt;</span>PgConnection<span style="color:#555">&gt;</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#099">#[get(</span><span style="color:#c30">&#34;/&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#099">#[</span><span style="color:#099">get(</span><span style="color:#c30">&#34;</span><span style="color:#c30">/</span><span style="color:#c30">&#34;</span><span style="color:#099">)</span><span style="color:#099">]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">index</span>(db_conn: <span style="color:#0a8;font-weight:bold">State</span><span style="color:#555">&lt;</span>DbConn<span style="color:#555">&gt;</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::<span style="color:#555">*</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>my_db_conn<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>db_conn.inner().lock().expect(<span style="color:#c30">&#34;Couldn&#39;t get mutex lock on db connection&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_from_db<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits.filter(id.eq(<span style="color:#f60">1</span>))<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.limit(<span style="color:#f60">1</span>)<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.load::<span style="color:#555">&lt;</span>Hit<span style="color:#555">&gt;</span>(<span style="color:#555">&amp;</span>my_db_conn<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#555">&amp;</span>PgConnection)<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// Explicit cast needed
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::<span style="color:#555">*</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>my_db_conn<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>db_conn.inner().lock().expect(<span style="color:#c30">&#34;Couldn&#39;t get mutex lock on db connection&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_from_db<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits.filter(id.eq(<span style="color:#f60">1</span>))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.limit(<span style="color:#f60">1</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.load::<span style="color:#555">&lt;</span>Hit<span style="color:#555">&gt;</span>(<span style="color:#555">&amp;</span>my_db_conn<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#555">&amp;</span>PgConnection)<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// Explicit cast needed
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">        </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t load hits, yo.&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// increment hits:
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// increment hits:
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits_from_db.first().unwrap().hits_so_far;<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>increment_hit(<span style="color:#555">&amp;</span>my_db_conn,<span style="color:#bbb"> </span><span style="color:#f60">1</span>,<span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Hello, world!  Hits: {:?}&#34;</span>,<span style="color:#bbb"> </span>hits_weve_seen).to_string()<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>increment_hit(<span style="color:#555">&amp;</span>my_db_conn,<span style="color:#bbb"> </span><span style="color:#f60">1</span>,<span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Hello, world!  Hits: {:?}&#34;</span>,<span style="color:#bbb"> </span>hits_weve_seen).to_string()<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">main</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>connection<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>establish_connection();<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>create_hit(<span style="color:#555">&amp;</span>connection,<span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span>rocket::ignite()<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.manage(Mutex::new(connection))<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.mount(<span style="color:#c30">&#34;/&#34;</span>,<span style="color:#bbb"> </span>routes<span style="color:#555">!</span>[index])<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.launch();<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>connection<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>establish_connection();<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>create_hit(<span style="color:#555">&amp;</span>connection,<span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>rocket::ignite()<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.manage(Mutex::new(connection))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.mount(<span style="color:#c30">&#34;/&#34;</span>,<span style="color:#bbb"> </span>routes<span style="color:#555">!</span>[index])<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.launch();<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">increment_hit</span>(conn: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">PgConnection</span>,<span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb"> </span>new_hits: <span style="color:#078;font-weight:bold">i32</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::hits<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span>myhits;<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>diesel::update(myhits.find(id))<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.set(hits::hits_so_far.eq(new_hits))<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.execute(conn);<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>};<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::hits<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span>myhits;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>diesel::update(myhits.find(id))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.set(hits::hits_so_far.eq(new_hits))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.execute(conn);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>};<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div>
-<p>That&rsquo;s a lot to take in!  Let&rsquo;s break it down:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#![feature(plugin)]</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#099">#![plugin(rocket_codegen)]</span><span style="color:#bbb">
-</span><span style="color:#bbb">
+</span></code></pre></div><p>That's a lot to take in!  Let's break it down:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#![</span><span style="color:#099">feature(plugin)</span><span style="color:#099">]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#099">#![</span><span style="color:#099">plugin(rocket_codegen)</span><span style="color:#099">]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>diesel;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>dotenv;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rocket;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">extern</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">crate</span><span style="color:#bbb"> </span>rusoto_rocket;<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::sync::Mutex;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>diesel::prelude::<span style="color:#555">*</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>diesel::pg::PgConnection;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rocket::State;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>self::rusoto_rocket::<span style="color:#555">*</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>self::rusoto_rocket::models::<span style="color:#555">*</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">type</span> <span style="color:#0a8;font-weight:bold">DbConn</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>Mutex<span style="color:#555">&lt;</span>PgConnection<span style="color:#555">&gt;</span>;<span style="color:#bbb">
-</span></code></pre></div>
-<p>We enable Rust plugins and the Rocket codegen plugin.  Then we bring in the required crates: <code>diesel</code> for database access, <code>dotenv</code> for configuration, <code>rocket</code> for the site and code for this walkthrough, <code>rusoto_rocket</code>.  We <code>use</code> the required modules: <code>diesel</code> boilerplate, Postgres libraries and our <code>rusoto_rocket</code> code and database models.</p>
-
-<p>To keep the same database connection across multiple requests, we&rsquo;ll use Rocket&rsquo;s <code>State</code> functionality.  We&rsquo;ll wrap up the Diesel Postgres connection in a Mutex for thread safety and refer to that as a <code>DbConn</code>.</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[get(</span><span style="color:#c30">&#34;/&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span></code></pre></div><p>We enable Rust plugins and the Rocket codegen plugin.  Then we bring in the required crates: <code>diesel</code> for database access, <code>dotenv</code> for configuration, <code>rocket</code> for the site and code for this walkthrough, <code>rusoto_rocket</code>.  We <code>use</code> the required modules: <code>diesel</code> boilerplate, Postgres libraries and our <code>rusoto_rocket</code> code and database models.</p>
+<p>To keep the same database connection across multiple requests, we'll use Rocket's <code>State</code> functionality.  We'll wrap up the Diesel Postgres connection in a Mutex for thread safety and refer to that as a <code>DbConn</code>.</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[</span><span style="color:#099">get(</span><span style="color:#c30">&#34;</span><span style="color:#c30">/</span><span style="color:#c30">&#34;</span><span style="color:#099">)</span><span style="color:#099">]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">index</span>(db_conn: <span style="color:#0a8;font-weight:bold">State</span><span style="color:#555">&lt;</span>DbConn<span style="color:#555">&gt;</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::<span style="color:#555">*</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>my_db_conn<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>db_conn.inner().lock().expect(<span style="color:#c30">&#34;Couldn&#39;t get mutex lock on db connection&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_from_db<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits.filter(id.eq(<span style="color:#f60">1</span>))<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.limit(<span style="color:#f60">1</span>)<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.load::<span style="color:#555">&lt;</span>Hit<span style="color:#555">&gt;</span>(<span style="color:#555">&amp;</span>my_db_conn<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#555">&amp;</span>PgConnection)<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// Explicit cast needed
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::<span style="color:#555">*</span>;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>my_db_conn<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>db_conn.inner().lock().expect(<span style="color:#c30">&#34;Couldn&#39;t get mutex lock on db connection&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_from_db<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits.filter(id.eq(<span style="color:#f60">1</span>))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.limit(<span style="color:#f60">1</span>)<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.load::<span style="color:#555">&lt;</span>Hit<span style="color:#555">&gt;</span>(<span style="color:#555">&amp;</span>my_db_conn<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span><span style="color:#555">&amp;</span>PgConnection)<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// Explicit cast needed
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">        </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t load hits, yo.&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// increment hits:
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// increment hits:
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>hits_from_db.first().unwrap().hits_so_far;<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>increment_hit(<span style="color:#555">&amp;</span>my_db_conn,<span style="color:#bbb"> </span><span style="color:#f60">1</span>,<span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Hello, world!  Hits: {:?}&#34;</span>,<span style="color:#bbb"> </span>hits_weve_seen).to_string()<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>increment_hit(<span style="color:#555">&amp;</span>my_db_conn,<span style="color:#bbb"> </span><span style="color:#f60">1</span>,<span style="color:#bbb"> </span>hits_weve_seen<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Hello, world!  Hits: {:?}&#34;</span>,<span style="color:#bbb"> </span>hits_weve_seen).to_string()<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">main</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>connection<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>establish_connection();<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>create_hit(<span style="color:#555">&amp;</span>connection,<span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span>rocket::ignite()<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.manage(Mutex::new(connection))<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.mount(<span style="color:#c30">&#34;/&#34;</span>,<span style="color:#bbb"> </span>routes<span style="color:#555">!</span>[index])<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.launch();<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>connection<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>establish_connection();<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>create_hit(<span style="color:#555">&amp;</span>connection,<span style="color:#bbb"> </span><span style="color:#f60">1</span>);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>rocket::ignite()<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.manage(Mutex::new(connection))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.mount(<span style="color:#c30">&#34;/&#34;</span>,<span style="color:#bbb"> </span>routes<span style="color:#555">!</span>[index])<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.launch();<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div>
-<p>Starting with <code>main</code>, we establish a connection to the database.  Then we create our first <code>hit</code> record with an <code>id</code> of <code>1</code>.  Then we bind our Rocket site to <code>/</code> with the <code>index</code> route as the only route.  The <code>.manage</code> line tells Rocket to manage the database connection for us.  It&rsquo;s a <code>Mutex::new(PgConnection)</code> which is translated to a <code>DbConn</code> we defined earlier.</p>
-
+</span></code></pre></div><p>Starting with <code>main</code>, we establish a connection to the database.  Then we create our first <code>hit</code> record with an <code>id</code> of <code>1</code>.  Then we bind our Rocket site to <code>/</code> with the <code>index</code> route as the only route.  The <code>.manage</code> line tells Rocket to manage the database connection for us.  It's a <code>Mutex::new(PgConnection)</code> which is translated to a <code>DbConn</code> we defined earlier.</p>
 <p>The <code>index</code> route is defined by the <code>fn index()</code> function and the <code>#[get(&quot;/&quot;)]</code> tells Rocket to map it to the root URL: no path required for that endpoint.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">increment_hit</span>(conn: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">PgConnection</span>,<span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb"> </span>new_hits: <span style="color:#078;font-weight:bold">i32</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::hits<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span>myhits;<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>diesel::update(myhits.find(id))<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.set(hits::hits_so_far.eq(new_hits))<span style="color:#bbb">
-</span><span style="color:#bbb">        </span>.execute(conn);<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
-</span><span style="color:#bbb">    </span>};<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::hits<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">as</span><span style="color:#bbb"> </span>myhits;<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>diesel::update(myhits.find(id))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.set(hits::hits_so_far.eq(new_hits))<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.execute(conn);<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>result<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>};<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div>
-<p>Finally, our <code>increment_hit</code> function: this uses Diesel to update the database record.  We reference the required schema item, rename the Diesel DSL <code>hits</code> as <code>myhits</code> and run an update.  The actual integer increment happens in the <code>index</code> function.  More on this in the Diesel section.</p>
-
+</span></code></pre></div><p>Finally, our <code>increment_hit</code> function: this uses Diesel to update the database record.  We reference the required schema item, rename the Diesel DSL <code>hits</code> as <code>myhits</code> and run an update.  The actual integer increment happens in the <code>index</code> function.  More on this in the Diesel section.</p>
 <h2 id="connecting-it-all">Connecting it all</h2>
-
-<p>Run <code>cargo run</code> in <code>rusoto-rocket</code> directory.  This will spin up a Rocket webserver on <a href="http://localhost:8000">http://localhost:8000</a>.
+<p>Run <code>cargo run</code> in <code>rusoto-rocket</code> directory.  This will spin up a Rocket webserver on http://localhost:8000.
 Visit that page to see the hit counter.  Refresh the page and see it increment by one for every page visit.
 The data is stored in the RDS instance on AWS. 🎉</p>
-
 <h2 id="cleaning-up">Cleaning up</h2>
-
-<p>To ensure the database doesn&rsquo;t keep running and potentially run up AWS bills, log in to the AWS Console and delete the
+<p>To ensure the database doesn't keep running and potentially run up AWS bills, log in to the AWS Console and delete the
 RDS DB instance.</p>
-
 <h2 id="demo-vs-longer-term-infrastructure">Demo vs longer term infrastructure</h2>
-
-<p>As a demo, there&rsquo;s a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addressed when making a real service:</p>
-
+<p>As a demo, there's a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addressed when making a real service:</p>
 <ul>
 <li>Lots of <code>unwrap()</code> in this sample code.  Check for errors instead of that.</li>
 <li>Use a database connection pool instead of a single database connection.</li>
 <li>Deploys of a real site should use <a href="https://aws.amazon.com/cloudformation/">Cloudformation</a> via <a href="https://github.com/cloudtools/troposphere">Troposphere</a> for infrastructure, such as the RDS instance.</li>
 <li>To deploy an actual Rocket site, use <a href="https://aws.amazon.com/codedeploy/">CodeDeploy</a>, <a href="https://aws.amazon.com/elasticbeanstalk/">ElasticBeanstalk</a> or <a href="https://aws.amazon.com/ecs/">Elastic Container Service</a> instead of copying files to an AWS EC2 instance.</li>
 </ul>
-
 <h2 id="rusoto-homework">Rusoto homework</h2>
-
-<p>Instead of going through the AWS Console, we can modify the security groups to allow ingress from our IP address using Rusoto.  Find the database&rsquo;s security group and <code>allow</code> inbound traffic from your IP address.  Security groups are under <a href="https://rusoto.github.io/rusoto/rusoto_ec2/struct.CreateSecurityGroupRequest.html">EC2 in Rusoto</a>.</p>
+<p>Instead of going through the AWS Console, we can modify the security groups to allow ingress from our IP address using Rusoto.  Find the database's security group and <code>allow</code> inbound traffic from your IP address.  Security groups are under <a href="https://rusoto.github.io/rusoto/rusoto_ec2/struct.CreateSecurityGroupRequest.html">EC2 in Rusoto</a>.</p>
 
 
 		
@@ -425,7 +363,7 @@ RDS DB instance.</p>
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-10-28 22:22:13.767092 -0700 PDT m=&#43;0.215786136">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2019-12-16 20:23:11.70152 -0800 PST m=&#43;0.196070592">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

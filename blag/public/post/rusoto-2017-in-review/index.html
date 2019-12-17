@@ -48,23 +48,16 @@
 
 		
 
-		
-
-<p><a href="https://github.com/rusoto/rusoto">Rusoto</a>, an unofficial SDK for <a href="https://aws.amazon.com/">Amazon Web Services</a>, had a wonderful year! We made great strides in improving functionality, increasing the number of services covered and making various ergonomic changes.</p>
-
+		<p><a href="https://github.com/rusoto/rusoto">Rusoto</a>, an unofficial SDK for <a href="https://aws.amazon.com/">Amazon Web Services</a>, had a wonderful year! We made great strides in improving functionality, increasing the number of services covered and making various ergonomic changes.</p>
 <h2 id="improved-functionality">Improved functionality</h2>
-
 <ul>
 <li>Added all publicly available AWS regions</li>
 <li>Custom endpoint support</li>
 <li>HTTP connection pools for connecting to services</li>
 <li>S3 supports streaming responses: no more loading the entire file to download into a Vector</li>
 </ul>
-
 <h2 id="more-supported-services">More supported services</h2>
-
 <p>A non-exhaustive list:</p>
-
 <ul>
 <li>Security Token Service, Simple Email Service, Organizations, Snowball, StepFunctions, ServiceCatalog, Support, Rekognition, OpsWorksCM, Lightsail,
 Kinesis Analytics, GameLift, Database Migration Service, Cost and Usage Reports, CodeBuild,
@@ -74,11 +67,8 @@ CloudSearch Domain, GreenGrass, Elastic Filesystem, Workdocs, Cognito Sync, Shie
 Discovery, CodeStar, Migration Hub, Marketplace Entitlement, CloudHSMv2, ResourceGroupsTaggingApi, Lex,
 Lex Models, Budgets</li>
 </ul>
-
 <p>As of the end of 2017, Rusoto is <em>three</em> services shy of implementing publicly available AWS services from before re:Invent 2017.</p>
-
 <h2 id="ergonomics">Ergonomics</h2>
-
 <ul>
 <li>The mega-crate of <code>rusoto</code> was split into many crates: <code>rusoto_core</code>, <code>rusoto_credential</code> and a crate per service. Improves compilation performance and reduces overall crate size.</li>
 <li>Each crate has its own documentation, available at <a href="https://rusoto.github.io/rusoto/rusoto_core/index.html">https://rusoto.github.io/rusoto/rusoto_core/index.html</a> or <a href="https://docs.rs/">https://docs.rs/</a></li>
@@ -86,11 +76,8 @@ Lex Models, Budgets</li>
 <li>Added a CHANGELOG</li>
 <li>S3 streaming downloads implement the <code>Read</code> trait for better memory control</li>
 </ul>
-
 <h2 id="rust-rusoto-aws">Rust, Rusoto, AWS</h2>
-
 <p>Rust and Rusoto have demonstrated they can fit well with AWS. I <a href="https://www.meetup.com/PDXRust/events/244697789/">gave a talk at PDXRust</a> on this topic. While writing the presentation, I was surprised at how much Rusoto is used for infrastructure related tasks.  Some examples:</p>
-
 <ul>
 <li>Kubernetes cluster lifecycle management tool</li>
 <li>AWS Docker container registry cleaner</li>
@@ -98,14 +85,10 @@ Lex Models, Budgets</li>
 <li>Configuration management accelerator (Rust speed &gt; Python speed)</li>
 <li>Infrastructure as code</li>
 </ul>
-
 <p>I was expecting to hear more use cases of running on AWS. Perhaps it was the sample set of users I contacted.
-Rumor has it there are big companies using Rusoto in applications. I&rsquo;m hoping to get more information so we can make Rusoto even better.</p>
-
+Rumor has it there are big companies using Rusoto in applications. I'm hoping to get more information so we can make Rusoto even better.</p>
 <h2 id="the-future">The future</h2>
-
-<p>We&rsquo;re going to keep on keeping on!  Some goals for 2018:</p>
-
+<p>We're going to keep on keeping on!  Some goals for 2018:</p>
 <ul>
 <li>Support all AWS services</li>
 <li>Improve ergonomics</li>
@@ -113,10 +96,8 @@ Rumor has it there are big companies using Rusoto in applications. I&rsquo;m hop
 <li>Add more maintainers</li>
 <li>Flesh out <a href="https://rusoto.org">https://rusoto.org</a> with more information</li>
 </ul>
-
 <h2 id="a-big-thank-you-to-all-contributors">A big thank-you to all contributors!</h2>
-
-<p>We couldn&rsquo;t have done it without you. <a href="https://github.com/rusoto/rusoto/graphs/contributors">See the list of contributors on GitHub.</a></p>
+<p>We couldn't have done it without you. <a href="https://github.com/rusoto/rusoto/graphs/contributors">See the list of contributors on GitHub.</a></p>
 
 
 		
@@ -133,7 +114,7 @@ Rumor has it there are big companies using Rusoto in applications. I&rsquo;m hop
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-10-28 22:22:13.630083 -0700 PDT m=&#43;0.078781537">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2019-12-16 20:23:11.600995 -0800 PST m=&#43;0.095548861">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

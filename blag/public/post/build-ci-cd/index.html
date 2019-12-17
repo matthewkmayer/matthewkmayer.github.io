@@ -48,32 +48,20 @@
 
 		
 
-		
-
-<p>Ever hear someone say &ldquo;CI/CD build pipeline&rdquo; and weren&rsquo;t sure that that means, <em>exactly?</em></p>
-
-<p>Let&rsquo;s define and explore the concepts of:</p>
-
+		<p>Ever hear someone say &ldquo;CI/CD build pipeline&rdquo; and weren't sure that that means, <em>exactly?</em></p>
+<p>Let's define and explore the concepts of:</p>
 <ul>
 <li>Build server</li>
 <li>Continuous Integration (CI)</li>
 <li>Continous Delivery (CD)</li>
 </ul>
-
 <h2 id="three-separate-ideas">Three separate ideas</h2>
-
 <p><em>Build server</em> is a server, servers or a system that automatically builds and tests code.</p>
-
 <p><em>Continuous Integration</em> and <em>Continuous Delivery</em> are both processes, guiding humans on what to do.</p>
-
 <h2 id="build-server-or-build-service">Build server (or build service)</h2>
-
-<p>Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests. The exact build and run steps depend on the language being used. For a Go project, the server may run <code>go build</code> followed by <code>go test ./...</code> and report back success or failure. This ensures what&rsquo;s checked in to source control can be built by someone else, not just the person who wrote the code.</p>
-
+<p>Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests. The exact build and run steps depend on the language being used. For a Go project, the server may run <code>go build</code> followed by <code>go test ./...</code> and report back success or failure. This ensures what's checked in to source control can be built by someone else, not just the person who wrote the code.</p>
 <p>Usually this is a one time setup. After that, builds run automatically and report success or failure.</p>
-
 <p>Examples:</p>
-
 <ul>
 <li>Jenkins</li>
 <li>TravisCI</li>
@@ -81,74 +69,45 @@
 <li>SemaphoreCI</li>
 <li>TeamCity</li>
 </ul>
-
 <h2 id="continuous-integration">Continuous integration</h2>
-
-<p>Guideline: branches are short lived. If a branch lives longer than a day or two, it&rsquo;s not continuous integration.</p>
-
+<p>Guideline: branches are short lived. If a branch lives longer than a day or two, it's not continuous integration.</p>
 <p>This process is for <em>continuously integrating</em> code back into the main branch. Keeping branches short lived prevents them from drifting out of date, causing merge conflicts or massive amounts of code to review. The bigger a team gets, the more likely two people are going to change something in the same spot, causing a merge conflict.</p>
-
 <p>Examples:</p>
-
 <ul>
 <li>commit directly to master (careful!)</li>
 <li><a href="https://scottchacon.com/2011/08/31/github-flow.html">GitHub Flow</a> with short lived branches</li>
 <li><a href="https://trunkbaseddevelopment.com/">Trunk Based Development</a></li>
 </ul>
-
 <p>Counter-examples:</p>
-
 <ul>
 <li><a href="https://nvie.com/posts/a-successful-git-branching-model/">git flow</a>: lots of moving pieces makes it difficult to integrate to the <em>release</em> branch every day or two.</li>
 </ul>
-
 <h2 id="continuous-delivery">Continuous delivery</h2>
-
 <p>Guideline: code gets delivered to production within a day or two of it being approved.</p>
-
 <p>Once code is accepted to the &ldquo;main&rdquo; branch, it should be shipped to production within a day or two. This requires deployments to be a polished, every day event. There are tricks that can be used to deliver code without having it available for use: feature flags are one technique to ship code but not make it available to consumers of the code.</p>
-
 <p>Examples:</p>
-
 <ul>
 <li><a href="https://scottchacon.com/2011/08/31/github-flow.html">GitHub Flow</a></li>
 </ul>
-
 <p>Counter-examples:</p>
-
 <ul>
 <li><a href="https://nvie.com/posts/a-successful-git-branching-model/">git flow</a>: again, lots of moving pieces complicates release process</li>
-<li>cargo-cult scrum: the <a href="https://www.scrumguides.org/scrum-guide.html">scrum guide</a> doesn&rsquo;t preclude shipping during an iteration</li>
+<li>cargo-cult scrum: the <a href="https://www.scrumguides.org/scrum-guide.html">scrum guide</a> doesn't preclude shipping during an iteration</li>
 </ul>
-
 <h2 id="separation-of-concepts">Separation of concepts</h2>
-
-<p>Now that we have an understanding of what each concept is, we can see how it can be used by itself: no part needs the other. To make this clearer, let&rsquo;s use a theoretical Go project on GitHub as a thought experiment.</p>
-
-<p>One could have a build server by itself. In our theoretical example, we&rsquo;ll hook up TravisCI and configure it to run <code>go build &amp;&amp; go test ./...</code>. Whenever code is pushed to GitHub, the TravisCI job will run and report back if it succeeded or failed.</p>
-
+<p>Now that we have an understanding of what each concept is, we can see how it can be used by itself: no part needs the other. To make this clearer, let's use a theoretical Go project on GitHub as a thought experiment.</p>
+<p>One could have a build server by itself. In our theoretical example, we'll hook up TravisCI and configure it to run <code>go build &amp;&amp; go test ./...</code>. Whenever code is pushed to GitHub, the TravisCI job will run and report back if it succeeded or failed.</p>
 <p>To get CI by itself, a simple example is to commit directly to the <code>master</code> branch. The changes are continually integrated back into <code>master</code> because they are committed right there. No chance of branches getting out of date or having merge conflicts.</p>
-
 <p>One way of doing CD by itself is to have a shell script checked into the repository. This script can do the repetitive work of creating a build and deploying it. The code can be continuously delivered if the committer runs the script after each commit.</p>
-
 <h2 id="a-real-world-example-of-separation">A real world example of separation</h2>
-
 <p>These concepts scale from single developer projects to massive corporations with a single repository for all projects. For example, I have a solo developer project that uses all three of these concepts separately.</p>
-
 <p>For Continuous Integration I either commit directly to the <code>master</code> branch or make a branch that lives for a few hours, then merge it back to <code>master</code>.</p>
-
 <p>I use <a href="https://aws.amazon.com/codebuild/">AWS CodeBuild</a> to build, test and push a new Docker container of my code.</p>
-
 <p>Continuous Deployment is done manually: when the new Docker image is ready, I do a manual deploy on <a href="https://aws.amazon.com/ecs/">AWS ECS</a> to push my changes to production.</p>
-
 <h2 id="wrapup">Wrapup</h2>
-
 <p><em>Continuous Integration</em> and <em>Continuous Delivery</em> are processes that tell humans what techniques to use with source control.</p>
-
 <p><em>Build server</em> is a server, servers or a system that automatically builds and tests code.</p>
-
 <p>A followup blog post will show how these separate concepts can be put together and create an advantage bigger than the sum of its parts: a true <em>CI/CD pipeline</em>.</p>
-
 <p><em>Updated 9/10/2018: corrected a sentence in the wrong section</em></p>
 
 
@@ -166,7 +125,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-10-28 22:22:13.626285 -0700 PDT m=&#43;0.074982981">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2019-12-16 20:23:11.598356 -0800 PST m=&#43;0.092910060">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
