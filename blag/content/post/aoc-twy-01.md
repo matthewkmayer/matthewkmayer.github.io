@@ -16,9 +16,11 @@ Today we're easing into #serverless.
 
 It's an excuse to play around with smaller coding problems and enjoy some recreational coding. In this series of blog posts, we're going to go about solving the problems the wrong way: as much serverless as possible.
 
+There will be spoilers, so you may want to solve these puzzles yourself before reading these blog entries.
+
 ## Yup, no servers
 
-Instead of solving the puzzles on my computer, I'm going to use serverless as much as I can. This theme will certainly create hilariously overbuilt and overly complicated results, but that's going to be part of the fun this year.
+Instead of solving the puzzles on my computer, I'm going to use serverless as much as I can. This theme will certainly create hilariously overbuilt and overly complicated solutions, but that's going to be part of the fun this year.
 
 ## Day one, part one
 
@@ -103,7 +105,8 @@ println!("string entries: {:?}", string_entries);
 That works great, but we need integers for our fuel calculations:
 
 ```rust
-let int_entries: Vec<i64> = string_entries.iter().map(|x| x.parse::<i64>().unwrap()).collect();
+let int_entries: Vec<i64> = string_entries.iter()
+  .map(|x| x.parse::<i64>().unwrap()).collect();
 println!("int entries: {:?}", int_entries);  
 ```
 
