@@ -20,9 +20,9 @@ I registered https://rusoto.org to have more documentation available for the pro
 
 In the years since starting Rusoto, I've accomplished my goals for the project:
 
-* Learn Rust: check.
-* Run a non-trivial open source project: check.
-* Deepen my understanding of AWS: check.
+* Learn Rust
+* Run a non-trivial open source project
+* Deepen my understanding of AWS
 
 Time for me to move on to the next big thing.
 
