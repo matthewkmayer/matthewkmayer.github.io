@@ -1,5 +1,5 @@
 +++
-date = "2020-01-02T00:28:53-07:00"
+date = "2020-01-07T00:28:53-07:00"
 draft = false
 title = "Farewell to Rusoto"
 +++
