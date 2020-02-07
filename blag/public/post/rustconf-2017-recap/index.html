@@ -50,35 +50,35 @@
 
 		<p>My recap of RustConf 2017 in Portland, Oregon.  Or: how I avoided hotel surge pricing during the eclipse weekend!</p>
 <h2 id="rustconf-the-second">RustConf the second</h2>
-<p>I've been told the first conference for community or technology is the best.  I'm happy to report I don't believe it applies in this case!  The first RustConf set a tone of possibility and potentials whereas RustConf 2017 focused more on the progress made in the language, ecosystem and community.  As a whole, the conference was a great reflection of the language and community: where we've come from, where we're at and what's next.</p>
+<p>I&rsquo;ve been told the first conference for community or technology is the best.  I&rsquo;m happy to report I don&rsquo;t believe it applies in this case!  The first RustConf set a tone of possibility and potentials whereas RustConf 2017 focused more on the progress made in the language, ecosystem and community.  As a whole, the conference was a great reflection of the language and community: where we&rsquo;ve come from, where we&rsquo;re at and what&rsquo;s next.</p>
 <h2 id="presentations-recap">Presentations recap</h2>
 <h4 id="opening-keynote">Opening keynote</h4>
-<p>Rust's compiler is continuing to improve.  Mozilla doesn't have a stranglehold on Rust: only 17% of the core Rust team works for Mozilla.  Epochs are a way to evolve the language in opt-in ways for potential breaking changes, but if a breaking change affects an old, unmaintained crate, it can be set to use the old epoch and newer code can use the new one.  No Python 2/Python 3 split is going to happen.</p>
+<p>Rust&rsquo;s compiler is continuing to improve.  Mozilla doesn&rsquo;t have a stranglehold on Rust: only 17% of the core Rust team works for Mozilla.  Epochs are a way to evolve the language in opt-in ways for potential breaking changes, but if a breaking change affects an old, unmaintained crate, it can be set to use the old epoch and newer code can use the new one.  No Python 2/Python 3 split is going to happen.</p>
 <p>RustBridge helps people get started programming in Rust.  Looks amazing and I hope to help with the effort.</p>
 <h4 id="a-tale-of-teaching-rust">A Tale of Teaching Rust</h4>
 <p>I missed the first few minutes of this due to hallway track shennanigans, but <a href="https://github.com/carols10cents/rustlings">Rustlings</a> is apparently the way to go for teaching Rust.</p>
 <h4 id="building-rocket">Building Rocket</h4>
-<p>An excellent demystification of how Rocket works.  I was in the &ldquo;too much magic&rdquo; camp before but am now convinced Rocket simply automates how I'd hand-craft web server code.  Can't wait to have reduced-boilerplate for database interaction.  For an example, my walkthroughs of a super-simple Rocket and Diesel web server can be found here: <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/">part one</a> and <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-mk2/">part two</a>.</p>
+<p>An excellent demystification of how Rocket works.  I was in the &ldquo;too much magic&rdquo; camp before but am now convinced Rocket simply automates how I&rsquo;d hand-craft web server code.  Can&rsquo;t wait to have reduced-boilerplate for database interaction.  For an example, my walkthroughs of a super-simple Rocket and Diesel web server can be found here: <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/">part one</a> and <a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-mk2/">part two</a>.</p>
 <h4 id="shipping-a-solid-rust-crate">Shipping a Solid Rust Crate</h4>
-<p>Apparently one must include lots of anime in a crate. 😉  Good overview of what to have for a crate: documentation, documentation, documentation, a filled out Cargo.toml file, good README, sample code, a Code of Conduct, etc&hellip;  My takeaway is Rusoto checks almost all the boxes, so we're on the right path!</p>
+<p>Apparently one must include lots of anime in a crate. 😉  Good overview of what to have for a crate: documentation, documentation, documentation, a filled out Cargo.toml file, good README, sample code, a Code of Conduct, etc&hellip;  My takeaway is Rusoto checks almost all the boxes, so we&rsquo;re on the right path!</p>
 <h4 id="menhir-and-friends-the-state-of-the-art-of-parsing-in-rust">Menhir and Friends: the State of the Art of Parsing in Rust</h4>
-<p>This talk was over my head: I haven't had to write a parser since college and have forgotten all that content.  I wish the talk started with a simple use case for parsers and then a comparison of a parser in Rust and a parser in another language to show why one would choose Rust in this case.</p>
+<p>This talk was over my head: I haven&rsquo;t had to write a parser since college and have forgotten all that content.  I wish the talk started with a simple use case for parsers and then a comparison of a parser in Rust and a parser in another language to show why one would choose Rust in this case.</p>
 <h4 id="type-system-tips-for-the-real-world">Type System Tips for the Real World</h4>
-<p>Highly polished, informative and fun presentation.  Just the right level of technical details and explainations for my current knowledge level.  Cleared up how Diesel operates and removes some of my fear it's &ldquo;too much magic&rdquo; like I view ActiveRecord.</p>
+<p>Highly polished, informative and fun presentation.  Just the right level of technical details and explainations for my current knowledge level.  Cleared up how Diesel operates and removes some of my fear it&rsquo;s &ldquo;too much magic&rdquo; like I view ActiveRecord.</p>
 <h4 id="improving-rust-performance-through-profiling-and-benchmarking">Improving Rust Performance Through Profiling and Benchmarking</h4>
-<p>Nice deep dive into making Rust projects faster.  Can't wait to get to performance as a priority for my projects.</p>
+<p>Nice deep dive into making Rust projects faster.  Can&rsquo;t wait to get to performance as a priority for my projects.</p>
 <h4 id="fast-safe-pure-rust-elliptic-curve-cryptography">Fast, Safe, Pure-Rust Elliptic Curve Cryptography</h4>
 <p>Another presentation a bit over my head.  My grasp on elliptic curve cryptography is weak, to be generous.  The math involved could have used some animation to clearly explain how the steps happen.  This would have made it easier for me to follow.</p>
 <h4 id="closing-keynote-safe-systems-software-and-the-future-of-computing">Closing Keynote: Safe Systems Software and the Future of Computing</h4>
-<p>Microsoft's <a href="https://en.wikipedia.org/wiki/Singularity_(operating_system)">Singularity</a> and <a href="https://en.wikipedia.org/wiki/Midori_(operating_system)">Midori</a> experiences.  A bittersweet presentation: much progress made on improving operating system safety that was killed before its time.  But hope for the future with lessons learned.  I could listen to Joe Duffy talk all day. 🙂</p>
+<p>Microsoft&rsquo;s <a href="https://en.wikipedia.org/wiki/Singularity_(operating_system)">Singularity</a> and <a href="https://en.wikipedia.org/wiki/Midori_(operating_system)">Midori</a> experiences.  A bittersweet presentation: much progress made on improving operating system safety that was killed before its time.  But hope for the future with lessons learned.  I could listen to Joe Duffy talk all day. 🙂</p>
 <h2 id="hallway-track">Hallway track</h2>
-<p>The &ldquo;Hallway track&rdquo; at a conference refers to the conversations happening in hallways instead of the main events and presentations.  I made my own &ldquo;table track.&rdquo;  Another maintainer of <a href="https://github.com/rusoto/rusoto/">Rusoto</a> happened to sit at the same table so we caught up a little.  Another person who's been in touch about the same project contact me before the conference and we got a chance to chat in person, which is always great.</p>
+<p>The &ldquo;Hallway track&rdquo; at a conference refers to the conversations happening in hallways instead of the main events and presentations.  I made my own &ldquo;table track.&rdquo;  Another maintainer of <a href="https://github.com/rusoto/rusoto/">Rusoto</a> happened to sit at the same table so we caught up a little.  Another person who&rsquo;s been in touch about the same project contact me before the conference and we got a chance to chat in person, which is always great.</p>
 <p>The person sitting to my left gave me an excellent view into Haskell.  Funny how diverse the attendees&rsquo; technical knowledge is.</p>
 <h2 id="unofficial-afterparty">Unofficial afterparty</h2>
 <p>Last year I made a tweet right as the conference came to a close, suggesting attendees meet up to continue talking with each other.  We took over most of <a href="http://www.tugboatbrewco.com/">Tugboat Brewing</a> and had a great time.  This year I organized it a bit better: I called ahead to various venues and reserved space for us at a sports bar and grill near the conference location.  Due to better publicizing, the unofficial afterparty had more people there and hope everyone had a great time sharing a drink of their choice with fellow Rustaceans.</p>
 <h2 id="my-trick-to-avoiding-pricy-hotels">My trick to avoiding pricy hotels</h2>
-<p>RustConf's venue was a few blocks away from the office so I took light rail in and enjoyed a fun day. 😉</p>
-<h2 id="heres-to-another-great-year-for-rust">Here's to another great year for Rust!</h2>
+<p>RustConf&rsquo;s venue was a few blocks away from the office so I took light rail in and enjoyed a fun day. 😉</p>
+<h2 id="heres-to-another-great-year-for-rust">Here&rsquo;s to another great year for Rust!</h2>
 
 
 		
@@ -95,7 +95,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-01-07 18:59:46.511515 -0800 PST m=&#43;0.178655784">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-02-06 18:47:32.487481 -0800 PST m=&#43;0.105661173">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

@@ -1,10 +1,10 @@
 +++
-date = "2020-02-04T00:28:53-07:00"
+date = "2020-02-06T00:28:53-07:00"
 draft = false
 title = "Red/green bugfix"
 +++
 
-Red/green bugfixes are the best technique for demonstrating bug reproduction and solution for asynchronous code reviews.
+Red/green bugfixes are the best technique for communicating understanding of a bug and its solution, especially for asynchronous code reviews.
 
 ## A bug
 
@@ -16,7 +16,7 @@ Say a new bug has been discovered in a backend service. If it's found in product
 2. Using logs and/or reading the code, find where the issue is
 3. Fix the bug, make a pull request, let coworkers review it
 
-This procedure is straightforward and can get a bug fix out quickly. There are downsides to this process:
+While this procedure is straightforward and can get a bug fix out quickly, there are downsides to this process:
 
 * How is the fix confirmed?
 * How are regressions prevented?
@@ -28,7 +28,7 @@ A red/green bugfix works differently:
 
 1. Reproduce the bug
 2. Using logs and/or reading the code, find where the issue is
-3. Cover the broken behavior with a test: assert on expected behavior
+3. Cover the broken behavior with a test: assert on correct behavior
 4. Push the code and let the build pipeline demonstrate a red/failing state due to the new test failing
 5. Write the bug fix, see the test pass, push code and make a pull request: the build will go green/pass
 

@@ -48,29 +48,29 @@
 
 		
 
-		<p>Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? <em>What</em> types of tests should be written? Here are some guidelines for determining what a team's &ldquo;enough&rdquo; level of testing is.</p>
+		<p>Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? <em>What</em> types of tests should be written? Here are some guidelines for determining what a team&rsquo;s &ldquo;enough&rdquo; level of testing is.</p>
 <h2 id="definitions-and-goals">Definitions and goals</h2>
 <ul>
-<li>unit test: tests a single unit of code. Think a single function or method. If there are more than one or three mocks being used, it's probably not a unit test</li>
+<li>unit test: tests a single unit of code. Think a single function or method. If there are more than one or three mocks being used, it&rsquo;s probably not a unit test</li>
 <li>functional test: tests behavior of code, staying within a single process</li>
 <li>integration test: a test that crosses a process boundary. For example: code that talks to a real database</li>
 <li>end to end/smoke test: test the entire stack: apply power and see if any smoke comes out</li>
 </ul>
 <p>The goal is to get enough test coverage as quickly as possible. A test suite that takes a half hour to run makes it hard to stay focused and stay in flow. Insufficient test coverage means second guessing and worrying about deployments.</p>
 <h2 id="unit-tests">Unit tests</h2>
-<p>These should be <em>fast</em>. Most of a codebase's tests should be unit tests. I've heard a guideline of one millisecond (1 ms) per unit test. I like that aggressive goal. It means a codebase could have 10,000 tests and they can run in 10 seconds.</p>
+<p>These should be <em>fast</em>. Most of a codebase&rsquo;s tests should be unit tests. I&rsquo;ve heard a guideline of one millisecond (1 ms) per unit test. I like that aggressive goal. It means a codebase could have 10,000 tests and they can run in 10 seconds.</p>
 <h2 id="functional-tests">Functional tests</h2>
 <p>Testing the function of the code can be performed at the API layer. For backend HTTP services, this means using the HTTP calls the consumers of the service would call. Using an in-memory store instead of an external store such as a database means these can quickly run. 100ms each should be an easy level to reach; 25ms is probably closer to what one should aim for. 1,000 functional tests can run in 25 seconds with 25ms per test.</p>
 <h2 id="integration-tests">Integration tests</h2>
 <p>Since integration tests involve two operating system processes, usually the code under test and its backing store, these can take 50 to 100 milliseconds to run. At 100ms each, 100 integration tests can run in 10 seconds as well.</p>
-<p>It's possible to reuse the functional tests as integration tests: set up the system under test to use the real backing store and run the same tests.</p>
+<p>It&rsquo;s possible to reuse the functional tests as integration tests: set up the system under test to use the real backing store and run the same tests.</p>
 <h2 id="end-to-endsmoke-tests">End to end/smoke tests</h2>
-<p>Smoke tests tend to be expensive. It may take one to ten seconds for each test. This means there can only be so many of them: make these test the <em>most important parts of your system</em>. What would cause income to screech to a halt? What would make customers grumpy? Ensure those situations don't happen with smoke tests.</p>
+<p>Smoke tests tend to be expensive. It may take one to ten seconds for each test. This means there can only be so many of them: make these test the <em>most important parts of your system</em>. What would cause income to screech to a halt? What would make customers grumpy? Ensure those situations don&rsquo;t happen with smoke tests.</p>
 <h2 id="ok-but-how-many-tests-really">Ok, but how many tests? Really?</h2>
 <p>My personal line in the sand is all happy paths should be tested. For every feature and behavior the project has, the path where everything works right <em>must</em> be tested. This is the bare, bare minimum. Anything less requires a shift from new features toward writing tests to achieve this minimum requirement.</p>
 <p>My comfort level is when bug fixes have regression tests. Keeping a bug from happening twice is important: reproduce the bug with a test, show the broken behavior, then fix it.</p>
 <h2 id="general-pitfalls">General pitfalls</h2>
-<p>Note the omission of code coverage metrics. While these can help, code coverage can also be abused. I've seen projects with 99% code coverage still not behave right. Chasing a code coverage number can be detrimental to having a fast running suite of effective tests. If one must use code coverage metrics, use branch coverage: make sure all branches of <code>if</code>, <code>switch</code>, etc&hellip; statements are covered by tests.</p>
+<p>Note the omission of code coverage metrics. While these can help, code coverage can also be abused. I&rsquo;ve seen projects with 99% code coverage still not behave right. Chasing a code coverage number can be detrimental to having a fast running suite of effective tests. If one must use code coverage metrics, use branch coverage: make sure all branches of <code>if</code>, <code>switch</code>, etc&hellip; statements are covered by tests.</p>
 <p>Keep the approximate shape of the test pyramid: have more unit tests than any other. Smoke tests should have the least number of tests, due to their slowness.</p>
 <p>When tests flap between pass and fail, step back and rethink how the code is tested. False positives are frustrating and slow down development work: fix them!</p>
 <h2 id="move-to-the-left">Move to the left</h2>
@@ -81,7 +81,7 @@
 <h2 id="reuse-tests">Reuse tests</h2>
 <p>One can use testing frameworks that help with test code reuse. For example, correctly writing <a href="https://cucumber.io/">Cucumber tests</a> allows them to be used as functional tests, integration tests and sometimes smoke tests as well. Write tests once, run them in multiple scenarios.</p>
 <h2 id="take-action">Take action</h2>
-<p>Here's one way to get started with &ldquo;enough&rdquo; tests:</p>
+<p>Here&rsquo;s one way to get started with &ldquo;enough&rdquo; tests:</p>
 <ol>
 <li>Make unit tests for all happy path scenarios</li>
 <li>Write Cucumber tests for functional and integration test use</li>
@@ -105,7 +105,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-01-07 18:59:46.488563 -0800 PST m=&#43;0.155704261">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-02-06 18:47:32.457393 -0800 PST m=&#43;0.075572599">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

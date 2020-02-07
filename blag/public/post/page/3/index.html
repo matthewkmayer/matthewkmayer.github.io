@@ -38,6 +38,21 @@
 <main>
 	<div class="catalogue">
 		
+			<a href="https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-two/" class="catalogue-item">
+    <div>
+        <time datetime="2017-06-16 21:28:53 -0700 PDT" class="catalogue-time">June 16, 2017</time>
+        <h1 class="catalogue-title">Rusoto codegen, part two</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            In the previous post we took a quick tour of the major pieces of Rusoto code generation. In this post we&rsquo;ll get deeper into code generation for the Simple Queue Service.
+Picking up from part one Part one described a few parts of Rusoto codegen:
+ Finding which services to generate Making the service&rsquo;s crate Generating the service and placing it inside its crate rustfmt the generated code to make it look pretty  Step three is where this post will concentrate.
+        </p>
+    </div>
+</a>
+
+		
 			<a href="https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/" class="catalogue-item">
     <div>
         <time datetime="2017-06-09 21:28:53 -0700 PDT" class="catalogue-time">June 9, 2017</time>
@@ -45,8 +60,8 @@
         <div class="catalogue-line"></div>
 
         <p>
-            Writing a software development kit (SDK) is a challenge. Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &ldquo;other.&rdquo; Rusoto uses the botocore service definitions to create Rust code to interact with Amazon Web Services. Let's dive into how it's done!
-Using Simple Queue Service as an example To make this post clearer, we'll follow the Simple Queue Service (SQS) from botocore service definition to the rusoto_sqs crate.
+            Writing a software development kit (SDK) is a challenge. Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &ldquo;other.&rdquo; Rusoto uses the botocore service definitions to create Rust code to interact with Amazon Web Services. Let&rsquo;s dive into how it&rsquo;s done!
+Using Simple Queue Service as an example To make this post clearer, we&rsquo;ll follow the Simple Queue Service (SQS) from botocore service definition to the rusoto_sqs crate.
         </p>
     </div>
 </a>
@@ -59,8 +74,8 @@ Using Simple Queue Service as an example To make this post clearer, we'll follow
         <div class="catalogue-line"></div>
 
         <p>
-            Since the publication of Rusoto RDS walkthrough, a new version of Rusoto has been released: 0.25.0. This includes some breaking changes so let's work through those. We'll also be cleaning up some of the rougher edges in the previous walkthrough.
-rusoto-rds-mk2 The previous project's source code is on github. We'll be making a new project based off that one. You can see the final product in rusoto-rds-mk2 folder.
+            Since the publication of Rusoto RDS walkthrough, a new version of Rusoto has been released: 0.25.0. This includes some breaking changes so let&rsquo;s work through those. We&rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.
+rusoto-rds-mk2 The previous project&rsquo;s source code is on github. We&rsquo;ll be making a new project based off that one. You can see the final product in rusoto-rds-mk2 folder.
 Cargo.toml changes required for Rusoto 0.
         </p>
     </div>
@@ -74,7 +89,7 @@ Cargo.toml changes required for Rusoto 0.
         <div class="catalogue-line"></div>
 
         <p>
-            Let's tie some great Rust crates together! In this walkthrough, we'll use Rusoto to create a Postgres RDS database instance, Rocket.rs to make a web server and Diesel to talk to the database on AWS to make a proof of concept hit counter.
+            Let&rsquo;s tie some great Rust crates together! In this walkthrough, we&rsquo;ll use Rusoto to create a Postgres RDS database instance, Rocket.rs to make a web server and Diesel to talk to the database on AWS to make a proof of concept hit counter.
 Walkthrough overview There are two projects in this walkthrough. First is rusoto-rds. This creates the Amazon Web Services (AWS) Relational Database Service (RDS) instance and should be run first.
         </p>
     </div>
@@ -96,7 +111,7 @@ Walkthrough overview There are two projects in this walkthrough. First is rusoto
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-01-07 18:59:46.626244 -0800 PST m=&#43;0.293382093">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-02-06 18:47:32.605896 -0800 PST m=&#43;0.224075115">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

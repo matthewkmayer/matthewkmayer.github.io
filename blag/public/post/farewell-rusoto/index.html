@@ -48,26 +48,26 @@
 
 		
 
-		<p>TL;DR: I'm not working on Rusoto any more.</p>
+		<p>TL;DR: I&rsquo;m not working on Rusoto any more.</p>
 <h2 id="a-history-of-rusoto">A history of Rusoto</h2>
-<p>Anthony DiMarco and I started <a href="https://github.com/rusoto/rusoto">Rusoto</a> in July of 2015. I knew we started the project shortly after Rust's 1.0 release, but I didn't realize we had our first commit less than two months after Rust 1.0 landed. Wow!</p>
+<p>Anthony DiMarco and I started <a href="https://github.com/rusoto/rusoto">Rusoto</a> in July of 2015. I knew we started the project shortly after Rust&rsquo;s 1.0 release, but I didn&rsquo;t realize we had our first commit less than two months after Rust 1.0 landed. Wow!</p>
 <p>Some early parts of Rusoto are similar to how Rusoto looks now, others are quite a bit different. Our first iteration of code generation used a Python2 script to parse the botocore service definitions and output Rust. We support a few more services now and use a Rust program to generate the service definitions.</p>
 <p>A big change was in crate structure: in <a href="https://github.com/rusoto/rusoto/releases/tag/rusoto-v0.25.0">2017 we shattered the mega-crate</a>. This split core behavior from the services, giving each service its own crate. Doing this helped keep compilation times sane and letting users only pay for what they needed: no more bringing in every service just to use one API call. This approach continued to pay dividends as Rusoto grew from 28k lines of code to over 860k lines for Rusoto 0.42.0.</p>
-<p>I registered <a href="https://rusoto.org">https://rusoto.org</a> to have more documentation available for the project. It's been through a couple different site generators and is now using <a href="https://github.com/rust-lang/mdBook">mdbook</a>. The site has been a great resource since 2016 when the supplimental documentation was created.</p>
+<p>I registered <a href="https://rusoto.org">https://rusoto.org</a> to have more documentation available for the project. It&rsquo;s been through a couple different site generators and is now using <a href="https://github.com/rust-lang/mdBook">mdbook</a>. The site has been a great resource since 2016 when the supplimental documentation was created.</p>
 <h2 id="accomplished-goals">Accomplished goals</h2>
-<p>In the years since starting Rusoto, I've accomplished my goals for the project:</p>
+<p>In the years since starting Rusoto, I&rsquo;ve accomplished my goals for the project:</p>
 <ul>
 <li>Learn Rust</li>
 <li>Run a non-trivial open source project</li>
 <li>Deepen my understanding of AWS</li>
 </ul>
 <p>Time for me to move on to the next big thing.</p>
-<p>Effective immediately, I'm setting a one-hour-a-week cap on Rusoto work. As of February 1st, 2020, I will only be available for hand-off assistance.</p>
+<p>Effective immediately, I&rsquo;m setting a one-hour-a-week cap on Rusoto work. As of February 1st, 2020, I will only be available for hand-off assistance.</p>
 <h2 id="what-next">What next?</h2>
 <p>For Rusoto: the project will continue one way or another. Either others step up to address maintainership needs or the project will fracture into a constellation of forks.</p>
 <p>For me: address neglected duties and hobbies.</p>
 <h2 id="thanks-for-the-time-and-effort-everyone">Thanks for the time and effort, everyone</h2>
-<p>Rusoto didn't happen in a vacuum. There are 124 contributors to the project and counting. Rusoto has seen almost 500,000 downloads from crates.io and I've had a chance to work with a great many of excellent people. It's a bittersweet goodbye to the project but I wouldn't trade the journey for anything.</p>
+<p>Rusoto didn&rsquo;t happen in a vacuum. There are 124 contributors to the project and counting. Rusoto has seen almost 500,000 downloads from crates.io and I&rsquo;ve had a chance to work with a great many of excellent people. It&rsquo;s a bittersweet goodbye to the project but I wouldn&rsquo;t trade the journey for anything.</p>
 <p>Keep hacking, keep working, keep being awesome. 👍</p>
 
 
@@ -76,6 +76,7 @@
 
 	<div class="pagination">
 		<a href="/blag/public/post/aoc-twy-01/" class="left arrow">&#8592;</a>
+		<a href="/blag/public/post/red-green-bugfix/" class="right arrow">&#8594;</a>
 
 		<a href="#" class="top">Top</a>
 	</div>
@@ -84,7 +85,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-01-07 18:59:46.483774 -0800 PST m=&#43;0.150914912">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-02-06 18:47:32.453398 -0800 PST m=&#43;0.071578185">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>
+				Red/green bugfix &middot; Matthew Mayer&#39;s tech blog
+		</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    <li><a href="/blag/public/about">About</a></li>
+    <li><a href="/blag/public/">Posts</a></li>
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2020-02-06 00:28:53 -0700 -0700">February 6, 2020</time>
+</div>
+		<h1 class="post-title">Red/green bugfix</h1>
+<div class="post-line"></div>
+
+		
+
+		<p>Red/green bugfixes are the best technique for communicating understanding of a bug and its solution, especially for asynchronous code reviews.</p>
+<h2 id="a-bug">A bug</h2>
+<p>Say a new bug has been discovered in a backend service. If it&rsquo;s found in production, the first instinct is to solve it as quickly as possible. While laudable, this kneejerk reaction can actually make the fix slower and harder for others to understand.</p>
+<h2 id="usual-fixing-procedure">Usual fixing procedure</h2>
+<ol>
+<li>Reproduce the bug</li>
+<li>Using logs and/or reading the code, find where the issue is</li>
+<li>Fix the bug, make a pull request, let coworkers review it</li>
+</ol>
+<p>While this procedure is straightforward and can get a bug fix out quickly, there are downsides to this process:</p>
+<ul>
+<li>How is the fix confirmed?</li>
+<li>How are regressions prevented?</li>
+<li>How is the bug communicated to the rest of the team? What if there are similar bugs lurking in the codebase?</li>
+</ul>
+<h2 id="redgreen-bugfix">Red/green bugfix</h2>
+<p>A red/green bugfix works differently:</p>
+<ol>
+<li>Reproduce the bug</li>
+<li>Using logs and/or reading the code, find where the issue is</li>
+<li>Cover the broken behavior with a test: assert on correct behavior</li>
+<li>Push the code and let the build pipeline demonstrate a red/failing state due to the new test failing</li>
+<li>Write the bug fix, see the test pass, push code and make a pull request: the build will go green/pass</li>
+</ol>
+<p>By making separate commits, one for the new test case and one for the fix, the problem and solution is communicated via source control and the build pipeline. Others reviewing the code can clearly see what the issue was, see the test covers the broken behavior, then see the fix actually solves the problem.</p>
+<p>This process also prevents regressions: a test is now in place to prevent the bug from surfacing again.</p>
+<p>By taking a few extra steps to fix a bug, the change is easier to follow by others and regressions can be prevented.</p>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/farewell-rusoto/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2020-02-06 18:47:32.453384 -0800 PST m=&#43;0.071563879">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
