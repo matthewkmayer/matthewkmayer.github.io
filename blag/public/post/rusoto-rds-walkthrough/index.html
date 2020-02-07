@@ -48,14 +48,14 @@
 
 		
 
-		<p>Let's tie some great Rust crates together!  In this walkthrough, we'll use <a href="https://github.com/rusoto/rusoto">Rusoto</a> to create a Postgres RDS database instance,
+		<p>Let&rsquo;s tie some great Rust crates together!  In this walkthrough, we&rsquo;ll use <a href="https://github.com/rusoto/rusoto">Rusoto</a> to create a Postgres RDS database instance,
 <a href="https://github.com/SergioBenitez/Rocket">Rocket.rs</a> to make a web server and <a href="https://github.com/diesel-rs/diesel">Diesel</a> to talk to the database on AWS to make a proof of concept hit counter.</p>
 <h2 id="walkthrough-overview">Walkthrough overview</h2>
 <p>There are two projects in this walkthrough.  First is <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds">rusoto-rds</a>.  This creates the Amazon Web Services (AWS) Relational Database Service (RDS) instance and should be run first.</p>
 <p>The second is <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket">rusoto-rocket</a>.  This is the Rocket web service sample.  It uses Diesel and Rocket to have a web site that connects to the RDS instance created in <code>rusoto-rds</code> and demonstrates a hit counter.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <h4 id="rocket">Rocket</h4>
-<p>Starting with the Rocket web site, we'll need to use Rust nightly.  This walkthrough uses <code>rustc 1.18.0-nightly (036983201 2017-04-26)</code>.  To switch to that nightly release, run <code>rustup default nightly-2017-04-26</code>.  The output of that command should look like this:</p>
+<p>Starting with the Rocket web site, we&rsquo;ll need to use Rust nightly.  This walkthrough uses <code>rustc 1.18.0-nightly (036983201 2017-04-26)</code>.  To switch to that nightly release, run <code>rustup default nightly-2017-04-26</code>.  The output of that command should look like this:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">info: syncing channel updates <span style="color:#069;font-weight:bold">for</span> <span style="color:#c30">&#39;nightly-2017-04-26-x86_64-apple-darwin&#39;</span>
 info: downloading component <span style="color:#c30">&#39;rustc&#39;</span>
  42.3 MiB /  42.3 MiB <span style="color:#555">(</span><span style="color:#f60">100</span> %<span style="color:#555">)</span> 1014.4 KiB/s ETA:   <span style="color:#f60">0</span> s                
@@ -76,13 +76,13 @@ info: default toolchain <span style="color:#366">set</span> to <span style="colo
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ rustc --version
 rustc 1.18.0-nightly <span style="color:#555">(</span>2b4c91158 2017-04-25<span style="color:#555">)</span>
 </code></pre></div><h4 id="diesel">Diesel</h4>
-<p>To set up Diesel, we'll need to <a href="https://wiki.postgresql.org/wiki/Detailed_installation_guides">install Postgres</a> to get the required libraries for Diesel CLI.  The Postgres service doesn't have to be running for this walkthrough.</p>
+<p>To set up Diesel, we&rsquo;ll need to <a href="https://wiki.postgresql.org/wiki/Detailed_installation_guides">install Postgres</a> to get the required libraries for Diesel CLI.  The Postgres service doesn&rsquo;t have to be running for this walkthrough.</p>
 <p>Then install the Diesel CLI tool with the Postgres extensions:</p>
 <p><code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
 <h4 id="rusoto">Rusoto</h4>
 <p>For the AWS portions of this walkthrough, ensure AWS access keys are available either in environment variables or AWS credentials file.</p>
 <h2 id="creating-a-postgres-rds-instance">Creating a Postgres RDS instance</h2>
-<p>See <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rds/src/main.rs">rusoto-rds/src/main.rs</a> for the full code.  We'll be using <a href="https://github.com/rusoto/rusoto/">Rusoto</a> 0.24.0, the latest release as of writing this post.</p>
+<p>See <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rds/src/main.rs">rusoto-rds/src/main.rs</a> for the full code.  We&rsquo;ll be using <a href="https://github.com/rusoto/rusoto/">Rusoto</a> 0.24.0, the latest release as of writing this post.</p>
 <p>The meat of the program is this:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>database_instance_name<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;rusototester2&#34;</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>credentials<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DefaultCredentialsProvider::new().unwrap();<span style="color:#bbb">
@@ -174,7 +174,7 @@ rustc 1.18.0-nightly <span style="color:#555">(</span>2b4c91158 2017-04-25<span 
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint_address<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint.address.unwrap();<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>endpoint_port<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>endpoint.port.unwrap();<span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;\n\nendpoint: {:?}&#34;</span>,<span style="color:#bbb"> </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;{}:{}&#34;</span>,<span style="color:#bbb"> </span>endpoint_address,<span style="color:#bbb"> </span>endpoint_port));<span style="color:#bbb">
-</span></code></pre></div><p>When the database is available, we extract the connection string and print it.  Since the DNS name AWS creates for the RDS instance is unique, we'll put that in the <code>.env</code> file in <code>rusoto-rocket</code>.</p>
+</span></code></pre></div><p>When the database is available, we extract the connection string and print it.  Since the DNS name AWS creates for the RDS instance is unique, we&rsquo;ll put that in the <code>.env</code> file in <code>rusoto-rocket</code>.</p>
 <p>Example of <code>.env</code>, using <code>localhost</code> instead of the RDS DNS name:</p>
 <p><code>DATABASE_URL=postgres://masteruser:TotallySecurePassword501@localhost/rusoto_rocket</code></p>
 <p>Now, to create the database: in the <code>rusoto-rds</code> directory, run <code>cargo run</code> to create a new database and wait for it to be available. Populate <code>.env</code> DNS name the with the output of <code>rusoto-rds</code>, replacing <code>localhost</code> in this example.</p>
@@ -182,7 +182,7 @@ rustc 1.18.0-nightly <span style="color:#555">(</span>2b4c91158 2017-04-25<span 
 <p>Using the AWS Console, add a new rule to the security group the RDS instance is using.  Allow inbound traffic on port 5432
 from your IP address.  If the following <code>diesel</code> commands time out, double check you can reach the instance.  A common gotcha is security groups blocking ingress.</p>
 <h2 id="diesel-1">Diesel</h2>
-<p>We've already installed the Diesel CLI with <code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
+<p>We&rsquo;ve already installed the Diesel CLI with <code>cargo install diesel_cli --features &quot;postgres&quot; --no-default-features</code>.</p>
 <p>Ensure the <code>.env</code> file in <code>rusoto-rocket</code> has the connection string from the new RDS instance, including username and password:</p>
 <p><code>DATABASE_URL=postgres://postgres:TotallySecurePassword501@localhost/rusoto_rocket</code></p>
 <p>The up and down files have been populated in this sample.  They are available at <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter">https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rocket/migrations/20170503003554_hit_counter</a> .</p>
@@ -204,7 +204,7 @@ from your IP address.  If the following <code>diesel</code> commands time out, d
 </span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>hits_so_far: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div><p>We use the type <code>Hit</code> to describe our hit counter.  It <code>derive</code>s Queryable, Insertable and Debug, in the table <code>hits</code>.  There's an <code>id</code> field which we gloss over by using a constant and the <code>hits_so_far</code> field where we store the number of hits the site has seen.  Except <code>Debug</code>, the <code>derive</code> fields are used by Diesel.</p>
+</span></code></pre></div><p>We use the type <code>Hit</code> to describe our hit counter.  It <code>derive</code>s Queryable, Insertable and Debug, in the table <code>hits</code>.  There&rsquo;s an <code>id</code> field which we gloss over by using a constant and the <code>hits_so_far</code> field where we store the number of hits the site has seen.  Except <code>Debug</code>, the <code>derive</code> fields are used by Diesel.</p>
 <p>In the <code>rusoto-rocket</code> directory, run <code>diesel setup</code>.  This will connect to RDS and create the database with the required schema.</p>
 <p>If the command times out, ensure your security groups allow inbound access from your IP address.</p>
 <h2 id="making-the-rocket-site">Making the Rocket site</h2>
@@ -217,7 +217,7 @@ rocket_codegen = &quot;0.2.6&quot;
 diesel = { version = &quot;0.11.0&quot;, features = [&quot;postgres&quot;] }
 diesel_codegen = { version = &quot;0.11.0&quot;, features = [&quot;postgres&quot;] }
 dotenv = &quot;0.8.0&quot;
-</code></pre><p>We're using Rocket 0.2.6 along with its codegen library, Diesel 0.11.0 with Postgres with its codegen library and dotenv for supplying configuration to Diesel.</p>
+</code></pre><p>We&rsquo;re using Rocket 0.2.6 along with its codegen library, Diesel 0.11.0 with Postgres with its codegen library and dotenv for supplying configuration to Diesel.</p>
 <p>In the <code>bin/main</code> directory we have the entirety of the Rocket site:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#![</span><span style="color:#099">feature(plugin)</span><span style="color:#099">]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#099">#![</span><span style="color:#099">plugin(rocket_codegen)</span><span style="color:#099">]</span><span style="color:#bbb">
@@ -273,7 +273,7 @@ dotenv = &quot;0.8.0&quot;
 </span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t update hit counter: {}&#34;</span>,<span style="color:#bbb"> </span>e),<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#bbb">    </span>};<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div><p>That's a lot to take in!  Let's break it down:</p>
+</span></code></pre></div><p>That&rsquo;s a lot to take in!  Let&rsquo;s break it down:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#![</span><span style="color:#099">feature(plugin)</span><span style="color:#099">]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#099">#![</span><span style="color:#099">plugin(rocket_codegen)</span><span style="color:#099">]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#bbb">
@@ -291,7 +291,7 @@ dotenv = &quot;0.8.0&quot;
 </span><span style="color:#bbb"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">type</span> <span style="color:#0a8;font-weight:bold">DbConn</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>Mutex<span style="color:#555">&lt;</span>PgConnection<span style="color:#555">&gt;</span>;<span style="color:#bbb">
 </span></code></pre></div><p>We enable Rust plugins and the Rocket codegen plugin.  Then we bring in the required crates: <code>diesel</code> for database access, <code>dotenv</code> for configuration, <code>rocket</code> for the site and code for this walkthrough, <code>rusoto_rocket</code>.  We <code>use</code> the required modules: <code>diesel</code> boilerplate, Postgres libraries and our <code>rusoto_rocket</code> code and database models.</p>
-<p>To keep the same database connection across multiple requests, we'll use Rocket's <code>State</code> functionality.  We'll wrap up the Diesel Postgres connection in a Mutex for thread safety and refer to that as a <code>DbConn</code>.</p>
+<p>To keep the same database connection across multiple requests, we&rsquo;ll use Rocket&rsquo;s <code>State</code> functionality.  We&rsquo;ll wrap up the Diesel Postgres connection in a Mutex for thread safety and refer to that as a <code>DbConn</code>.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[</span><span style="color:#099">get(</span><span style="color:#c30">&#34;</span><span style="color:#c30">/</span><span style="color:#c30">&#34;</span><span style="color:#099">)</span><span style="color:#099">]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">index</span>(db_conn: <span style="color:#0a8;font-weight:bold">State</span><span style="color:#555">&lt;</span>DbConn<span style="color:#555">&gt;</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_rocket::schema::hits::dsl::<span style="color:#555">*</span>;<span style="color:#bbb">
@@ -315,7 +315,7 @@ dotenv = &quot;0.8.0&quot;
 </span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.mount(<span style="color:#c30">&#34;/&#34;</span>,<span style="color:#bbb"> </span>routes<span style="color:#555">!</span>[index])<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#bbb">        </span>.launch();<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div><p>Starting with <code>main</code>, we establish a connection to the database.  Then we create our first <code>hit</code> record with an <code>id</code> of <code>1</code>.  Then we bind our Rocket site to <code>/</code> with the <code>index</code> route as the only route.  The <code>.manage</code> line tells Rocket to manage the database connection for us.  It's a <code>Mutex::new(PgConnection)</code> which is translated to a <code>DbConn</code> we defined earlier.</p>
+</span></code></pre></div><p>Starting with <code>main</code>, we establish a connection to the database.  Then we create our first <code>hit</code> record with an <code>id</code> of <code>1</code>.  Then we bind our Rocket site to <code>/</code> with the <code>index</code> route as the only route.  The <code>.manage</code> line tells Rocket to manage the database connection for us.  It&rsquo;s a <code>Mutex::new(PgConnection)</code> which is translated to a <code>DbConn</code> we defined earlier.</p>
 <p>The <code>index</code> route is defined by the <code>fn index()</code> function and the <code>#[get(&quot;/&quot;)]</code> tells Rocket to map it to the root URL: no path required for that endpoint.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">increment_hit</span>(conn: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">PgConnection</span>,<span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i32</span>,<span style="color:#bbb"> </span>new_hits: <span style="color:#078;font-weight:bold">i32</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>schema::hits;<span style="color:#bbb">
@@ -336,10 +336,10 @@ dotenv = &quot;0.8.0&quot;
 Visit that page to see the hit counter.  Refresh the page and see it increment by one for every page visit.
 The data is stored in the RDS instance on AWS. 🎉</p>
 <h2 id="cleaning-up">Cleaning up</h2>
-<p>To ensure the database doesn't keep running and potentially run up AWS bills, log in to the AWS Console and delete the
+<p>To ensure the database doesn&rsquo;t keep running and potentially run up AWS bills, log in to the AWS Console and delete the
 RDS DB instance.</p>
 <h2 id="demo-vs-longer-term-infrastructure">Demo vs longer term infrastructure</h2>
-<p>As a demo, there's a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addressed when making a real service:</p>
+<p>As a demo, there&rsquo;s a lot of best practices ignored in favor of concise code.  An incomplete list of things that should be addressed when making a real service:</p>
 <ul>
 <li>Lots of <code>unwrap()</code> in this sample code.  Check for errors instead of that.</li>
 <li>Use a database connection pool instead of a single database connection.</li>
@@ -347,7 +347,7 @@ RDS DB instance.</p>
 <li>To deploy an actual Rocket site, use <a href="https://aws.amazon.com/codedeploy/">CodeDeploy</a>, <a href="https://aws.amazon.com/elasticbeanstalk/">ElasticBeanstalk</a> or <a href="https://aws.amazon.com/ecs/">Elastic Container Service</a> instead of copying files to an AWS EC2 instance.</li>
 </ul>
 <h2 id="rusoto-homework">Rusoto homework</h2>
-<p>Instead of going through the AWS Console, we can modify the security groups to allow ingress from our IP address using Rusoto.  Find the database's security group and <code>allow</code> inbound traffic from your IP address.  Security groups are under <a href="https://rusoto.github.io/rusoto/rusoto_ec2/struct.CreateSecurityGroupRequest.html">EC2 in Rusoto</a>.</p>
+<p>Instead of going through the AWS Console, we can modify the security groups to allow ingress from our IP address using Rusoto.  Find the database&rsquo;s security group and <code>allow</code> inbound traffic from your IP address.  Security groups are under <a href="https://rusoto.github.io/rusoto/rusoto_ec2/struct.CreateSecurityGroupRequest.html">EC2 in Rusoto</a>.</p>
 
 
 		
@@ -363,7 +363,7 @@ RDS DB instance.</p>
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-01-07 18:59:46.624596 -0800 PST m=&#43;0.291734329">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-02-06 18:47:32.604794 -0800 PST m=&#43;0.222973369">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

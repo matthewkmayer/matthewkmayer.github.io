@@ -50,19 +50,19 @@
 
 		<p>A hot take on hot patching/fixing.</p>
 <h2 id="definitions">Definitions</h2>
-<p>A hot patch, or hot fix, is a method of fixing a critical bug found in production by following a branching strategy that's outside the norm of software development. Specifically called out in <a href="https://nvie.com/posts/a-successful-git-branching-model/">Gitflow</a>, this process is more complex and error prone than treating a critical bug as a regular bug or feature.</p>
+<p>A hot patch, or hot fix, is a method of fixing a critical bug found in production by following a branching strategy that&rsquo;s outside the norm of software development. Specifically called out in <a href="https://nvie.com/posts/a-successful-git-branching-model/">Gitflow</a>, this process is more complex and error prone than treating a critical bug as a regular bug or feature.</p>
 <p>When following Gitflow, a hot patch can get a fix to production faster by making the change off the master branch, which is then also applied to the release branch. When releases are slow and expensive, this can be successful. However, there are simpler approaches available.</p>
 <h2 id="hot-patching">Hot patching</h2>
 <p>The usual approach for writing a new feature or fixing a bug in Gitflow is to make a new branch off the <code>develop</code> branch, do work then merge it back to <code>develop</code>. Straightforward enough. But when a new release requires merging the <code>develop</code> branch into the <code>release</code> branch, then cutting a new release by merging <code>release</code> into <code>master</code>, it can bring along other changes into the new release, which may not be desired.</p>
 <p>Since a Gitflow hot patch is branched off <code>master</code> the change can be smaller and only bring along the fix.</p>
-<p>A major downside is requiring the person writing the patch to merge their hotfix branch into both <code>master</code> and <code>develop</code>. If the patch isn't merged into <code>develop</code> as well, it's possible to introduce a regression on the next release.</p>
-<p>When a critical bug is found in production, there's a higher level of stress present than everyday coding. Requiring a stressed human to remember an infrequently used workflow is very likely to result in a step of the workflow to be missed. The bug bites twice when the next release has a regression.</p>
+<p>A major downside is requiring the person writing the patch to merge their hotfix branch into both <code>master</code> and <code>develop</code>. If the patch isn&rsquo;t merged into <code>develop</code> as well, it&rsquo;s possible to introduce a regression on the next release.</p>
+<p>When a critical bug is found in production, there&rsquo;s a higher level of stress present than everyday coding. Requiring a stressed human to remember an infrequently used workflow is very likely to result in a step of the workflow to be missed. The bug bites twice when the next release has a regression.</p>
 <h2 id="gitflow-example">Gitflow example</h2>
-<p>Here's a quick example of a full lifecycle of Gitflow: it has the required <code>master</code>, <code>develop</code> and <code>release-1.0.0</code> branches with a single feature branch. This example takes the feature branch and merges it into <code>develop</code>, then into <code>release-1.0.0</code> for the release candidate/pending release, then into <code>master</code> for the actual release.</p>
+<p>Here&rsquo;s a quick example of a full lifecycle of Gitflow: it has the required <code>master</code>, <code>develop</code> and <code>release-1.0.0</code> branches with a single feature branch. This example takes the feature branch and merges it into <code>develop</code>, then into <code>release-1.0.0</code> for the release candidate/pending release, then into <code>master</code> for the actual release.</p>
 <p><img src="https://github.com/matthewkmayer/matthewkmayer.github.io/raw/master/images/gitflow-before-hotfix.png" alt="Gitflow"></p>
 <p>If a bug if found at this point, the workflow must change. A new branch is created off <code>master</code> and is merged into <code>master</code> and <code>develop</code>:</p>
 <p><img src="https://github.com/matthewkmayer/matthewkmayer.github.io/raw/master/images/gitflow-after-hotfix.png" alt="Gitflow hotfix"></p>
-<h2 id="dont-have-that-problem">Don't have that problem</h2>
+<h2 id="dont-have-that-problem">Don&rsquo;t have that problem</h2>
 <p>A patch for a bug should follow the same process as feature work, regardless of bug severity. This reduces the cognitive load of the humans involved, who are already stressed enough about a critical bug.</p>
 <h2 id="trunk-based-development">Trunk based development</h2>
 <p><a href="https://trunkbaseddevelopment.com/">Trunk based development</a> (TBD) is a well thought out and battle tested method to use source control. When a bug is found in TBD, <a href="https://trunkbaseddevelopment.com/branch-for-release/">the reproduction test and fix is applied to the trunk/master branch</a> and cherry picked to the release branch, if used.</p>
@@ -70,13 +70,13 @@
 <h2 id="gitlab-flow">GitLab flow</h2>
 <p><a href="https://docs.gitlab.com/ee/workflow/gitlab_flow.html">GitLab flow</a> is another branching strategy to use. One can use GitLab flow to closely mirror how trunk based development works, or it can be used closer to Gitflow.</p>
 <p>When a critical bug is found in GitLab flow, the fix is made in a short lived branch off <code>master</code>. This is merged back into master, ensuring future releases will not have a regression. Note this is the same way all bug fixes or feature work is done. If needed, the commit with the critical bug fix can be applied to an existing release branch to get the fix out sooner.</p>
-<p>Here's how a git history would look following this example:</p>
+<p>Here&rsquo;s how a git history would look following this example:</p>
 <p><img src="https://github.com/matthewkmayer/matthewkmayer.github.io/raw/master/images/gitlab-flow-bugfix.png" alt="GitLab flow bug fix"></p>
 <p>Note the critical bug fix is applied in the same manner as feature development or other bug fixes: branch off <code>master</code>, make the fix with tests, merge back into <code>master</code>.</p>
 <h2 id="out-of-the-ordinary-or-business-as-usual">Out of the ordinary or business as usual?</h2>
 <p>Both trunk based development and GitLab flow have the option of quickly and easily cutting a new release to get a critical bug fix deployed. With a <a href="https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/">strong CI/CD pipeline</a>, a bug fix can be released with other features and bug fixes with little fuss. This is much harder to do with Gitflow, where releases require careful thinking and source control commands.</p>
 <p>The sample git histories in the post highlight the differences between a special workflow and business as usual. The GitLab flow example is much easier to follow, especially during times of high stress.</p>
-<h2 id="dont-spend-time-wrangling-source-control">Don't spend time wrangling source control</h2>
+<h2 id="dont-spend-time-wrangling-source-control">Don&rsquo;t spend time wrangling source control</h2>
 <p>Relying on stressed humans to perfectly execute a rarely used workflow is a recipe for sadness and regressions. Letting developers use the same process they always use is one less moving piece for them to keep track of while fixing a bug.</p>
 <p>Spend time fixing bugs instead of cherry picking commits or manually applying code changes.</p>
 
@@ -95,7 +95,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-01-07 18:59:46.490144 -0800 PST m=&#43;0.157284626">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-02-06 18:47:32.457388 -0800 PST m=&#43;0.075568241">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
