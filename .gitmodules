@@ -1,0 +1,3 @@
+[submodule "blag/themes/tale"]
+	path = blag/themes/tale
+	url = https://github.com/EmielH/tale-hugo.git
