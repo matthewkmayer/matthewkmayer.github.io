@@ -100,11 +100,20 @@ pub struct Event {
     pub repo: Repo,
     pub payload: Option<Payload>,
 }
+
+/// Type containing if it's a push event or pull request event.
+#[derive(Deserialize, Debug, Clone, PartialEq, PartialOrd, Ord, Eq)]
+pub struct Payload {
+    pub action: Option<String>,
+    #[serde(rename = "pull_request")]
+    pub pull_request: Option<PullRequest>,
+    pub commits: Option<Vec<Commit>>,
+}
 ```
 
 Each line of the JSON file is one of these events which means the file can be read line by line to get a collection of Events.
 
-The actual implementation of Rusty von Humboldt has a roughshod actor like messaging system. The RvH takes the user input of what year to look at, how many hours in that year to process, then what mode to operate in: committer count or repository ID mapping.
+The actual implementation of Rusty von Humboldt has a rough actor-like messaging system. The RvH takes the user input of what year to look at, how many hours in that year to process, then what mode to operate in: committer count or repository ID mapping.
 
 Repository IDs internal to GitHub, exposed in GitHub Archive, are IDs that don't change. However, the repository name or location can move, so the repo ID is what we use to track the latest name of a repository.
 
@@ -147,11 +156,23 @@ pub fn is_direct_push_event(&self) -> bool {
 
 We count a merged PR or a commit directly to the repo as a commit. PRs not accepted aren't counted.
 
+RvH starts with getting the list of files from S3 that match the requirements: year and number of hours. It then splits that in two and sends it to two worker threads that download each file and use rayon to parse the decompressed JSON data.
+
+Deduplication relies heavily on Postgres' `ON CONFLICT` abilities for upserts: we update data if the information we have is newer and ignore data already in the database. (More words on batching upserts for performance)
+
 ## Deployment and running
+
+Due to complexities and roughness of containers with Rust, Rusoto and openssl, we opted to make an AMI with RvH installed. To do this we built RvH on an EC2 instance and saved the machine image (AMI). The service was triggered weekly to start the AMI with a startup script providing configuration such as S3 bucket source, year to process, what mode to run in and where to upload the results.
+
+*2020 update: Dockerization is far easier with rustls: RvH was converted to use AWS ECS Fargate for "serverless" instead of using AMIs*
 
 ## Results
 
+It works, it powered data analysis at my day job for years before a rewrite in Go because our company has more Go expertise.
+
 ## Future work and blog posts
+
+*2020 update: stdlib channels were replaced with crossbeam-channel and vectors were replaced with BTreeMaps for better performance*
 
 ## Lessons learned
 
