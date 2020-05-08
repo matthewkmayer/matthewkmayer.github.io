@@ -1,5 +1,5 @@
 +++
-date = "2018-02-03T21:28:53-07:00"
+date = "2020-05-06T21:28:53-07:00"
 draft = false
 title = "Rusty von Humboldt"
 +++
@@ -154,3 +154,8 @@ We count a merged PR or a commit directly to the repo as a commit. PRs not accep
 ## Future work and blog posts
 
 ## Lessons learned
+
+(Some big blog post about moving to BigQuery for analytics was proud of: )
+That project: 36 core machine, 0.8 TB of gzipped JSON, four hours.
+
+Rusty von Humboldt: couple of 2 core Fargate VM, 2 TB of gzipped JSON, three hours.
