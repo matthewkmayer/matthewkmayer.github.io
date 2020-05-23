@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head>
-	<meta name="generator" content="Hugo 0.63.1" />
+	<meta name="generator" content="Hugo 0.71.0" />
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<meta name="description" content="">
 
-		<title>
-				Matthew Mayer&#39;s tech blog
-		</title>
+		<title>Matthew Mayer&#39;s tech blog</title>
 
 		
   		<link rel="stylesheet" href="/blag/public/css/style.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+		<link rel="stylesheet" href="/blag/public/css/fonts.css">
 		
 		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
@@ -29,8 +27,8 @@
 					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
 				</a>
 				<ul>
-    <li><a href="/blag/public/about">About</a></li>
-    <li><a href="/blag/public/">Posts</a></li>
+    
+    
 </ul>
 			</div>
 		</nav>
@@ -43,40 +41,168 @@
 
 	<div class="catalogue">
 		
-			<a href="https://matthewkmayer.github.io/blag/public/post/" class="catalogue-item">
+			<a href="https://matthewkmayer.github.io/blag/public/post/red-green-bugfix/" class="catalogue-item">
     <div>
-        <time datetime="0001-01-01 00:00:00 &#43;0000 UTC" class="catalogue-time">January 1, 0001</time>
-        <h1 class="catalogue-title">Posts</h1>
+        <time datetime="2020-02-06 00:28:53 -0700 -0700" class="catalogue-time">February 6, 2020</time>
+        <h1 class="catalogue-title">Red/green bugfix</h1>
         <div class="catalogue-line"></div>
 
         <p>
-            
+            Red/green bugfixes are the best technique for communicating understanding of a bug and its solution, especially for asynchronous code reviews.
+A bug Say a new bug has been discovered in a backend service. If it&rsquo;s found in production, the first instinct is to solve it as quickly as possible. While laudable, this kneejerk reaction can actually make the fix slower and harder for others to understand.
+Usual fixing procedure  Reproduce the bug Using logs and/or reading the code, find where the issue is Fix the bug, make a pull request, let coworkers review it  While this procedure is straightforward and can get a bug fix out quickly, there are downsides to this process:
         </p>
     </div>
 </a>
 
 		
-			<a href="https://matthewkmayer.github.io/blag/public/about/" class="catalogue-item">
+			<a href="https://matthewkmayer.github.io/blag/public/post/farewell-rusoto/" class="catalogue-item">
     <div>
-        <time datetime="0001-01-01 00:00:00 &#43;0000 UTC" class="catalogue-time">January 1, 0001</time>
-        <h1 class="catalogue-title">About</h1>
+        <time datetime="2020-01-07 00:28:53 -0700 -0700" class="catalogue-time">January 7, 2020</time>
+        <h1 class="catalogue-title">Farewell to Rusoto</h1>
         <div class="catalogue-line"></div>
 
         <p>
-            Matthew Mayer has been professionally building software since 2006. He&rsquo;s earned a living writing C#, Java, Golang and Ruby. Since 2014 he&rsquo;s focused on cloud native solutions on Amazon Web Services, including achieving the AWS Solutions Architect Professional level certification.
-Matthew was one of the founding maintainers of Rusoto, the community AWS SDK for Rust.
-When not typing on a computer, he can be found touring North America on his motorcycle or sidecar rig.
+            TL;DR: I&rsquo;m not working on Rusoto any more.
+A history of Rusoto Anthony DiMarco and I started Rusoto in July of 2015. I knew we started the project shortly after Rust&rsquo;s 1.0 release, but I didn&rsquo;t realize we had our first commit less than two months after Rust 1.0 landed. Wow!
+Some early parts of Rusoto are similar to how Rusoto looks now, others are quite a bit different. Our first iteration of code generation used a Python2 script to parse the botocore service definitions and output Rust.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/aoc-twy-01/" class="catalogue-item">
+    <div>
+        <time datetime="2019-12-16 00:28:53 -0700 -0700" class="catalogue-time">December 16, 2019</time>
+        <h1 class="catalogue-title">Advent of Code 2019, the wrong way (part one)</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            Per my tweet: doing Advent of Code 2019 the wrong way. 😁
+Today we&rsquo;re easing into #serverless.
+WHAT are we doing? Advent of Code!
+Advent of Code is an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like.
+It&rsquo;s an excuse to play around with smaller coding problems and enjoy some recreational coding. In this series of blog posts, we&rsquo;re going to go about solving the problems the wrong way: as much serverless as possible.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/rust-as-abs/" class="catalogue-item">
+    <div>
+        <time datetime="2019-10-28 00:28:53 -0700 PDT" class="catalogue-time">October 28, 2019</time>
+        <h1 class="catalogue-title">Rust as anti lock brakes</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            Rust: a Language for the Next 40 Years put a seed of an idea on my head. I recommend watching the 55 minute video if you haven&rsquo;t had a chance yet.
+The recent posts on the Microsoft Security Response Center blog helped the pieces click in my head.
+Rust is like anti lock brakes (ABS) for motorcycles.
+Wait, what? There are a lot of parallels here!
+Bringing a motorcycle to a stop as quickly as possible is a skill.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/2019-break/" class="catalogue-item">
+    <div>
+        <time datetime="2019-06-11 00:28:53 -0700 PDT" class="catalogue-time">June 11, 2019</time>
+        <h1 class="catalogue-title">Taking a break, 2019</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            Like last year I&rsquo;m taking a summer break from open source, including Rusoto.
+Outside time is good for me I&rsquo;ll be spending more time outside and less time on a computer until September 2019. There won&rsquo;t be a disappearing act but I&rsquo;ll be significantly reducing the amount of time spent on computers for the next few months.
+Until then!
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/how-much-testing/" class="catalogue-item">
+    <div>
+        <time datetime="2019-05-10 00:28:53 -0700 PDT" class="catalogue-time">May 10, 2019</time>
+        <h1 class="catalogue-title">How much testing is enough?</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            Most software developers will tell you that tests are good. More tests are better. How much is enough? How can one recognize diminishing returns? What types of tests should be written? Here are some guidelines for determining what a team&rsquo;s &ldquo;enough&rdquo; level of testing is.
+Definitions and goals  unit test: tests a single unit of code. Think a single function or method. If there are more than one or three mocks being used, it&rsquo;s probably not a unit test functional test: tests behavior of code, staying within a single process integration test: a test that crosses a process boundary.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/dont-hotpatch/" class="catalogue-item">
+    <div>
+        <time datetime="2019-05-07 00:28:53 -0700 PDT" class="catalogue-time">May 7, 2019</time>
+        <h1 class="catalogue-title">Don&#39;t hot patch</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            A hot take on hot patching/fixing.
+Definitions A hot patch, or hot fix, is a method of fixing a critical bug found in production by following a branching strategy that&rsquo;s outside the norm of software development. Specifically called out in Gitflow, this process is more complex and error prone than treating a critical bug as a regular bug or feature.
+When following Gitflow, a hot patch can get a fix to production faster by making the change off the master branch, which is then also applied to the release branch.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/chaining-rusoto-futures/" class="catalogue-item">
+    <div>
+        <time datetime="2019-01-02 00:28:53 -0700 -0700" class="catalogue-time">January 2, 2019</time>
+        <h1 class="catalogue-title">Chaining Rusoto Futures</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            <p>Rusoto supports asynchronously running commands to AWS. While immediately making a blocking call to AWS is a common use case, one can create actions to run async and let the <code>tokio</code> runtime handle it. This opens up the ability to run multiple AWS calls concurrently.</p>
+<p>If a project sets up infrastructure on AWS, the actions that don&rsquo;t depend on others to finish can run concurrently. For example: creating an S3 bucket and an SQS queue. Instead of creating a bucket and waiting for the request to finish, then moving on to creating the queue, one can put the Rusoto <code>Futures</code> together and concurrently run them.</p>
+<p>In this post we&rsquo;ll explore to examples of using futures and the Rusoto DynamoDB client.</p>
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/" class="catalogue-item">
+    <div>
+        <time datetime="2018-12-04 00:28:53 -0700 -0700" class="catalogue-time">December 4, 2018</time>
+        <h1 class="catalogue-title">Repos for getting hired</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            I&rsquo;m often involved in hiring. When GitHub links are on a resume, I look at pinned repos and source repos. Here&rsquo;s a checklist of important items to have in a GitHub public repository to catch the eye of reviewers. Or at least my eye when hiring, and why it&rsquo;s important.
+Your goal, my goal Yours: get hired. Mine: make an informed decision about hiring someone who can do the job.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/postgres-tls/" class="catalogue-item">
+    <div>
+        <time datetime="2018-09-13 00:28:53 -0700 PDT" class="catalogue-time">September 13, 2018</time>
+        <h1 class="catalogue-title">Postgres over TLS with postgres and r2d2_postgres</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            &ldquo;Dance like nobody&rsquo;s watching. Encrypt like everybody is.&rdquo;
+In this post we&rsquo;ll go over how to get the postgres crate and r2d2_postgres working with openssl for connection pooling with TLS.
+Source code is available.
+Goal Modern web applications are built with resiliency and fault tolerance in mind. For our example, we&rsquo;ll be examining parts of a web application backed by a Postgres database.
+When services launch, their database won&rsquo;t always be available.
         </p>
     </div>
 </a>
 
 		
 	</div>
-	
+
 	<div class="pagination">
 		
 		
-	
+			<a href="/blag/public/page/2/" class="right arrow">&#8594;</a>
+		
+
 		<span>1</span>
 	</div>
 </main>
@@ -84,7 +210,7 @@ When not typing on a computer, he can be found touring North America on his moto
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-02-06 18:47:32.453376 -0800 PST m=&#43;0.071556119">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-05-23 11:30:04.348858 -0700 PDT m=&#43;0.080700426">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

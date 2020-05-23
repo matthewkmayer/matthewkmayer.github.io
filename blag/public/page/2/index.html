@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head>
-	<meta name="generator" content="Hugo 0.55.6" />
+	<meta name="generator" content="Hugo 0.71.0" />
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<meta name="description" content="">
 
-		<title>
-				Matthew Mayer&#39;s tech blog
-		</title>
+		<title>Matthew Mayer&#39;s tech blog</title>
 
 		
   		<link rel="stylesheet" href="/blag/public/css/style.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+		<link rel="stylesheet" href="/blag/public/css/fonts.css">
 		
 		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
@@ -29,8 +27,8 @@
 					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
 				</a>
 				<ul>
-    <li><a href="/blag/public/about">About</a></li>
-    <li><a href="/blag/public/">Posts</a></li>
+    
+    
 </ul>
 			</div>
 		</nav>
@@ -42,6 +40,68 @@
 
 
 	<div class="catalogue">
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/" class="catalogue-item">
+    <div>
+        <time datetime="2018-09-12 00:28:53 -0700 PDT" class="catalogue-time">September 12, 2018</time>
+        <h1 class="catalogue-title">CI/CD Pipeline</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            Previously, we defined Continuous Integration (CI), Continuous Deployment (CD) and build servers. Now we&rsquo;ll see how combining these concepts creates something greater than its parts: a true CI/CD pipeline.
+Continuous Integration and Continuous Delivery are processes that tell humans what techniques to use with source control.
+Build server is a server, servers or a system that automatically builds and tests code.
+Putting these concepts together require people following processes so automated tasks execute well.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/build-ci-cd/" class="catalogue-item">
+    <div>
+        <time datetime="2018-09-05 00:28:53 -0700 PDT" class="catalogue-time">September 5, 2018</time>
+        <h1 class="catalogue-title">Build servers, Continuous Integration, Continuous Delivery</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            Ever hear someone say &ldquo;CI/CD build pipeline&rdquo; and weren&rsquo;t sure that that means, exactly?
+Let&rsquo;s define and explore the concepts of:
+ Build server Continuous Integration (CI) Continous Delivery (CD)  Three separate ideas Build server is a server, servers or a system that automatically builds and tests code.
+Continuous Integration and Continuous Delivery are both processes, guiding humans on what to do.
+Build server (or build service) Whenever code is pushed to the repository, the build server checks out that commit or branch and tries to build the code and run tests.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/2018-break/" class="catalogue-item">
+    <div>
+        <time datetime="2018-04-02 00:28:53 -0700 PDT" class="catalogue-time">April 2, 2018</time>
+        <h1 class="catalogue-title">Taking a break</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            After three years maintaining an open source project, it&rsquo;s time to take a few months of me time.
+TL;DR I&rsquo;m taking a break to do things I&rsquo;ve been missing. I will be back, no later than September 1st, 2018.
+Rusoto history and running an open source project Back in early 2015, Anthony DiMarco and I started Rusoto. Rust&rsquo;s promises of performance and correctness looked like a perfect match for cloud computing.
+        </p>
+    </div>
+</a>
+
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/resources-list/" class="catalogue-item">
+    <div>
+        <time datetime="2018-03-18 21:28:53 -0700 PDT" class="catalogue-time">March 18, 2018</time>
+        <h1 class="catalogue-title">Curated list of resources for software engineering</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            List of links for topics including:
+ Git Branching strategies Ruby Go Testing Cloud and AWS  Git  Think like a Git Pro Git  Branching strategies  GitHub flow Trunk based Development  Ruby  Learn Ruby the Hard Way  Go  Effective Go Golang Tripping Hazards  Testing  Practical Test Pyramid https://en.wikipedia.org/wiki/Test-driven_development Red Green Refactor Repeat Cucumber general reference  Cloud and AWS  Getting Started on AWS This Is My Architecture A Cloud Guru Linux Academy  
+        </p>
+    </div>
+</a>
+
 		
 			<a href="https://matthewkmayer.github.io/blag/public/post/rust-2018/" class="catalogue-item">
     <div>
@@ -128,72 +188,16 @@ Parts one and two recap In the previous two posts, we followed code generation f
 </a>
 
 		
-			<a href="https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-two/" class="catalogue-item">
-    <div>
-        <time datetime="2017-06-16 21:28:53 -0700 PDT" class="catalogue-time">June 16, 2017</time>
-        <h1 class="catalogue-title">Rusoto codegen, part two</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            In the previous post we took a quick tour of the major pieces of Rusoto code generation. In this post we&rsquo;ll get deeper into code generation for the Simple Queue Service.
-Picking up from part one Part one described a few parts of Rusoto codegen:
- Finding which services to generate Making the service&rsquo;s crate Generating the service and placing it inside its crate rustfmt the generated code to make it look pretty  Step three is where this post will concentrate.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/" class="catalogue-item">
-    <div>
-        <time datetime="2017-06-09 21:28:53 -0700 PDT" class="catalogue-time">June 9, 2017</time>
-        <h1 class="catalogue-title">Rusoto codegen</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            Writing a software development kit (SDK) is a challenge. Especially when the target has a tremendous number of services, endpoints and different styles of interacting, such as REST, querystring and &ldquo;other.&rdquo; Rusoto uses the botocore service definitions to create Rust code to interact with Amazon Web Services. Let&rsquo;s dive into how it&rsquo;s done!
-Using Simple Queue Service as an example To make this post clearer, we&rsquo;ll follow the Simple Queue Service (SQS) from botocore service definition to the rusoto_sqs crate.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-mk2/" class="catalogue-item">
-    <div>
-        <time datetime="2017-05-23 21:28:53 -0700 PDT" class="catalogue-time">May 23, 2017</time>
-        <h1 class="catalogue-title">Rusoto RDS walkthrough, mk 2</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            Since the publication of Rusoto RDS walkthrough, a new version of Rusoto has been released: 0.25.0. This includes some breaking changes so let&rsquo;s work through those. We&rsquo;ll also be cleaning up some of the rougher edges in the previous walkthrough.
-rusoto-rds-mk2 The previous project&rsquo;s source code is on github. We&rsquo;ll be making a new project based off that one. You can see the final product in rusoto-rds-mk2 folder.
-Cargo.toml changes required for Rusoto 0.
-        </p>
-    </div>
-</a>
-
-		
-			<a href="https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/" class="catalogue-item">
-    <div>
-        <time datetime="2017-05-14 21:28:53 -0700 PDT" class="catalogue-time">May 14, 2017</time>
-        <h1 class="catalogue-title">Rusoto RDS walkthrough</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            Let&rsquo;s tie some great Rust crates together! In this walkthrough, we&rsquo;ll use Rusoto to create a Postgres RDS database instance, Rocket.rs to make a web server and Diesel to talk to the database on AWS to make a proof of concept hit counter.
-Walkthrough overview There are two projects in this walkthrough. First is rusoto-rds. This creates the Amazon Web Services (AWS) Relational Database Service (RDS) instance and should be run first.
-        </p>
-    </div>
-</a>
-
-		
 	</div>
-	
+
 	<div class="pagination">
 		
 			<a href="/blag/public/" class="left arrow">&#8592;</a>
 		
 		
-	
+			<a href="/blag/public/page/3/" class="right arrow">&#8594;</a>
+		
+
 		<span>2</span>
 	</div>
 </main>
@@ -201,7 +205,7 @@ Walkthrough overview There are two projects in this walkthrough. First is rusoto
 
         		<footer>
 			<span>
-			&copy; <time datetime="2019-06-12 23:15:46.141278 -0700 PDT m=&#43;0.230582961">2019</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-05-23 11:30:04.370094 -0700 PDT m=&#43;0.101936457">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

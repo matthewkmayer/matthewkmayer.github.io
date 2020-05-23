@@ -4,13 +4,11 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<title>
-				Postgres over TLS with postgres and r2d2_postgres &middot; Matthew Mayer&#39;s tech blog
-		</title>
+		<title>Postgres over TLS with postgres and r2d2_postgres &middot; Matthew Mayer&#39;s tech blog</title>
 
 		
   		<link rel="stylesheet" href="/blag/public/css/style.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+		<link rel="stylesheet" href="/blag/public/css/fonts.css">
 		
 		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
@@ -27,8 +25,8 @@
 					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
 				</a>
 				<ul>
-    <li><a href="/blag/public/about">About</a></li>
-    <li><a href="/blag/public/">Posts</a></li>
+    
+    
 </ul>
 			</div>
 		</nav>
@@ -57,44 +55,44 @@
 <h2 id="ping">Ping</h2>
 <p>The first step is to gather the details needed to start the service. This is usually configuration and credentials from environment variables in <a href="https://12factor.net/">12 Factor App</a> fashion. After that, the service will ping the database until it&rsquo;s available.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#09f;font-style:italic">// Usual web app startup things here: read config from environment variables,
-</span><span style="color:#09f;font-style:italic"></span><span style="color:#09f;font-style:italic">// do any one-time startup work, etc...
+</span><span style="color:#09f;font-style:italic">// do any one-time startup work, etc...
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>conn_string<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;&#34;</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Conn string: {}&#34;</span>,<span style="color:#bbb"> </span>conn_string);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>dbssl<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;require&#34;</span>;<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// pretend we got this from environment variables
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#09f;font-style:italic">// First: ping the database until it accepts a connection:
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">loop</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// We do connection building and other work inside the loop because we can&#39;t
+</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// We do connection building and other work inside the loop because we can&#39;t
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// .clone() ping_db_ssl_mode:
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">mut</span><span style="color:#bbb"> </span>connbuilder<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>SslConnectorBuilder::new(SslMethod::tls()).unwrap();<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// https://www.postgresql.org/docs/current/static/libpq-ssl.html describes the modes
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// https://www.postgresql.org/docs/current/static/libpq-ssl.html describes the modes
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>dbssl.to_lowercase().as_ref()<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#c30">&#34;require&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;prefer&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;allow&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>connbuilder.set_verify(postgres::tls::openssl::openssl::ssl::SSL_VERIFY_NONE),<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>_<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// by default we verify certs: it&#39;s like either verify-ca or verify-full, TBD
+</span><span style="color:#bbb">        </span><span style="color:#c30">&#34;require&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;prefer&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;allow&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>connbuilder.set_verify(postgres::tls::openssl::openssl::ssl::SSL_VERIFY_NONE),<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>_<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// by default we verify certs: it&#39;s like either verify-ca or verify-full, TBD
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>}<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>negotiator<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>postgres::tls::openssl::OpenSsl::from(connbuilder.build());<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>ping_db_ssl_mode<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>dbssl.to_lowercase().as_ref()<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#c30">&#34;require&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;verify-ca&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;verify-full&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>postgres::TlsMode::Require(<span style="color:#555">&amp;</span>negotiator),<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#09f;font-style:italic">// `prefer` and `allow` fall into here and will not try TLS. 
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>negotiator<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>postgres::tls::openssl::OpenSsl::from(connbuilder.build());<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>ping_db_ssl_mode<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>dbssl.to_lowercase().as_ref()<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#c30">&#34;require&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;verify-ca&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;verify-full&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>postgres::TlsMode::Require(<span style="color:#555">&amp;</span>negotiator),<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#09f;font-style:italic">// `prefer` and `allow` fall into here and will not try TLS. 
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">        </span><span style="color:#09f;font-style:italic">// Not totally correct: please use at least `require` for real use.
-</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">        </span>_<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>postgres::TlsMode::<span style="color:#366">None</span>,<span style="color:#bbb"> 
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">        </span>_<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>postgres::TlsMode::<span style="color:#366">None</span>,<span style="color:#bbb"> 
 </span><span style="color:#bbb">    </span>};<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>Connection::connect(conn_string.as_ref(),<span style="color:#bbb"> </span>ping_db_ssl_mode)<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;connected to db&#34;</span>);<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span><span style="color:#bbb"></span><span style="color:#99f"></span>;<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>},<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t connect to DB, sleeping a second. Error: {}&#34;</span>,<span style="color:#bbb"> </span>e);<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::{thread,<span style="color:#bbb"> </span>time};<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">            </span>thread::sleep(time::Duration::from_millis(<span style="color:#f60">1000</span>));<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">        </span>}<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>Connection::connect(conn_string.as_ref(),<span style="color:#bbb"> </span>ping_db_ssl_mode)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Ok</span>(_)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;connected to db&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">break</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Err</span>(e)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Couldn&#39;t connect to DB, sleeping a second. Error: {}&#34;</span>,<span style="color:#bbb"> </span>e);<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::{thread,<span style="color:#bbb"> </span>time};<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>thread::sleep(time::Duration::from_millis(<span style="color:#f60">1000</span>));<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;Postgres TLS tester, connected!&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#09f;font-style:italic">// After we exit the loop, the connection we made should drop and disconnect.
 </span></code></pre></div><p>As the comments point out, we look at what the <code>sslmode</code> settings are to determine how picky we are about encryption and certificates. For more details, review <a href="https://www.postgresql.org/docs/current/static/libpq-ssl.html">the official Postgres docs on libpq-ssl</a>.</p>
@@ -103,20 +101,20 @@
 <p>After we&rsquo;ve successfully pinged the database, it&rsquo;s time to make our connection pool. Since making database connections are relatively expensive, we <em>really</em> want to keep a pool of them. The r2d2_postgres crate handles that for us, but we need to do a lot of the same work with configuring its TLS connections.</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">mut</span><span style="color:#bbb"> </span>builder<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>SslConnector::builder(::openssl::ssl::SslMethod::tls()).unwrap();<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>dbssl.to_lowercase().as_ref()<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#c30">&#34;require&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;prefer&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;allow&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>builder.set_verify(SslVerifyMode::empty()),<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>_<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// by default we verify certs: it&#39;s like either verify-ca or verify-full, TBD
+</span><span style="color:#bbb">    </span><span style="color:#c30">&#34;require&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;prefer&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;allow&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>builder.set_verify(SslVerifyMode::empty()),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>_<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>(),<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// by default we verify certs: it&#39;s like either verify-ca or verify-full, TBD
 </span><span style="color:#09f;font-style:italic"></span>}<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>negotiator<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#366">Box</span>::new(::postgres::tls::openssl::OpenSsl::new().unwrap());<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>db_ssl_mode<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>dbssl.to_lowercase().as_ref()<span style="color:#bbb"> </span>{<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#c30">&#34;require&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;verify-ca&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;verify-full&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>TlsMode::Require(negotiator),<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// `prefer` and `allow` fall into here and will not try TLS. 
+</span><span style="color:#bbb">    </span><span style="color:#c30">&#34;require&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;verify-ca&#34;</span><span style="color:#bbb"> </span><span style="color:#555">|</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;verify-full&#34;</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>TlsMode::Require(negotiator),<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// `prefer` and `allow` fall into here and will not try TLS. 
 </span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span><span style="color:#09f;font-style:italic">// Not totally correct: please use at least `require` for real use.
-</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>_<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>TlsMode::<span style="color:#366">None</span>,<span style="color:#bbb"> 
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#bbb">    </span>_<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>TlsMode::<span style="color:#366">None</span>,<span style="color:#bbb"> 
 </span><span style="color:#bbb"></span>};<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">
+</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>manager<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>PostgresConnectionManager::new(conn_string.as_ref(),<span style="color:#bbb"> </span>db_ssl_mode)<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#bbb">    </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t make postgres connection manager&#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>.expect(<span style="color:#c30">&#34;Couldn&#39;t make postgres connection manager&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>pool<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>r2d2::Pool::new(manager).expect(<span style="color:#c30">&#34;Couldn&#39;t make pool from pg connection manager&#34;</span>);<span style="color:#bbb">
 </span></code></pre></div><p>This is very similar, but has some tricky parts in it. Specifically, many <code>openssl</code> items are re-exported from the <code>postgres</code> crate and collide with ones from our <code>openssl</code> import but are not compatible. To get around that, we fully specify which structs and functions we want. We also <code>Box</code> our openssl connection to put it on the heap, since we&rsquo;ll be passing the connection pool into our actix-web handlers.</p>
 <p>In my web app, I take the <code>pool</code> variable and put it into the actix-web server&rsquo;s application state for access in its handlers.</p>
@@ -139,7 +137,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-02-06 18:47:32.476565 -0800 PST m=&#43;0.094744498">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-05-23 11:30:04.344762 -0700 PDT m=&#43;0.076604852">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
