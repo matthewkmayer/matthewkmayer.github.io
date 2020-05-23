@@ -4,19 +4,20 @@ draft = false
 title = "Surviving the upcoming winter"
 +++
 
-This is my perspective of the current state of Rusoto as a semi-retired maintainer and Amazon outsider.
+This is my perspective of the current state of Rusoto as a semi-retired maintainer and Amazon outsider. The post borrows the term `winter` from [AI Winter](https://en.wikipedia.org/wiki/AI_winter): a time period of decreased interest and funding for something.
 
-## Chilling effects and winter
+## Amazon is hiring engineers for an AWS Rust SDK
 
-This post borrows the term `winter` from [AI Winter](https://en.wikipedia.org/wiki/AI_winter): a time period of decreased interest and funding for something.
+Amazon has two public job openings for [Senior Software Development Engineers - AWS Rust SDK](https://www.amazon.jobs/en/jobs/1124901/senior-software-development-engineer-aws-rust-sdk). There's now enough customer demand for Amazon to make an official SDK for Rust. 
 
-Amazon has two public job openings for [Senior Software Development Engineers - AWS Rust SDK](https://www.amazon.jobs/en/jobs/1124901/senior-software-development-engineer-aws-rust-sdk). This is a win for Rusoto: there's now enough customer demand for Amazon to make an official SDK for Rust. 
+The fact Amazon has these job openings means they are getting serious about supporting Rust with AWS. It's a win for the Rust community: an official AWS SDK is on the horizon. There's also a downside for Rusoto.
 
-What does this mean for Rusoto? Operating under the assumption when Amazon releases an official AWS SDK for Rust, the community will (and should) move to use that. Right now Amazon's intentions are unknown: will they ask to take over Rusoto or will they make their own SDK?
+## Winter from chilling effects
 
-In the long term, any official SDK is going to be a wonderful addition to the Rust ecosystem. In the short term, their unknown intentions cause a chilling effect on Rusoto. With the chance of Amazon making their own SDK from scratch, any work on Rusoto has a short shelf life: it won't be the popular way to interact with AWS when an official SDK is released.
+Operating under the assumption when Amazon releases an official AWS SDK for Rust, the community will (and should) move to use that. Right now Amazon's intentions are unknown: will they ask to take over Rusoto or will they make their own SDK?
+
+Amazon's unknown intentions cause a chilling effect on Rusoto. With the possibility of Amazon making their own SDK from scratch, any work on Rusoto has a short shelf life: it won't be the popular way to interact with AWS when an official SDK is released.
 
 ## Summer is coming
 
 It's time to wait and see how Amazon acts instead of continuing to spend much time on Rusoto. But summer is coming, one way or another.
-
