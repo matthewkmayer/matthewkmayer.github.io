@@ -6,10 +6,20 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Feb 2020 00:28:53 -0700</lastBuildDate>
+    <lastBuildDate>Tue, 26 May 2020 00:28:53 -0700</lastBuildDate>
     
 	<atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Surviving the upcoming winter</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/surviving-the-winter/</link>
+      <pubDate>Tue, 26 May 2020 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/surviving-the-winter/</guid>
+      <description>This is my perspective of the current state of Rusoto as a semi-retired maintainer and Amazon outsider. The post borrows the term winter from AI Winter: a time period of decreased interest and funding.
+Amazon is hiring engineers for an AWS Rust SDK Amazon has two public job openings for Senior Software Development Engineers - AWS Rust SDK. There&amp;rsquo;s now enough customer demand for Amazon to make an official SDK for Rust.</description>
+    </item>
     
     <item>
       <title>Red/green bugfix</title>
