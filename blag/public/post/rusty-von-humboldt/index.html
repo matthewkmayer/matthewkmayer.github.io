@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Rusty von Humboldt &middot; Matthew Mayer&#39;s tech blog</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="/blag/public/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2020-06-23 00:28:53 -0700 PDT">June 23, 2020</time>
+</div>
+		<h1 class="post-title">Rusty von Humboldt</h1>
+<div class="post-line"></div>
+
+		
+
+		<p>Rusty von Humboldt is a GitHub Archive data explorer and Extract, Transform and Load (ETL) tool. Or: <strong>seeing how far the tools you know can take you.</strong></p>
+<h2 id="a-blog-post-written-across-two-years">A blog post written across two years</h2>
+<p>It&rsquo;s been more than two years since the first draft of this post. Since then, Rusty von Humboldt (RvH) has seen a few tweaks and the maturing ecosystem has made some things much easier. An example is <a href="https://github.com/rusoto/rusoto">Rusoto</a> supporting <a href="https://github.com/ctz/rustls">rustls</a> which avoids a lot of heartache dealing with OpenSSL.</p>
+<h2 id="whats-in-a-name">What&rsquo;s in a name?</h2>
+<p><a href="https://en.wikipedia.org/wiki/Alexander_von_Humboldt">Alexander von Humboldt</a> jumped out from a list of explorers on Wikipedia. I got a chuckle out of replacing Alexander&rsquo;s name with &ldquo;Rusty&rdquo; so Rusty von Humboldt was born to explore the treasures of <a href="https://www.githubarchive.org/">GitHub Archive</a> (GHA).</p>
+<h2 id="gha-data">GHA data</h2>
+<p>GitHub Archive has a record of public GitHub events since 2/12/2011. Every hour, public events are recorded in a gzipped JSON file. Every <code>git push</code>, opened pull request, accepted pull request, new issue, comment on an issue, etc&hellip; is available.</p>
+<p>The event formats differ before and after 1/1/2015. At that date, the format switches to GitHub&rsquo;s Event API format. In this post we&rsquo;ll focus on the 2015 and later format.</p>
+<p>The amount of data isn&rsquo;t <em>massive</em>: the complete archive is approximately two terabytes of gzipped JSON. <em>Note: this data was gathered during the first iteration of this post in 2017 or 2018</em></p>
+<p>Another way of getting an idea for scale: the record of public activity for GitHub during the first hour of December 1st, 2019 is 17 megabytes of JSON, gzipped. Decompressed, that single hour of data is 120 megabytes on my Mac. Multiply the 17 MB of compressed data by 24 hours in a day and there&rsquo;s about 408 megabytes of compressed files for <em>one day</em>.  To keep decompressed files around for one day is almost three gigabytes. At the December rate for one year the numbers come out to be around a terabyte of <strong>decompressed</strong> data.</p>
+<h2 id="strategy">Strategy</h2>
+<p>The goal of the project is to track the number of committers to public repositories on GitHub without relying on the GitHub API. Making calls to GitHub isn&rsquo;t possible in certain customer environments, so we have to get our own copy of the data we need.</p>
+<p>When approaching this problem, I looked at the volume of data to process, where our copy was located on S3 and how the data gleaned from GHA was planned to be used. I decided to make a proof of concept using Rust.</p>
+<h2 id="why-rust">Why Rust?</h2>
+<p>Instead of learning a new tool like BigQuery, Apache Spark, AWS Elastic MapReduce (EMR), etc&hellip; <strong>I wanted to see how far the tools I knew could get me.</strong> Crunching lots of data is a great fit for Rust and this project would let me use Rusoto in an intensive manner.</p>
+<h2 id="workflow-overview">Workflow overview</h2>
+<ol>
+<li>Fetch data from S3.</li>
+<li>Find events we care about.</li>
+<li>Remove duplicated events.</li>
+<li>Output SQL to a different S3 bucket.</li>
+<li>Run script to ingest SQL from S3 into an RDS Postgres instance.</li>
+</ol>
+<h2 id="fetching-github-archive-data">Fetching GitHub Archive data</h2>
+<p>The source data in S3 is organized in this manner: keys have the form of <code>year/month/day/hour.json.gz</code>. So the first hour of January 1st, 2019 would be at <code>2019/01/01/01.json.gz</code>. The list of files matching the requested year is retrieved via <code>ListObjectsV2Request</code> and includes handling paging from S3 to get all the items. Once the list of files is retrieved, it&rsquo;s split into two Vecs and each is sent to a thread.</p>
+<p>Each thread downloads files from the list sequentially, decompressing them and then parsing the JSON.</p>
+<h2 id="processing-github-archive-data-with-serde">Processing GitHub Archive data with serde</h2>
+<p>With a goal of tracking the number of code committers to a repository, we&rsquo;ll need to traverse the entire history of data to extract the list of committers to a project. This means making a Rust representation of events. With serde, this is straightforward. Since every item in GHA is an &ldquo;Event&rdquo; we can start with that. Here&rsquo;s a JSON representation of a commit to a repository:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#c30">&#34;5785865382&#34;</span>,
+  <span style="color:#309;font-weight:bold">&#34;type&#34;</span>: <span style="color:#c30">&#34;PushEvent&#34;</span>,
+  <span style="color:#309;font-weight:bold">&#34;actor&#34;</span>: {
+    <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#f60">1234</span>,
+    <span style="color:#309;font-weight:bold">&#34;login&#34;</span>: <span style="color:#c30">&#34;direct_committer&#34;</span>,
+    <span style="color:#309;font-weight:bold">&#34;display_login&#34;</span>: <span style="color:#c30">&#34;direct_committer&#34;</span>,
+    <span style="color:#309;font-weight:bold">&#34;url&#34;</span>: <span style="color:#c30">&#34;https://api.github.com/users/direct_committer&#34;</span>
+    },
+  <span style="color:#309;font-weight:bold">&#34;repo&#34;</span>: {
+    <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#f60">255</span>,
+    <span style="color:#309;font-weight:bold">&#34;name&#34;</span>: <span style="color:#c30">&#34;foo/bar&#34;</span>,
+    <span style="color:#309;font-weight:bold">&#34;url&#34;</span>: <span style="color:#c30">&#34;https://api.github.com/repos/foo/bar&#34;</span>
+  },
+  <span style="color:#309;font-weight:bold">&#34;payload&#34;</span>: {
+    <span style="color:#309;font-weight:bold">&#34;push_id&#34;</span>: <span style="color:#f60">1234567</span>,
+    <span style="color:#309;font-weight:bold">&#34;size&#34;</span>: <span style="color:#f60">1</span>,
+    <span style="color:#309;font-weight:bold">&#34;distinct_size&#34;</span>: <span style="color:#f60">1</span>
+  },
+  <span style="color:#309;font-weight:bold">&#34;created_at&#34;</span>: <span style="color:#c30">&#34;2017-05-01T07:00:00Z&#34;</span>
+}
+</code></pre></div><p>And the Rust representation:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#c30;font-style:italic">/// 2015 and later github archive event.
+</span><span style="color:#c30;font-style:italic"></span><span style="color:#099">#[derive(Deserialize, Debug, Clone)]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Event</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#099">#[serde(deserialize_with = </span><span style="color:#c30">&#34;from_str&#34;</span><span style="color:#099">)]</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>id: <span style="color:#078;font-weight:bold">i64</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>created_at: <span style="color:#0a8;font-weight:bold">DateTime</span><span style="color:#555">&lt;</span>Utc<span style="color:#555">&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#099">#[serde(rename = </span><span style="color:#c30">&#34;type&#34;</span><span style="color:#099">)]</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>event_type: <span style="color:#366">String</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>actor: <span style="color:#0a8;font-weight:bold">Actor</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>repo: <span style="color:#0a8;font-weight:bold">Repo</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>payload: <span style="color:#366">Option</span><span style="color:#555">&lt;</span>Payload<span style="color:#555">&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#c30;font-style:italic">/// Type containing if it&#39;s a push event or pull request event.
+</span><span style="color:#c30;font-style:italic"></span><span style="color:#099">#[derive(Deserialize, Debug, Clone, PartialEq, PartialOrd, Ord, Eq)]</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Payload</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>action: <span style="color:#366">Option</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#099">#[serde(rename = </span><span style="color:#c30">&#34;pull_request&#34;</span><span style="color:#099">)]</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>pull_request: <span style="color:#366">Option</span><span style="color:#555">&lt;</span>PullRequest<span style="color:#555">&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>commits: <span style="color:#366">Option</span><span style="color:#555">&lt;</span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span>Commit<span style="color:#555">&gt;&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>We discard everything in the source JSON we don&rsquo;t need, such as the <code>payload</code> section and the internal GitHub <code>id</code>.</p>
+<p>RvH also needs to count contributions via accepted pull requests, like this one:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#c30">&#34;12345&#34;</span>,
+  <span style="color:#309;font-weight:bold">&#34;type&#34;</span>: <span style="color:#c30">&#34;PullRequestEvent&#34;</span>,
+  <span style="color:#309;font-weight:bold">&#34;actor&#34;</span>: {
+    <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#f60">1</span>,
+    <span style="color:#309;font-weight:bold">&#34;login&#34;</span>: <span style="color:#c30">&#34;owner-login&#34;</span>,
+    <span style="color:#309;font-weight:bold">&#34;display_login&#34;</span>: <span style="color:#c30">&#34;owner-login&#34;</span>
+  },
+  <span style="color:#309;font-weight:bold">&#34;repo&#34;</span>: {
+    <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#f60">155</span>,
+    <span style="color:#309;font-weight:bold">&#34;name&#34;</span>: <span style="color:#c30">&#34;foo/reponame&#34;</span>,
+    <span style="color:#309;font-weight:bold">&#34;url&#34;</span>: <span style="color:#c30">&#34;https://api.github.com/repos/foo/reponame&#34;</span>
+  },
+  <span style="color:#309;font-weight:bold">&#34;payload&#34;</span>: {
+    <span style="color:#309;font-weight:bold">&#34;action&#34;</span>: <span style="color:#c30">&#34;closed&#34;</span>,
+    <span style="color:#309;font-weight:bold">&#34;pull_request&#34;</span>: {
+      <span style="color:#309;font-weight:bold">&#34;state&#34;</span>: <span style="color:#c30">&#34;closed&#34;</span>,
+      <span style="color:#309;font-weight:bold">&#34;user&#34;</span>: {
+        <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#f60">5</span>,
+        <span style="color:#309;font-weight:bold">&#34;login&#34;</span>: <span style="color:#c30">&#34;committer-login&#34;</span>
+      },
+      <span style="color:#309;font-weight:bold">&#34;created_at&#34;</span>: <span style="color:#c30">&#34;2017-04-30T13:14:51Z&#34;</span>,
+      <span style="color:#309;font-weight:bold">&#34;updated_at&#34;</span>: <span style="color:#c30">&#34;2017-05-01T07:01:53Z&#34;</span>,
+      <span style="color:#309;font-weight:bold">&#34;closed_at&#34;</span>: <span style="color:#c30">&#34;2017-05-01T07:01:53Z&#34;</span>,
+      <span style="color:#309;font-weight:bold">&#34;merged_at&#34;</span>: <span style="color:#c30">&#34;2017-05-01T07:01:53Z&#34;</span>,
+      <span style="color:#309;font-weight:bold">&#34;head&#34;</span>: {
+        <span style="color:#309;font-weight:bold">&#34;repo&#34;</span>: {
+          <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#f60">155</span>,
+          <span style="color:#309;font-weight:bold">&#34;name&#34;</span>: <span style="color:#c30">&#34;reponame&#34;</span>
+        }
+      },
+      <span style="color:#309;font-weight:bold">&#34;base&#34;</span>: {
+        <span style="color:#309;font-weight:bold">&#34;label&#34;</span>: <span style="color:#c30">&#34;foo:master&#34;</span>,
+        <span style="color:#309;font-weight:bold">&#34;ref&#34;</span>: <span style="color:#c30">&#34;master&#34;</span>,
+        <span style="color:#309;font-weight:bold">&#34;sha&#34;</span>: <span style="color:#c30">&#34;a829c2e22381a1ff55824602127b9a7e440d7dc5&#34;</span>,
+        <span style="color:#309;font-weight:bold">&#34;repo&#34;</span>: {
+          <span style="color:#309;font-weight:bold">&#34;id&#34;</span>: <span style="color:#f60">1234</span>,
+          <span style="color:#309;font-weight:bold">&#34;name&#34;</span>: <span style="color:#c30">&#34;reponame&#34;</span>,
+          <span style="color:#309;font-weight:bold">&#34;full_name&#34;</span>: <span style="color:#c30">&#34;foo/reponame&#34;</span>,
+          <span style="color:#309;font-weight:bold">&#34;created_at&#34;</span>: <span style="color:#c30">&#34;2014-12-03T22:47:01Z&#34;</span>,
+          <span style="color:#309;font-weight:bold">&#34;updated_at&#34;</span>: <span style="color:#c30">&#34;2017-04-27T09:13:53Z&#34;</span>,
+          <span style="color:#309;font-weight:bold">&#34;pushed_at&#34;</span>: <span style="color:#c30">&#34;2017-05-01T07:01:53Z&#34;</span>
+        }
+      },
+      <span style="color:#309;font-weight:bold">&#34;merged&#34;</span>: <span style="color:#069;font-weight:bold">true</span>
+    }
+  },
+  <span style="color:#309;font-weight:bold">&#34;public&#34;</span>: <span style="color:#069;font-weight:bold">true</span>,
+  <span style="color:#309;font-weight:bold">&#34;created_at&#34;</span>: <span style="color:#c30">&#34;2017-05-01T07:01:53Z&#34;</span>
+}
+</code></pre></div><p>The Rust version of the data looks similar to the sample above, but with different fields extracted.</p>
+<p>Each line of the GHA JSON file is one of these events. This means the file can be read line by line to get a collection of Events. Deserializing is easy with the serde annotations. Here&rsquo;s a code snippet from a test:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>event: <span style="color:#0a8;font-weight:bold">Event</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>serde_json::from_str(<span style="color:#555">&amp;</span>pr_text)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#366">Ok</span>(event)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>event,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#366">Err</span>(err)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>panic<span style="color:#555">!</span>(<span style="color:#c30">&#34;Found a weird line of json, got this error: {:?}.&#34;</span>,<span style="color:#bbb"> </span>err),<span style="color:#bbb">
+</span><span style="color:#bbb"></span>};<span style="color:#bbb">
+</span></code></pre></div><p>There&rsquo;s also a snippet of code that ensures any string representation of a number is correctly translated into a number. It&rsquo;s been quite a while since the code was written for my recollection is hazy: I think this had to be done because the type checker wasn&rsquo;t clear how the deserialization with serde would output results.</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#c30;font-style:italic">/// Allows us to convert &#34;1234&#34; to 1234 integer type
+</span><span style="color:#c30;font-style:italic"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">from_str</span><span style="color:#555">&lt;</span><span style="color:#309">&#39;de</span>,<span style="color:#bbb"> </span>T,<span style="color:#bbb"> </span>D<span style="color:#555">&gt;</span>(deserializer: <span style="color:#0a8;font-weight:bold">D</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span>T,<span style="color:#bbb"> </span>D::Error<span style="color:#555">&gt;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">where</span><span style="color:#bbb">
+</span><span style="color:#bbb">    </span>T: <span style="color:#0a8;font-weight:bold">FromStr</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>T::<span style="color:#366">Err</span>: <span style="color:#0a8;font-weight:bold">Display</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>D: <span style="color:#0a8;font-weight:bold">Deserializer</span><span style="color:#555">&lt;</span><span style="color:#309">&#39;de</span><span style="color:#555">&gt;</span>,<span style="color:#bbb">
+</span><span style="color:#bbb"></span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>s<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#366">String</span>::deserialize(deserializer)<span style="color:#555">?</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>T::from_str(<span style="color:#555">&amp;</span>s).map_err(de::Error::custom)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><h2 id="putting-things-together">Putting things together</h2>
+<p>The actual implementation of Rusty von Humboldt has a rough actor-like messaging system. The RvH takes input of what year to look at, how many hours in that year to process, then what mode to operate in: committer count or repository ID mapping.</p>
+<p>Repository IDs internal to GitHub, exposed in GitHub Archive, are IDs that don&rsquo;t change. However, the repository name or location can move, so the repo ID is what we use to track the latest name of a repository. Perhaps we can explore how that part of RvH works at a different time.</p>
+<p>Committer counts is why we&rsquo;re here: we want to see how many people contribute to a repo on GitHub. This is done by processing each event and see if it&rsquo;s a <code>commit event</code>. These functions are in the <code>impl</code> block of <code>Event</code>:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">is_commit_event</span>(<span style="color:#555">&amp;</span>self)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">bool</span> {<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>self.is_accepted_pr()<span style="color:#bbb"> </span><span style="color:#555">||</span><span style="color:#bbb"> </span>self.is_direct_push_event()<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">is_accepted_pr</span>(<span style="color:#555">&amp;</span>self)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">bool</span> {<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>self.event_type<span style="color:#bbb"> </span><span style="color:#555">!=</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;PullRequestEvent&#34;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>self.payload<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>payload)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>payload.pull_request<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>pr)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>pr.merged<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">                </span><span style="color:#366">Some</span>(merged)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span>merged,<span style="color:#bbb">
+</span><span style="color:#bbb">                </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">            </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">is_direct_push_event</span>(<span style="color:#555">&amp;</span>self)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">bool</span> {<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>self.event_type<span style="color:#bbb"> </span><span style="color:#555">!=</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;PushEvent&#34;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>self.payload<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>payload)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">match</span><span style="color:#bbb"> </span>payload.commits<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#366">Some</span>(<span style="color:#069;font-weight:bold">ref</span><span style="color:#bbb"> </span>commits)<span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#555">!</span>commits.is_empty(),<span style="color:#bbb">
+</span><span style="color:#bbb">            </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">        </span>},<span style="color:#bbb">
+</span><span style="color:#bbb">        </span><span style="color:#366">None</span><span style="color:#bbb"> </span><span style="color:#555">=&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span><span style="color:#bbb"></span>}<span style="color:#bbb">
+</span></code></pre></div><p>We count a merged PR or a commit directly to the repo as a commit. PRs not accepted aren&rsquo;t counted.</p>
+<h2 id="getting-the-data-we-want">Getting the data we want</h2>
+<p>RvH starts with getting the list of files from S3 that match the requirements: year and number of hours. It splits the list in two and sends one to a worker thread that download each file and use rayon to parse the decompressed JSON data. Here&rsquo;s how to get all events for a year:</p>
+<p><code>MODE=committer_count GHABUCKET=sourcebucketname DESTBUCKET=destbucketname GHAYEAR=2016 GHAHOURS=8766 cargo run --release</code></p>
+<p>Using environment variables for configuration was an ease-of-use choice, which would probably be replaced with command line arguments if I was to update RvH.</p>
+<p>Deduplication is required because if GitHub account <code>A</code> makes multiple pushes to repository <code>foo</code>, we only care about the number of GitHub accounts doing so and count it as one committer. The first iteration of RvH stored <code>Event</code>s in a <code>Vec</code> and used a hand written function for testing equality to use with <a href="https://doc.rust-lang.org/std/vec/struct.Vec.html#method.dedup_by"><code>Vec</code> dedup_by</a>. This inefficient approach was changed to using a BTreeMap to get much better performance:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">mut</span><span style="color:#bbb"> </span>commiter_events_bt: <span style="color:#0a8;font-weight:bold">BTreeMap</span><span style="color:#555">&lt;</span>CommitEvent,<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">i64</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>BTreeMap::new();<span style="color:#bbb">
+</span><span style="color:#bbb"></span>...<span style="color:#bbb">
+</span><span style="color:#bbb"></span>commiter_events_bt<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>.entry(item.event.as_commit_event())<span style="color:#bbb">
+</span><span style="color:#bbb">  </span>.or_insert(<span style="color:#f60">1</span>);<span style="color:#bbb">
+</span></code></pre></div><p>This was a massive win in terms of overall memory usage.</p>
+<h2 id="making-the-data-available">Making the data available</h2>
+<p>See the <code>DESTBUCKET</code> option above? That&rsquo;s where RvH puts the SQL it generates once all the parsing work has been completed. While RvH deduplicates internally using a BTreeMap, sometimes there will be duplicate entries due to multiple threads having their own BTreeMap to store their results.</p>
+<p>Final deduplication relies heavily on Postgres&rsquo; <code>ON CONFLICT</code> abilities for upserts: we update data if the information we have is newer and ignore data already in the database.</p>
+<p>The schema in the destination database has a mapping table between repositories and committer IDs. Committer count is done by selecting the count of entries in that table for the requested repository ID. To populate the data, SQL like this is generated:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> committer_repo_id_names (repo_id, actor_name)
+<span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1</span>, <span style="color:#c30">&#39;bar&#39;</span>), (<span style="color:#f60">2</span>, <span style="color:#c30">&#39;bar&#39;</span>), (<span style="color:#f60">2</span>, <span style="color:#c30">&#39;baz&#39;</span>), (<span style="color:#f60">1</span>, <span style="color:#c30">&#39;foo&#39;</span>), (<span style="color:#f60">2</span>, <span style="color:#c30">&#39;foo&#39;</span>)
+<span style="color:#069;font-weight:bold">ON</span> CONFLICT <span style="color:#069;font-weight:bold">DO</span> <span style="color:#069;font-weight:bold">NOTHING</span>;
+</code></pre></div><p>This example SQL, lifted from a test in RvH, has <code>bar</code> and <code>foo</code> contributing to repo <code>1</code> and committers <code>bar</code>, <code>baz</code> and <code>foo</code> committing to repo 2. A more concrete way of looking at it: it could be <code>matthewkmayer</code> committed to repos <code>rusty-von-humboldt</code> and <code>rusoto</code>. If there&rsquo;s already a record for the user committing to the account, Postgres will take the <code>ON CONFLICT</code> clause and do nothing.</p>
+<p>Note the multiple parts in the <code>VALUES</code> section of the statement: batching these upserts into Postgres is far, far faster than doing one at a time.</p>
+<p>In RvH this is created by taking the committer IDs and repos IDs and collecting them into a Vec then taking iterating in batches of 20:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">a.chunks(<span style="color:#f60">20</span>).map(<span style="color:#555">|</span>c<span style="color:#555">|</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>collector<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>c.iter().cloned().map(<span style="color:#555">|</span>x<span style="color:#555">|</span><span style="color:#bbb"> </span>x).collect::<span style="color:#555">&lt;</span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;</span>().join(<span style="color:#c30">&#34;, &#34;</span>);<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;INSERT INTO committer_repo_id_names (repo_id, actor_name) VALUES {} ON CONFLICT DO NOTHING;&#34;</span>,<span style="color:#bbb"> </span>collector)<span style="color:#bbb">
+</span><span style="color:#bbb"></span>})<span style="color:#bbb">
+</span></code></pre></div><p>Once all processed events have been collected into SQL, the string is compressed via gzip and uploaded to the destination bucket. Once a week, an ingest process runs with the Postgres command line tool to load the data into the destination Postgres instance.</p>
+<h2 id="deployment-and-running">Deployment and running</h2>
+<p>Due to complexities and roughness of containers with Rust, Rusoto and openssl, we opted to make an AMI with RvH installed. To do this we built RvH on an EC2 instance and saved the machine image (AMI). The image was automatically run weekly with a startup script providing configuration such as S3 bucket source, year to process, what mode to run in and where to upload the results.</p>
+<p><em>2020 update: Dockerization is far easier with rustls: RvH was converted to use AWS ECS Fargate for &ldquo;serverless&rdquo; instead of using AMIs</em></p>
+<h2 id="results">Results</h2>
+<p>Rusty von Humboldt powered data analysis at my day job for years, achieving customer requirements.</p>
+<p>Eventually it was rewritten in Go because our company has far more Go expertise, but the work I did on RvH showed the approach was not only feasible but fulfilled our latency requirements of data being in GHA to being available to customers. The same patterns RvH used were applied in the Go version.</p>
+<h2 id="lessons-learned">Lessons learned</h2>
+<p>Rust fit the problem space very well. Its performance was rock solid and this was a wonderfully fun project to write! Rayon, Serde and Rusoto all shone in performance and stability.</p>
+<p>Months after I stopped working on RvH, I found a blog post of a company touting their performance improvements doing a similar task. They took 0.8 TB of gzipped JSON and ran their ETL pipeline in four hours on a 36 core machine. RvH could handle 2015 through 2019 data, over two TB of gzipped JSON, on a couple of two core AWS Fargate VMs, in three hours. Mission accomplished. :)</p>
+<p>There are things I&rsquo;d do differently if I could:</p>
+<ul>
+<li>Get buy-in from management to do this during work hours instead of an after-hours and weekends project</li>
+<li>Use S3-Select to be easier on instance bandwidth and speed things up (as of writing this in 2020, Rusoto still does not support S3-Select)</li>
+<li>Figure out better ways of passing messages around - this was pretty hacky and I think I could reduce complexity by signaling via closing channels</li>
+<li>Code organization wasn&rsquo;t even a second thought on this project: things are scattered about and there&rsquo;s lots of mixing of concerns</li>
+<li>Spend a week learning about other ways to solve the problem: Athena is cheaper now, for example</li>
+</ul>
+<p>In the end, the project was a success and I&rsquo;m still referring to some of my work in the <a href="https://github.com/matthewkmayer/rusty-von-humboldt">Rusty von Humboldt repo</a> for patterns.</p>
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/surviving-the-winter/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2020-06-23 17:44:10.488876 -0700 PDT m=&#43;0.159886488">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
