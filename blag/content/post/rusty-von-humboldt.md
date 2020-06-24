@@ -4,7 +4,7 @@ draft = false
 title = "Rusty von Humboldt"
 +++
 
-Rusty von Humboldt is a GitHub Archive data explorer and Extract, Transform and Load (ETL) tool. Or: seeing how far the tools you know can take you.
+Rusty von Humboldt is a GitHub Archive data explorer and Extract, Transform and Load (ETL) tool. Or: **seeing how far the tools you know can take you.**
 
 <!--more-->
 
@@ -35,12 +35,15 @@ When approaching this problem, I looked at the volume of data to process, where 
 
 ## Why Rust?
 
-Instead of learning a new tool like BigQuery, Apache Spark, AWS Elastic MapReduce (EMR), etc... I wanted to see how far the tools I knew could get me. Crunching lots of data is a great fit for Rust and this project would let me use Rusoto in an intensive manner.
+Instead of learning a new tool like BigQuery, Apache Spark, AWS Elastic MapReduce (EMR), etc... **I wanted to see how far the tools I knew could get me.** Crunching lots of data is a great fit for Rust and this project would let me use Rusoto in an intensive manner.
 
 ## Workflow overview
 
-// TODO: flesh out
-Fetch data. Process. Deduplicate as needed. Output SQL into another S3 bucket. Run something to ingest data from SQL in S3 to an RDS Postgres instance.
+1. Fetch data from S3.
+2. Find events we care about.
+3. Remove duplicated events.
+4. Output SQL to a different S3 bucket.
+5. Run script to ingest SQL from S3 into an RDS Postgres instance.
 
 ## Fetching GitHub Archive data
 
@@ -236,9 +239,17 @@ RvH starts with getting the list of files from S3 that match the requirements: y
 
 Using environment variables for configuration was an ease-of-use choice, which would probably be replaced with command line arguments if I was to update RvH.
 
-// TODO: bits on finding which files to download and handle
+Deduplication is required because if GitHub account `A` makes multiple pushes to repository `foo`, we only care about the number of GitHub accounts doing so and count it as one committer. The first iteration of RvH stored `Event`s in a `Vec` and used a hand written function for testing equality to use with [`Vec` dedup_by](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.dedup_by). This inefficient approach was changed to using a BTreeMap to get much better performance:
 
-// TODO: bits on deduplication of results
+```rust
+let mut commiter_events_bt: BTreeMap<CommitEvent, i64> = BTreeMap::new();
+...
+commiter_events_bt
+  .entry(item.event.as_commit_event())
+  .or_insert(1);
+```
+
+This was a massive win in terms of overall memory usage.
 
 ## Making the data available
 
