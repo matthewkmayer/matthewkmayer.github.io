@@ -99,12 +99,12 @@ thread <span style="color:#c30">&#39;tests::test_fuel&#39;</span> panicked at <s
 <span style="color:#366">test</span> tests::test_fuel ... ok
 </code></pre></div><p>If we were running locally, we could put our hundred lines of input into a file and read that. Being ~~~serverless let&rsquo;s take a different approach and use a <a href="https://doc.rust-lang.org/rust-by-example/std/str.html">raw string literal</a>:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#09f;font-style:italic">// parts removed for brevity
-</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">const</span><span style="color:#bbb"> </span>DAYS_INPUT: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span> <span style="color:#555">=</span><span style="color:#bbb"> </span>r<span style="color:#a00;background-color:#faa">#&#34;</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#f60">130762</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#f60">108691</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#f60">131618</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#f60">138163</span><span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#a00;background-color:#faa">&#34;#</span>;<span style="color:#bbb">
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">const</span><span style="color:#bbb"> </span>DAYS_INPUT: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span> <span style="color:#555">=</span><span style="color:#bbb"> </span><span style="color:#c30">r#&#34;
+</span><span style="color:#c30">130762
+</span><span style="color:#c30">108691
+</span><span style="color:#c30">131618
+</span><span style="color:#c30">138163
+</span><span style="color:#c30">&#34;#</span>;<span style="color:#bbb">
 </span></code></pre></div><p>Now we can get the strings out, splitting by whitespace:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>string_entries: <span style="color:#366">Vec</span><span style="color:#555">&lt;&amp;</span><span style="color:#078;font-weight:bold">str</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>DAYS_INPUT.split_whitespace().collect();<span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;string entries: {:?}&#34;</span>,<span style="color:#bbb"> </span>string_entries);<span style="color:#bbb">
@@ -133,7 +133,7 @@ thread <span style="color:#c30">&#39;tests::test_fuel&#39;</span> panicked at <s
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-06-23 17:44:10.406933 -0700 PDT m=&#43;0.077945640">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-12-27 18:48:33.10948 -0800 PST m=&#43;0.111863459">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

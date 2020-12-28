@@ -36,6 +36,21 @@
 <main>
 	<div class="catalogue">
 		
+			<a href="https://matthewkmayer.github.io/blag/public/post/2020-technical-review/" class="catalogue-item">
+    <div>
+        <time datetime="2020-10-27 00:28:53 -0700 PDT" class="catalogue-time">October 27, 2020</time>
+        <h1 class="catalogue-title">2020 technical review</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            As the challenging year of 2020 wraps up, here&rsquo;s what happened in the past twelve months with a focus on my experience in technology.
+Rust I&rsquo;ve been writing Rust since mid 2015. That&rsquo;s over five years of working with the language. At the start of 2020 I stepped back from my work on Rusoto, an AWS SDK for Rust.
+Looking back: every line of Rust I&rsquo;ve written has been unpaid, volunteer work.
+        </p>
+    </div>
+</a>
+
+		
 			<a href="https://matthewkmayer.github.io/blag/public/post/rusty-von-humboldt/" class="catalogue-item">
     <div>
         <time datetime="2020-06-23 00:28:53 -0700 PDT" class="catalogue-time">June 23, 2020</time>
@@ -171,21 +186,6 @@ When following Gitflow, a hot patch can get a fix to production faster by making
 </a>
 
 		
-			<a href="https://matthewkmayer.github.io/blag/public/post/chaining-rusoto-futures/" class="catalogue-item">
-    <div>
-        <time datetime="2019-01-02 00:28:53 -0700 -0700" class="catalogue-time">January 2, 2019</time>
-        <h1 class="catalogue-title">Chaining Rusoto Futures</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            <p>Rusoto supports asynchronously running commands to AWS. While immediately making a blocking call to AWS is a common use case, one can create actions to run async and let the <code>tokio</code> runtime handle it. This opens up the ability to run multiple AWS calls concurrently.</p>
-<p>If a project sets up infrastructure on AWS, the actions that don&rsquo;t depend on others to finish can run concurrently. For example: creating an S3 bucket and an SQS queue. Instead of creating a bucket and waiting for the request to finish, then moving on to creating the queue, one can put the Rusoto <code>Futures</code> together and concurrently run them.</p>
-<p>In this post we&rsquo;ll explore to examples of using futures and the Rusoto DynamoDB client.</p>
-        </p>
-    </div>
-</a>
-
-		
 	</div>
 	
 	<div class="pagination">
@@ -201,7 +201,7 @@ When following Gitflow, a hot patch can get a fix to production faster by making
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-06-23 17:44:10.499572 -0700 PDT m=&#43;0.170581439">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-12-27 18:48:33.195061 -0800 PST m=&#43;0.197412901">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

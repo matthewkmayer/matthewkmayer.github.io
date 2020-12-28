@@ -234,7 +234,7 @@
 </span></code></pre></div><p>This was a massive win in terms of overall memory usage.</p>
 <h2 id="making-the-data-available">Making the data available</h2>
 <p>See the <code>DESTBUCKET</code> option above? That&rsquo;s where RvH puts the SQL it generates once all the parsing work has been completed. While RvH deduplicates internally using a BTreeMap, sometimes there will be duplicate entries due to multiple threads having their own BTreeMap to store their results.</p>
-<p>Final deduplication relies heavily on Postgres&rsquo; <code>ON CONFLICT</code> abilities for upserts: we update data if the information we have is newer and ignore data already in the database.</p>
+<p>Final deduplication relies heavily on Postgres' <code>ON CONFLICT</code> abilities for upserts: we update data if the information we have is newer and ignore data already in the database.</p>
 <p>The schema in the destination database has a mapping table between repositories and committer IDs. Committer count is done by selecting the count of entries in that table for the requested repository ID. To populate the data, SQL like this is generated:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> committer_repo_id_names (repo_id, actor_name)
 <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1</span>, <span style="color:#c30">&#39;bar&#39;</span>), (<span style="color:#f60">2</span>, <span style="color:#c30">&#39;bar&#39;</span>), (<span style="color:#f60">2</span>, <span style="color:#c30">&#39;baz&#39;</span>), (<span style="color:#f60">1</span>, <span style="color:#c30">&#39;foo&#39;</span>), (<span style="color:#f60">2</span>, <span style="color:#c30">&#39;foo&#39;</span>)
@@ -271,6 +271,7 @@
 
 	<div class="pagination">
 		<a href="/blag/public/post/surviving-the-winter/" class="left arrow">&#8592;</a>
+		<a href="/blag/public/post/2020-technical-review/" class="right arrow">&#8594;</a>
 
 		<a href="#" class="top">Top</a>
 	</div>
@@ -279,7 +280,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-06-23 17:44:10.488876 -0700 PDT m=&#43;0.159886488">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-12-27 18:48:33.186586 -0800 PST m=&#43;0.188940497">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
