@@ -162,16 +162,16 @@
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">where</span><span style="color:#bbb"> </span>P: <span style="color:#0a8;font-weight:bold">GenerateProtocol</span>,<span style="color:#bbb">
 </span><span style="color:#bbb">          </span>E: <span style="color:#0a8;font-weight:bold">GenerateErrorTypes</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">
-</span><span style="color:#bbb">    </span>writeln<span style="color:#555">!</span>(writer,<span style="color:#bbb"> </span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#099">#[allow(warnings)]</span><span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>hyper::Client;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>hyper::status::StatusCode;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::request::DispatchSignedRequest;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::region;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::fmt;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::error::Error;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::request::HttpDispatchError;<span style="color:#bbb">
-</span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::credential::{{CredentialsError,<span style="color:#bbb"> </span>ProvideAwsCredentials}};<span style="color:#bbb">
-</span><span style="color:#bbb">    </span><span style="color:#a00;background-color:#faa">&#34;</span>)<span style="color:#555">?</span>;<span style="color:#bbb">
+</span><span style="color:#bbb">    </span>writeln<span style="color:#555">!</span>(writer,<span style="color:#bbb"> </span><span style="color:#c30">&#34;#[allow(warnings)]
+</span><span style="color:#c30">        use hyper::Client;
+</span><span style="color:#c30">        use hyper::status::StatusCode;
+</span><span style="color:#c30">        use rusoto_core::request::DispatchSignedRequest;
+</span><span style="color:#c30">        use rusoto_core::region;
+</span><span style="color:#c30">        use std::fmt;
+</span><span style="color:#c30">        use std::error::Error;
+</span><span style="color:#c30">        use rusoto_core::request::HttpDispatchError;
+</span><span style="color:#c30">        use rusoto_core::credential::{{CredentialsError, ProvideAwsCredentials}};
+</span><span style="color:#c30">    &#34;</span>)<span style="color:#555">?</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">
 </span><span style="color:#bbb">    </span>protocol_generator.generate_prelude(writer,<span style="color:#bbb"> </span>service)<span style="color:#555">?</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>generate_types(writer,<span style="color:#bbb"> </span>service,<span style="color:#bbb"> </span><span style="color:#555">&amp;</span>protocol_generator)<span style="color:#555">?</span>;<span style="color:#bbb">
@@ -190,17 +190,17 @@
 </span><span style="color:#bbb">          </span>E: <span style="color:#0a8;font-weight:bold">GenerateErrorTypes</span><span style="color:#bbb"> </span>{<span style="color:#bbb"> </span>...<span style="color:#bbb">
 </span></code></pre></div><p><code>generate</code> takes a total of four arguments.  Two are generics, <code>P</code> and <code>E</code>.  They are defined in the <code>where</code> block: <code>P: GenerateProtocol</code> means <code>P</code> accepts anything that fulfills the <code>GenerateProtocol</code> trait.  Similarly, <code>E</code> accepts anything that implements the <code>GenerateErrorTypes</code> trait.  This is used in the signature so the <code>protocol_generator</code> arg is anything that implements the <code>GenerateProtocol</code> trait and <code>error_type_generator</code> is for the <code>GenerateErrorTypes</code> trait.</p>
 <p>Now that we&rsquo;ve rephrased that a few times, let&rsquo;s go to the next part:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">writeln<span style="color:#555">!</span>(writer,<span style="color:#bbb"> </span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#099">#[allow(warnings)]</span><span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>hyper::Client;<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>hyper::status::StatusCode;<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::request::DispatchSignedRequest;<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::region;<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::fmt;<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::error::Error;<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::request::HttpDispatchError;<span style="color:#bbb">
-</span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::credential::{{CredentialsError,<span style="color:#bbb"> </span>ProvideAwsCredentials}};<span style="color:#bbb">
-</span><span style="color:#bbb"></span><span style="color:#a00;background-color:#faa">&#34;</span>)<span style="color:#555">?</span>;<span style="color:#bbb">
-</span></code></pre></div><p>Now we&rsquo;re getting to Rust code for SQS!  This is our prelude to the service.  Every AWS service Rusoto supports has this code at the top of <code>generated.rs</code>.  Take a peek at <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/src/generated.rs">SQS&rsquo; generated.rs file</a>.  This brings in all the items we need for talking to AWS: <a href="https://github.com/hyperium/hyper">hyper</a> for HTTP(s) requests, wrappers for signing AWS requests from <code>rusoto_core::request</code>, AWS regions from <code>rusoto_core::region</code>, etc&hellip;  We also bring in AWS credential providing helpers.</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">writeln<span style="color:#555">!</span>(writer,<span style="color:#bbb"> </span><span style="color:#c30">&#34;#[allow(warnings)]
+</span><span style="color:#c30">  use hyper::Client;
+</span><span style="color:#c30">  use hyper::status::StatusCode;
+</span><span style="color:#c30">  use rusoto_core::request::DispatchSignedRequest;
+</span><span style="color:#c30">  use rusoto_core::region;
+</span><span style="color:#c30">  use std::fmt;
+</span><span style="color:#c30">  use std::error::Error;
+</span><span style="color:#c30">  use rusoto_core::request::HttpDispatchError;
+</span><span style="color:#c30">  use rusoto_core::credential::{{CredentialsError, ProvideAwsCredentials}};
+</span><span style="color:#c30">&#34;</span>)<span style="color:#555">?</span>;<span style="color:#bbb">
+</span></code></pre></div><p>Now we&rsquo;re getting to Rust code for SQS!  This is our prelude to the service.  Every AWS service Rusoto supports has this code at the top of <code>generated.rs</code>.  Take a peek at <a href="https://github.com/rusoto/rusoto/blob/master/rusoto/services/sqs/src/generated.rs">SQS' generated.rs file</a>.  This brings in all the items we need for talking to AWS: <a href="https://github.com/hyperium/hyper">hyper</a> for HTTP(s) requests, wrappers for signing AWS requests from <code>rusoto_core::request</code>, AWS regions from <code>rusoto_core::region</code>, etc&hellip;  We also bring in AWS credential providing helpers.</p>
 <p>Here&rsquo;s the next part of <code>generate</code>:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">protocol_generator.generate_prelude(writer,<span style="color:#bbb"> </span>service)<span style="color:#555">?</span>;<span style="color:#bbb">
 </span><span style="color:#bbb"></span>generate_types(writer,<span style="color:#bbb"> </span>service,<span style="color:#bbb"> </span><span style="color:#555">&amp;</span>protocol_generator)<span style="color:#555">?</span>;<span style="color:#bbb">
@@ -219,21 +219,21 @@
 </span><span style="color:#bbb"></span>...<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">generate_prelude</span>(<span style="color:#555">&amp;</span>self,<span style="color:#bbb"> </span>writer: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">mut</span><span style="color:#bbb"> </span>FileWriter,<span style="color:#bbb"> </span>_service: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">Service</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#0a8;font-weight:bold">IoResult</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">      </span>writeln<span style="color:#555">!</span>(writer,<span style="color:#bbb">
-</span><span style="color:#bbb">               </span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>std::<span style="color:#078;font-weight:bold">str</span>::FromStr;<span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>xml::EventReader;<span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>xml::reader::ParserConfig;<span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::param::{{Params,<span style="color:#bbb"> </span>ServiceParams}};<span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::signature::SignedRequest;<span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>xml::reader::XmlEvent;<span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::xmlutil::{{Next,<span style="color:#bbb"> </span>Peek,<span style="color:#bbb"> </span>XmlParseError,<span style="color:#bbb"> </span>XmlResponse}};<span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::xmlutil::{{characters,<span style="color:#bbb"> </span>end_element,<span style="color:#bbb"> </span>start_element,<span style="color:#bbb"> </span>skip_tree,<span style="color:#bbb"> </span>peek_at_name}};<span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">use</span><span style="color:#bbb"> </span>rusoto_core::xmlerror::<span style="color:#555">*</span>;<span style="color:#bbb">
-</span><span style="color:#bbb">
-</span><span style="color:#bbb">          </span><span style="color:#069;font-weight:bold">enum</span> <span style="color:#0a8;font-weight:bold">DeserializerNext</span><span style="color:#bbb"> </span>{{<span style="color:#bbb">
-</span><span style="color:#bbb">              </span>Close,<span style="color:#bbb">
-</span><span style="color:#bbb">              </span>Skip,<span style="color:#bbb">
-</span><span style="color:#bbb">              </span>Element(<span style="color:#366">String</span>),<span style="color:#bbb">
-</span><span style="color:#bbb">      </span>}}<span style="color:#a00;background-color:#faa">&#34;</span>)<span style="color:#bbb">
+</span><span style="color:#bbb">               </span><span style="color:#c30">&#34;use std::str::FromStr;
+</span><span style="color:#c30">          use xml::EventReader;
+</span><span style="color:#c30">          use xml::reader::ParserConfig;
+</span><span style="color:#c30">          use rusoto_core::param::{{Params, ServiceParams}};
+</span><span style="color:#c30">          use rusoto_core::signature::SignedRequest;
+</span><span style="color:#c30">          use xml::reader::XmlEvent;
+</span><span style="color:#c30">          use rusoto_core::xmlutil::{{Next, Peek, XmlParseError, XmlResponse}};
+</span><span style="color:#c30">          use rusoto_core::xmlutil::{{characters, end_element, start_element, skip_tree, peek_at_name}};
+</span><span style="color:#c30">          use rusoto_core::xmlerror::*;
+</span><span style="color:#c30">
+</span><span style="color:#c30">          enum DeserializerNext {{
+</span><span style="color:#c30">              Close,
+</span><span style="color:#c30">              Skip,
+</span><span style="color:#c30">              Element(String),
+</span><span style="color:#c30">      }}&#34;</span>)<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>}<span style="color:#bbb">
 </span><span style="color:#bbb"></span>...<span style="color:#bbb">
 </span></code></pre></div><p>There&rsquo;s more to that trait, but we&rsquo;ll focus on <code>generate_prelude</code>.  While we&rsquo;ve already created a generic prelude all services share, the <code>query</code> type needs additional imports.  For example we need to parse the XML payloads returned by SQS, so we bring in items from the <a href="https://github.com/netvl/xml-rs">xml crate</a>.  We also bring in Rusoto xmlutil helpers to make the code more concise.</p>
@@ -338,7 +338,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-06-23 17:44:10.467718 -0700 PDT m=&#43;0.138729108">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-12-27 18:48:33.158215 -0800 PST m=&#43;0.160580069">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

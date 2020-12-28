@@ -102,7 +102,7 @@
 </span></code></pre></div><p>This is all populated by Serde! 🎉</p>
 <h2 id="the-tricky-part">The tricky part</h2>
 <p>With everything botocore knows about the service now in memory, we need to generate Rust code to talk to the AWS service.  We&rsquo;ll skip over how we generate the skeleton of the new crate, such as Cargo.toml and the README, and focus on the code that will be published as a crate.</p>
-<p>Still in <code>service_crategen</code>'s <code>main.rs</code> file:</p>
+<p>Still in <code>service_crategen</code>&rsquo;s <code>main.rs</code> file:</p>
 <div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">mut</span><span style="color:#bbb"> </span>gen_writer<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>BufWriter::new(gen_file);<span style="color:#bbb">
 </span><span style="color:#bbb"></span>rusoto_codegen::generator::generate_source(<span style="color:#555">&amp;</span>service,<span style="color:#bbb"> </span><span style="color:#555">&amp;</span><span style="color:#069;font-weight:bold">mut</span><span style="color:#bbb"> </span>gen_writer).unwrap();<span style="color:#bbb">
 </span></code></pre></div><p>That&rsquo;s the magic!  We create a buffered writer, for better writing performance, and pass that into <code>generate_source</code> along with the service definition we populated above.  We&rsquo;ll visit the implementations of this in another post.</p>
@@ -163,7 +163,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-06-23 17:44:10.458202 -0700 PDT m=&#43;0.129212515">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-12-27 18:48:33.131518 -0800 PST m=&#43;0.133893276">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

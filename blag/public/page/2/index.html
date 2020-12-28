@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head>
-	<meta name="generator" content="Hugo 0.72.0" />
+	<meta name="generator" content="Hugo 0.79.1" />
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<meta name="description" content="">
@@ -40,6 +40,21 @@
 
 
 	<div class="catalogue">
+		
+			<a href="https://matthewkmayer.github.io/blag/public/post/chaining-rusoto-futures/" class="catalogue-item">
+    <div>
+        <time datetime="2019-01-02 00:28:53 -0700 -0700" class="catalogue-time">January 2, 2019</time>
+        <h1 class="catalogue-title">Chaining Rusoto Futures</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            <p>Rusoto supports asynchronously running commands to AWS. While immediately making a blocking call to AWS is a common use case, one can create actions to run async and let the <code>tokio</code> runtime handle it. This opens up the ability to run multiple AWS calls concurrently.</p>
+<p>If a project sets up infrastructure on AWS, the actions that don&rsquo;t depend on others to finish can run concurrently. For example: creating an S3 bucket and an SQS queue. Instead of creating a bucket and waiting for the request to finish, then moving on to creating the queue, one can put the Rusoto <code>Futures</code> together and concurrently run them.</p>
+<p>In this post we&rsquo;ll explore to examples of using futures and the Rusoto DynamoDB client.</p>
+        </p>
+    </div>
+</a>
+
 		
 			<a href="https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/" class="catalogue-item">
     <div>
@@ -177,20 +192,6 @@ What we&rsquo;re changing Release-party is a command line tool I made for my day
 </a>
 
 		
-			<a href="https://matthewkmayer.github.io/blag/public/post/software-dev-force-multipliers/" class="catalogue-item">
-    <div>
-        <time datetime="2017-09-20 21:28:53 -0700 PDT" class="catalogue-time">September 20, 2017</time>
-        <h1 class="catalogue-title">Software development force multipliers</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            While a software enginerd/pixie wrangler at heart, I&rsquo;ve discovered the stereotypical developer path of grabbing a ticket from Jira, working on it, shoving the results to QA and repeat isn&rsquo;t for me. The biggest reason is how this leaves a tremendous amount of efficiency on the table. This inefficient approach is difficult to reconcile with empathy for the customer buying and using the product.
-My code writing speed has peaked: I can&rsquo;t write code any faster.
-        </p>
-    </div>
-</a>
-
-		
 	</div>
 
 	<div class="pagination">
@@ -208,7 +209,7 @@ My code writing speed has peaked: I can&rsquo;t write code any faster.
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-06-23 17:44:10.517335 -0700 PDT m=&#43;0.188344664">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-12-27 18:48:33.199674 -0800 PST m=&#43;0.202024507">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
