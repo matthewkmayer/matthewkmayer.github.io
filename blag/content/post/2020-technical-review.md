@@ -1,5 +1,5 @@
 +++
-date = "2020-10-27T00:28:53-07:00"
+date = "2020-12-27T00:28:53-07:00"
 draft = false
 title = "2020 technical review"
 +++
