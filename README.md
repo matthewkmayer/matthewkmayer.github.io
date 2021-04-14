@@ -7,8 +7,8 @@ Welcome visitor, you're probably wanting to find where this blog source code is 
 
 Hugo site follows https://gohugo.io/overview/quickstart/ .
 
-Live reload editing: `hugo server -w --theme=tale -v`. Open http://localhost:1313/blag/public/ .
+Live reload editing in the `blag` directory: `hugo server -w --theme=tale -v`. Open http://localhost:1313/blag/public/ .
 
 ### Publishing:
 
-Generate HTML: `hugo --theme=tale -v --baseURL=https://matthewkmayer.github.io/blag/public`. Commit and push, site is updated on merge to `master` branch.
+Generate HTML in the `blag` directory: `hugo --theme=tale -v --baseURL=https://matthewkmayer.github.io/blag/public`. Commit and push, site is updated on merge to `master` branch.
