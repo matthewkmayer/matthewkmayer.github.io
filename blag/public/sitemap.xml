@@ -1,162 +1,101 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <url>
-    <loc>https://matthewkmayer.github.io/blag/public/post/2020-technical-review/</loc>
-    <lastmod>2020-12-27T00:28:53-07:00</lastmod>
-  </url>
-  
   <url>
     <loc>https://matthewkmayer.github.io/blag/public/</loc>
-    <lastmod>2020-12-27T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-04-13T00:28:53-07:00</lastmod>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/</loc>
+    <lastmod>2021-04-13T00:28:53-07:00</lastmod>
+  </url><url>
+    <loc>https://matthewkmayer.github.io/blag/public/post/tiny-guide-to-rails/</loc>
+    <lastmod>2021-04-13T00:28:53-07:00</lastmod>
+  </url><url>
+    <loc>https://matthewkmayer.github.io/blag/public/post/2020-technical-review/</loc>
     <lastmod>2020-12-27T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rusty-von-humboldt/</loc>
     <lastmod>2020-06-23T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/surviving-the-winter/</loc>
     <lastmod>2020-05-26T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/red-green-bugfix/</loc>
     <lastmod>2020-02-06T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/farewell-rusoto/</loc>
     <lastmod>2020-01-07T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/aoc-twy-01/</loc>
     <lastmod>2019-12-16T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rust-as-abs/</loc>
     <lastmod>2019-10-28T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/2019-break/</loc>
     <lastmod>2019-06-11T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/how-much-testing/</loc>
     <lastmod>2019-05-10T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/dont-hotpatch/</loc>
     <lastmod>2019-05-07T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/chaining-rusoto-futures/</loc>
     <lastmod>2019-01-02T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/repos-for-being-hired/</loc>
     <lastmod>2018-12-04T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/postgres-tls/</loc>
     <lastmod>2018-09-13T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/ci-cd-pipeline/</loc>
     <lastmod>2018-09-12T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/build-ci-cd/</loc>
     <lastmod>2018-09-05T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/2018-break/</loc>
     <lastmod>2018-04-02T00:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/resources-list/</loc>
     <lastmod>2018-03-18T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rust-2018/</loc>
     <lastmod>2018-01-07T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rusoto-2017-in-review/</loc>
     <lastmod>2017-12-31T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/tdd-with-rust/</loc>
     <lastmod>2017-10-19T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/software-dev-force-multipliers/</loc>
     <lastmod>2017-09-20T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rustconf-2017-recap/</loc>
     <lastmod>2017-08-20T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-three/</loc>
     <lastmod>2017-07-11T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen-part-two/</loc>
     <lastmod>2017-06-16T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rusoto-codegen/</loc>
     <lastmod>2017-06-09T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-mk2/</loc>
     <lastmod>2017-05-23T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/post/rusoto-rds-walkthrough/</loc>
     <lastmod>2017-05-14T21:28:53-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/about/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://matthewkmayer.github.io/blag/public/tags/</loc>
   </url>
-  
 </urlset>

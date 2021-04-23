@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 27 Dec 2020 00:28:53 -0700</lastBuildDate><atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 13 Apr 2021 00:28:53 -0700</lastBuildDate><atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tiny guide to Rails</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/tiny-guide-to-rails/</link>
+      <pubDate>Tue, 13 Apr 2021 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/tiny-guide-to-rails/</guid>
+      <description>The tiny guide to Rails (that I wish I had) I&amp;rsquo;ve found Rails to rely on more convention over configuration than I&amp;rsquo;m comfortable with - so much so it seemed impenetrable at times. This is the tiny guide to Rails I wish I had to understand where code lives and how the application works.
+Know where to find things Go to definition or go to implementation doesn&amp;rsquo;t work well with Rails projects and most IDEs I&amp;rsquo;ve tried.</description>
+    </item>
+    
     <item>
       <title>2020 technical review</title>
       <link>https://matthewkmayer.github.io/blag/public/post/2020-technical-review/</link>
