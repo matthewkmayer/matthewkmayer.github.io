@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Tiny guide to Rails &middot; Matthew Mayer&#39;s tech blog</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="/blag/public/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2021-04-13 00:28:53 -0700 PDT">April 13, 2021</time>
+</div>
+		<h1 class="post-title">Tiny guide to Rails</h1>
+<div class="post-line"></div>
+
+		
+
+		<h2 id="the-tiny-guide-to-rails-that-i-wish-i-had">The tiny guide to Rails (that I wish I had)</h2>
+<p>I&rsquo;ve found Rails to rely on more convention over configuration than I&rsquo;m comfortable with - so much so it seemed impenetrable at times. This is <em>the tiny guide to Rails I wish I had</em> to understand where code lives and how the application works.</p>
+<h3 id="know-where-to-find-things">Know where to find things</h3>
+<p><code>Go to definition</code> or <code>go to implementation</code> doesn&rsquo;t work well with Rails projects and most IDEs I&rsquo;ve tried. It&rsquo;s important to know where to find code:</p>
+<ul>
+<li>Controllers: app/controllers/foo_controller.rb</li>
+<li>Views: app/views/foo/bar.html.erb. Controller app/controllers/<strong>foo_controller.rb</strong> above maps to app/views/<strong>foo</strong>/ and the controller&rsquo;s function <code>bar</code> finds the <strong>bar</strong>.html.erb file</li>
+<li>Models: app/models/item_foo.rb</li>
+</ul>
+<h3 id="models">Models</h3>
+<ul>
+<li>Naming: an ActiveRecord model with a declaration like <code>class ImportFile &lt; ApplicationRecord</code> will be accessed like <code>ImportFile.create</code> but <strong>the file must be named</strong> <code>import_file.rb</code>.</li>
+<li>Plurals: if a model called <code>Widget</code> has many <code>ImportFile</code> models from above, they will be accessed like so: <code>Widget.find(widget_id).import_files</code>.</li>
+<li>Fields can be accessed by <code>.field_name</code>. For the <code>ImportFile</code> class above, if we find an item with <code>ImportFile.find(import_id)</code> we can access the <code>filename</code> field like so: <code>ImportFile.find(import_id).filename</code>. If the field does not exist in the database an error occurs at runtime.</li>
+<li>Lots of validators and attributes etc&hellip; are available for Models. Every addition made to the Model file can increase complexity for the next person.</li>
+<li>Schema reference: located in db/schema.rb. This contains most but not all fields available. For example an ID field is in the database but not the schema file. Keep this file up to date for easy reference of field names.</li>
+</ul>
+<h3 id="controller-and-view-communication">Controller and View communication</h3>
+<p>Controllers set instance variables (<code>@foo</code>) which are available in the View.</p>
+<p>Controller:</p>
+<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#069;font-weight:bold">def</span> <span style="color:#c0f">show</span>
+  @foo <span style="color:#555">=</span> <span style="color:#360">ImportFile</span><span style="color:#555">.</span>find(import_id)
+<span style="color:#069;font-weight:bold">end</span>
+</code></pre></div><p>View:</p>
+<pre><code class="language-erb" data-lang="erb">&lt;h1&gt;foo filename is &lt;%= @foo.filename %&gt;&lt;/h1&gt;
+</code></pre><p>If the view tries to access a variable or a field on the variable that doesn&rsquo;t exist an error occurs at runtime.</p>
+<h3 id="views">Views</h3>
+<p>Two syntaxes are available in .erb files.</p>
+<p><code>&lt;%= RUBY CODE RETURNING A STRING =&gt;</code> will evaluate the items in the Ruby code block and return the contents.</p>
+<p><code>&lt;% RUBY CODE %&gt;</code> will evaluate the contents but not insert the value into the rendered page. This is useful for if/else statements:</p>
+<pre><code class="language-erb" data-lang="erb">&lt;% if @foo.bar.nil? %&gt;
+  &lt;p&gt;❌&lt;/p&gt; 
+&lt;% else %&gt;
+  &lt;p&gt;✅&lt;/p&gt; 
+&lt;% end %&gt;
+</code></pre><h3 id="resources">Resources</h3>
+<p><a href="https://guides.rubyonrails.org/">https://guides.rubyonrails.org/</a></p>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/2020-technical-review/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2021-04-22 18:20:16.371312 -0700 PDT m=&#43;0.203443149">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
