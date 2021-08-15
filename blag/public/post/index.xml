@@ -6,7 +6,19 @@
     <description>Recent content in Posts on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 13 Apr 2021 00:28:53 -0700</lastBuildDate><atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 14 Aug 2021 00:28:53 -0700</lastBuildDate><atom:link href="https://matthewkmayer.github.io/blag/public/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Closed loop development</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/closed-loop-development/</link>
+      <pubDate>Sat, 14 Aug 2021 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/closed-loop-development/</guid>
+      <description>Closed loop development Brace yourself for car analogies.
+Vehicles: open/closed loops Modern cars have two modes of operation: open loop and closed loop.
+Open loop: get engine inputs such as engine speed, air temperature and how much air is going into the engine. Apply a set of rules to determine how much fuel to put in.
+Closed loop: using the above data combined with information from the exhaust, adjust how much fuel goes into the engine.</description>
+    </item>
+    
     <item>
       <title>Tiny guide to Rails</title>
       <link>https://matthewkmayer.github.io/blag/public/post/tiny-guide-to-rails/</link>

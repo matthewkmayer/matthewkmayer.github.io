@@ -1,5 +1,5 @@
 +++
-date = "2021-08-09T00:28:53-07:00"
+date = "2021-08-14T00:28:53-07:00"
 draft = false
 title = "Closed loop development"
 +++
