@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Closed loop development &middot; Matthew Mayer&#39;s tech blog</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="/blag/public/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2021-08-14 00:28:53 -0700 PDT">August 14, 2021</time>
+</div>
+		<h1 class="post-title">Closed loop development</h1>
+<div class="post-line"></div>
+
+		
+
+		<h2 id="closed-loop-development">Closed loop development</h2>
+<p>Brace yourself for car analogies.</p>
+<h3 id="vehicles-openclosed-loops">Vehicles: open/closed loops</h3>
+<p>Modern cars have two modes of operation: open loop and closed loop.</p>
+<p>Open loop: get engine inputs such as engine speed, air temperature and how much air is going into the engine. Apply a set of rules to determine how much fuel to put in.</p>
+<p>Closed loop: using the above data <em>combined with information from the exhaust</em>, adjust how much fuel goes into the engine. Reading information from the engine&rsquo;s output lets the engine computer accurately determine how much fuel to supply.</p>
+<h3 id="software-openclosed-loops">Software: open/closed loops</h3>
+<p>Software can be thought of similarly.</p>
+<p>Open loop: code up a feature or make a bug fix. Ship it, don&rsquo;t check the changes did what they are supposed to do.</p>
+<p>Closed loop: same coding of a feature or bug fix, but <em>verify the new behavior works</em>.</p>
+<p>Automating verification via tests can work but sometimes a manual check is sufficient.</p>
+<h3 id="my-story-of-doing-it-wrong">My story of Doing It Wrong</h3>
+<p>As a new hire in a previous job, I was in a hurry to prove myself. I took a bug that looked straightforward, made my fix and shipped it. My open loop approach skipped verification of the fix. The bug remained. Customers were unhappy and my professional ego took a blow.</p>
+<p>This situation taught the importance of closed loop development. All future features or bug fixes involved doing the work and <em>verifying</em> the change worked.</p>
+<h3 id="one-more-analogy">One more analogy</h3>
+<p>Imagine your sink faucet is leaky. You call a plumber. They do some work, hand you a bill and leave. When you turn on the faucet, water sprays everywhere and the leak is still present. That&rsquo;s a bad look for the plumber - you immediately call their professionalism into question. The plumbing company gets a call back and they need to do the work again. Nobody is happy in this situation. Much time could be saved by the plumber testing their work before leaving.</p>
+<h3 id="do-closed-loop-development">Do closed loop development</h3>
+<p>Make changes. Test the changes. Verify it works. Be the employee that says the change is done and everyone <em>knows</em> it&rsquo;s true.</p>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/tiny-guide-to-rails/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2021-08-14 19:44:01.037169 -0700 PDT m=&#43;0.077126930">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>

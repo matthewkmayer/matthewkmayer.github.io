@@ -53,7 +53,7 @@
 <p>This is a hybrid of <a href="http://scottchacon.com/2011/08/31/github-flow.html">GitHub flow</a> and <a href="https://trunkbaseddevelopment.com/">trunk based development</a>.  Release-party automates the process of going to each repository in the organization, seeing if <code>release</code> is behind <code>master</code> and if so, create a new pull request.  It quickly became a time sink to do that manually, multiple times a week, and release-party will do the inspection and pull request creation as needed.</p>
 <p>One required argument to the tool is the GitHub organization.  Until recently, users had to supply the entire GitHub API URL, such as <code>https://api.github.com/orgs/ORG-HERE/repos</code>.  To make things easier on users, I modified it to take just the org: <code>ORG-HERE</code>.  However, when run with the previous argument of the entire URL, it unceremonously keeled over with an unhelpful error message.</p>
 <p>Here&rsquo;s how it looks when supplying the old style of argument:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#033">RP_GITHUBTOKEN</span><span style="color:#555">=</span>ghtoken release-party-br --org <span style="color:#c30">&#34;https://api.github.com/orgs/ORG-HERE/repos&#34;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#033">RP_GITHUBTOKEN</span><span style="color:#555">=</span>ghtoken release-party-br --org <span style="color:#c30">&#34;https://api.github.com/orgs/ORG-HERE/repos&#34;</span>
 thread <span style="color:#c30">&#39;main&#39;</span> panicked at 
 <span style="color:#c30">&#39;expected repos: &#34;Couldn\&#39;</span>t deserialize repos from github: invalid type: 
 map, expected a sequence at line <span style="color:#f60">1</span> column 1<span style="color:#c30">&#34;&#39;, src/libcore/result.rs:860:4
@@ -63,17 +63,17 @@ map, expected a sequence at line <span style="color:#f60">1</span> column 1<span
 <p>First pass: we&rsquo;ll check the <code>org</code> argument to see if it contains a URL.  If so, let the user know they just need to supply the org name.</p>
 <h2 id="red-green-refactor">Red, green, refactor</h2>
 <p>Test first:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">handle_malformed_org</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>assert_eq<span style="color:#555">!</span>(<span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb"> </span>org_is_just_org(<span style="color:#c30">&#34;https://api.github.com/orgs/ORG-HERE/repos&#34;</span>));<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p><code>org_is_just_org</code> is a new function to check if a string contains just the org name.  In this test we pass it the complete API URL, which should fail.</p>
 <p>Dogmatic TDD states we should run the tests now and watch it fail.  This is done by running <code>cargo test</code> and seeing the compilation error.  I prefer a less dogmatic approach: let&rsquo;s put in the <code>org_is_just_org</code> function, place it in the code base but the function will always return true:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">org_is_just_org</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">bool</span> {<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">org_is_just_org</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">bool</span> {<span style="color:#bbb">
 </span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">true</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>It&rsquo;s called in another function:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">make_org_url</span>(matches: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">clap</span>::ArgMatches)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">make_org_url</span>(matches: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">clap</span>::ArgMatches)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>org<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>matches<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>.value_of(<span style="color:#c30">&#34;ORG&#34;</span>)<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>.expect(<span style="color:#c30">&#34;Please specify a github org&#34;</span>);<span style="color:#bbb">
@@ -85,7 +85,7 @@ map, expected a sequence at line <span style="color:#f60">1</span> column 1<span
 </span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;https://api.github.com/orgs/{}/repos&#34;</span>,<span style="color:#bbb"> </span>org)<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>Now when we run <code>cargo test</code> we see it fail:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#366">test</span> tests::handle_malformed_org ... FAILED
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#366">test</span> tests::handle_malformed_org ... FAILED
 ...
 failures:
 
@@ -101,14 +101,14 @@ failures:
 
 <span style="color:#366">test</span> result: FAILED. <span style="color:#f60">6</span> passed; <span style="color:#f60">1</span> failed; <span style="color:#f60">0</span> ignored; <span style="color:#f60">0</span> measured; <span style="color:#f60">0</span> filtered out
 </code></pre></div><p>On to making the test pass!  Let&rsquo;s modify <code>org_is_just_org</code>:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">org_is_just_org</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">bool</span> {<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">org_is_just_org</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#078;font-weight:bold">bool</span> {<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>org.contains(<span style="color:#c30">&#34;https://api.github.com&#34;</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>;<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>}<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">true</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>That looks better.  What does <code>cargo test</code> say?</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">running <span style="color:#f60">7</span> tests
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">running <span style="color:#f60">7</span> tests
 <span style="color:#366">test</span> github::tests::no_next_link ... ok
 <span style="color:#366">test</span> github::tests::has_next_link ... ok
 <span style="color:#366">test</span> github::tests::no_requests_left ... ok
@@ -120,7 +120,7 @@ failures:
 <span style="color:#366">test</span> result: ok. <span style="color:#f60">7</span> passed; <span style="color:#f60">0</span> failed; <span style="color:#f60">0</span> ignored; <span style="color:#f60">0</span> measured; <span style="color:#f60">0</span> filtered out
 </code></pre></div><p>Success!</p>
 <p>Since our change was so small, there&rsquo;s little to nothing to refactor.  While we&rsquo;re in here, let&rsquo;s also ensure the happy path is tested:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">handle_okay_org</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>assert_eq<span style="color:#555">!</span>(<span style="color:#069;font-weight:bold">true</span>,<span style="color:#bbb"> </span>org_is_just_org(<span style="color:#c30">&#34;ORG-HERE&#34;</span>));<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
@@ -129,17 +129,17 @@ failures:
 <p>Panicking with a message of <code>Please make org just the organization name.</code> isn&rsquo;t super helpful.  It&rsquo;s correct but we can do better.  Let&rsquo;s try to make a suggestion to the user.  If they provide <code>https://api.github.com/orgs/ORG-HERE/repos</code> let&rsquo;s respond with something along the lines of <code>did you mean ORG-HERE?</code>.</p>
 <h2 id="red-green-refactor-1">Red, green, refactor</h2>
 <p>Our new test:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggestion_for_org</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>assert_eq<span style="color:#555">!</span>(<span style="color:#c30">&#34;Try this&#34;</span>,<span style="color:#bbb"> 
 </span><span style="color:#bbb">        </span>suggest_org_arg(<span style="color:#c30">&#34;https://api.github.com/orgs/ORG-HERE/repos&#34;</span>).unwrap());<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>New function:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggest_org_arg</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">String</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggest_org_arg</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">String</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#366">Err</span>(<span style="color:#c30">&#34;Can&#39;t make a suggestion&#34;</span>.to_owned())<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>And the new function slotted in where we want it:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">make_org_url</span>(matches: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">clap</span>::ArgMatches)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">make_org_url</span>(matches: <span style="color:#069">&amp;</span><span style="color:#0a8;font-weight:bold">clap</span>::ArgMatches)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">String</span> {<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>org<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>matches<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>.value_of(<span style="color:#c30">&#34;ORG&#34;</span>)<span style="color:#bbb">
 </span><span style="color:#bbb">        </span>.expect(<span style="color:#c30">&#34;Please specify a github org&#34;</span>);<span style="color:#bbb">
@@ -154,7 +154,7 @@ failures:
 </span><span style="color:#bbb">    </span>format<span style="color:#555">!</span>(<span style="color:#c30">&#34;https://api.github.com/orgs/{}/repos&#34;</span>,<span style="color:#bbb"> </span>org)<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>We can see our test fail:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">...
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">...
 <span style="color:#366">test</span> tests::suggestion_for_org ... FAILED
 ...
 
@@ -170,21 +170,21 @@ failures:
 </span><span style="color:#c30">
 </span><span style="color:#c30">test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
 </span></code></pre></div><p>And to make it pass:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggest_org_arg</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">String</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggest_org_arg</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">String</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>org.starts_with(<span style="color:#c30">&#34;https://api.github.com/orgs/&#34;</span>)<span style="color:#bbb"> </span><span style="color:#555">&amp;&amp;</span><span style="color:#bbb"> </span>org.ends_with(<span style="color:#c30">&#34;/repos&#34;</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#366">Ok</span>(<span style="color:#c30">&#34;Try this&#34;</span>.to_owned());<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>}<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#366">Err</span>(<span style="color:#c30">&#34;Can&#39;t make a suggestion&#34;</span>.to_owned())<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
-</span></code></pre></div><div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#366">test</span> result: ok. <span style="color:#f60">9</span> passed; <span style="color:#f60">0</span> failed; <span style="color:#f60">0</span> ignored; <span style="color:#f60">0</span> measured; <span style="color:#f60">0</span> filtered out
+</span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#366">test</span> result: ok. <span style="color:#f60">9</span> passed; <span style="color:#f60">0</span> failed; <span style="color:#f60">0</span> ignored; <span style="color:#f60">0</span> measured; <span style="color:#f60">0</span> filtered out
 </code></pre></div><p>Yes!  We now have a passing test.  But the test doesn&rsquo;t actually test our end state: it doesn&rsquo;t return the suggestion.  Let&rsquo;s fix that:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggestion_for_org_happy</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>assert_eq<span style="color:#555">!</span>(<span style="color:#c30">&#34;Try this: ORG-HERE&#34;</span>,<span style="color:#bbb"> 
 </span><span style="color:#bbb">        </span>suggest_org_arg(<span style="color:#c30">&#34;https://api.github.com/orgs/ORG-HERE/repos&#34;</span>).unwrap());<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p><code>cargo test</code> will show us that fails because our implementation doesn&rsquo;t return the suggestion.  On to that:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggest_org_arg</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">String</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggest_org_arg</span>(org: <span style="color:#069">&amp;</span><span style="color:#078;font-weight:bold">str</span>)<span style="color:#bbb"> </span>-&gt; <span style="color:#366">Result</span><span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">String</span><span style="color:#555">&gt;</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>org.starts_with(<span style="color:#c30">&#34;https://api.github.com/orgs/&#34;</span>)<span style="color:#bbb"> </span><span style="color:#555">&amp;&amp;</span><span style="color:#bbb"> </span>org.ends_with(<span style="color:#c30">&#34;/repos&#34;</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>suggestion<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>org.replace(<span style="color:#c30">&#34;https://api.github.com/orgs/&#34;</span>,<span style="color:#bbb"> </span><span style="color:#c30">&#34;&#34;</span>).replace(<span style="color:#c30">&#34;/repos&#34;</span>,<span style="color:#bbb"> </span><span style="color:#c30">&#34;&#34;</span>);<span style="color:#bbb">
 </span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#366">Ok</span>(format<span style="color:#555">!</span>(<span style="color:#c30">&#34;Try this: {}&#34;</span>,<span style="color:#bbb"> </span>suggestion).to_owned());<span style="color:#bbb">
@@ -192,16 +192,16 @@ failures:
 </span><span style="color:#bbb">    </span><span style="color:#366">Err</span>(<span style="color:#c30">&#34;Can&#39;t make a suggestion&#34;</span>.to_owned())<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p><code>cargo test</code> shows all green:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#366">test</span> result: ok. <span style="color:#f60">9</span> passed; <span style="color:#f60">0</span> failed; <span style="color:#f60">0</span> ignored; <span style="color:#f60">0</span> measured; <span style="color:#f60">0</span> filtered out
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#366">test</span> result: ok. <span style="color:#f60">9</span> passed; <span style="color:#f60">0</span> failed; <span style="color:#f60">0</span> ignored; <span style="color:#f60">0</span> measured; <span style="color:#f60">0</span> filtered out
 </code></pre></div><p>For completeness we&rsquo;ll also test some error cases for the function:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#099">#[test]</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span><span style="color:#069;font-weight:bold">fn</span> <span style="color:#c0f">suggestion_for_org_sad</span>()<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>assert_eq<span style="color:#555">!</span>(<span style="color:#069;font-weight:bold">true</span>,<span style="color:#bbb"> </span>suggest_org_arg(<span style="color:#c30">&#34;https://api.github.com/orgs/ORG-HERE/&#34;</span>).is_err());<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>assert_eq<span style="color:#555">!</span>(<span style="color:#069;font-weight:bold">true</span>,<span style="color:#bbb"> </span>suggest_org_arg(<span style="color:#c30">&#34;http://api.github.com/orgs/ORG-HERE/&#34;</span>).is_err());<span style="color:#bbb">
 </span><span style="color:#bbb">    </span>assert_eq<span style="color:#555">!</span>(<span style="color:#069;font-weight:bold">true</span>,<span style="color:#bbb"> </span>suggest_org_arg(<span style="color:#c30">&#34;api.github.com/orgs/ORG-HERE/repos&#34;</span>).is_err());<span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>Once again a <code>cargo test</code> shows the new test demonstrates our function works as expected:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">running <span style="color:#f60">10</span> tests
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">running <span style="color:#f60">10</span> tests
 <span style="color:#366">test</span> github::tests::no_next_link ... ok
 <span style="color:#366">test</span> github::tests::has_next_link ... ok
 <span style="color:#366">test</span> github::tests::no_requests_left ... ok
@@ -216,7 +216,7 @@ failures:
 <span style="color:#366">test</span> result: ok. <span style="color:#f60">10</span> passed; <span style="color:#f60">0</span> failed; <span style="color:#f60">0</span> ignored; <span style="color:#f60">0</span> measured; <span style="color:#f60">0</span> filtered out
 </code></pre></div><h2 id="the-proof-of-the-pudding-is-in-the-eating">The proof of the pudding is in the eating</h2>
 <p>One last manual check to make sure it&rsquo;s all plumbed corectly:</p>
-<div class="highlight"><pre style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#033">RP_GITHUBTOKEN</span><span style="color:#555">=</span>foo cargo run -- --org https://api.github.com/orgs/my-org-name/repos
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#033">RP_GITHUBTOKEN</span><span style="color:#555">=</span>foo cargo run -- --org https://api.github.com/orgs/my-org-name/repos
     Finished dev <span style="color:#555">[</span>unoptimized + debuginfo<span style="color:#555">]</span> target<span style="color:#555">(</span>s<span style="color:#555">)</span> in 0.0 secs
      Running <span style="color:#c30">`</span>target/debug/release-party-br --org <span style="color:#c30">&#39;https://api.github.com/orgs/my-org-name/repos&#39;</span><span style="color:#c30">`</span>
 thread <span style="color:#c30">&#39;main&#39;</span> panicked at <span style="color:#c30">&#39;Try this for the org value: Try this: my-org-name&#39;</span>, src/main.rs:66:30
@@ -243,7 +243,7 @@ thread <span style="color:#c30">&#39;main&#39;</span> panicked at <span style="c
 
         		<footer>
 			<span>
-			&copy; <time datetime="2021-04-22 18:20:16.39593 -0700 PDT m=&#43;0.228060831">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2021-08-14 19:44:01.152574 -0700 PDT m=&#43;0.192529450">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
