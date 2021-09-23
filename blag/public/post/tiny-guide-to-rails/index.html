@@ -70,13 +70,13 @@
   @foo <span style="color:#555">=</span> <span style="color:#360">ImportFile</span><span style="color:#555">.</span>find(import_id)
 <span style="color:#069;font-weight:bold">end</span>
 </code></pre></div><p>View:</p>
-<pre><code class="language-erb" data-lang="erb">&lt;h1&gt;foo filename is &lt;%= @foo.filename %&gt;&lt;/h1&gt;
+<pre tabindex="0"><code class="language-erb" data-lang="erb">&lt;h1&gt;foo filename is &lt;%= @foo.filename %&gt;&lt;/h1&gt;
 </code></pre><p>If the view tries to access a variable or a field on the variable that doesn&rsquo;t exist an error occurs at runtime.</p>
 <h3 id="views">Views</h3>
 <p>Two syntaxes are available in .erb files.</p>
 <p><code>&lt;%= RUBY CODE RETURNING A STRING =&gt;</code> will evaluate the items in the Ruby code block and return the contents.</p>
 <p><code>&lt;% RUBY CODE %&gt;</code> will evaluate the contents but not insert the value into the rendered page. This is useful for if/else statements:</p>
-<pre><code class="language-erb" data-lang="erb">&lt;% if @foo.bar.nil? %&gt;
+<pre tabindex="0"><code class="language-erb" data-lang="erb">&lt;% if @foo.bar.nil? %&gt;
   &lt;p&gt;❌&lt;/p&gt; 
 &lt;% else %&gt;
   &lt;p&gt;✅&lt;/p&gt; 
@@ -99,7 +99,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2021-08-14 19:44:01.136574 -0700 PDT m=&#43;0.176530253">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2021-09-22 22:27:35.217005 -0700 PDT m=&#43;0.168296458">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
