@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>How to split code changes &middot; Matthew Mayer&#39;s tech blog</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="/blag/public/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2021-09-22 00:28:53 -0700 PDT">September 22, 2021</time>
+</div>
+		<h1 class="post-title">How to split code changes</h1>
+<div class="post-line"></div>
+
+		
+
+		<h2 id="how-to-split-code-changes">How to split code changes</h2>
+<p>We&rsquo;ve all been there: when writing code, we fall victim to &ldquo;while I&rsquo;m here, I might as well&hellip;&rdquo; and end up with a collection of code changes instead of a focused set of deltas. One term for this is <em>shipwrights disease</em>. It&rsquo;s so easy to fix this typo, update this comment, change this dependency, etc&hellip;</p>
+<p>There are ways out and methods to logically group changes made, depending on what&rsquo;s most important.</p>
+<h3 id="branches">Branches</h3>
+<p>Branches are cheap. With all the changes saved to a branch, perhaps using the <a href="http://think-like-a-git.net/sections/testing-out-merges/the-savepoint-pattern.html">savepoint pattern</a>, you&rsquo;re free to figure out what changes you want in a branch and which you do not. Since the savepoint branch keeps all your work, there&rsquo;s low risk in losing changes you&rsquo;ve already made.</p>
+<p>One approach is to go back to the main or master branch, start a new branch and check out the files you need to make a focused set of changes from your savepoint branch, commit those and push them to the upstream server.</p>
+<p>Another method is to use a new branch, starting at but not the same as your savepoint branch, and remove the changes that aren&rsquo;t related to the branch&rsquo;s focus.</p>
+<p>One more option: you can always copy and paste code from the upstream server, such as GitHub, to undo unwanted changes in your local files. Not elegant but it can be quicker than other options.</p>
+<h3 id="commits">Commits</h3>
+<p>Sometimes it&rsquo;s easiest to show your work by having multiple commits that build on each other. Commits can also be used to theme changes: place all your comment updating in one commit, dependency updates in another, and so on.</p>
+<p>If your changes are already made and committed locally, use the savepoint branch pattern to keep your work. Then start a new branch and manually copy in your themed changes commit by commit.</p>
+<p>Another way is to use <a href="https://git-scm.com/book/en/v2/Git-Tools-Interactive-Staging">interactive staging</a> to add just the parts you want into a commit. This requires all your changes to be present but not committed or staged.</p>
+<h3 id="how-to-pick">How to pick</h3>
+<p>Splitting code changes via branches or commits fulfill different needs.</p>
+<p>Separating changes into branches helps continuous integration and continuous delivery. Small changes get merged into the main or master branch regularly and deployed quickly. Small changes to deployment means a smaller area to search if problems arise.</p>
+<p>Using commits to segregate changes is for making reviewer&rsquo;s lives easier. They can look at related changes in each commit which limits the amount of time and focus required to follow a potentially complex set of changes.</p>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/closed-loop-development/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2021-09-22 22:27:35.127979 -0700 PDT m=&#43;0.079272366">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>

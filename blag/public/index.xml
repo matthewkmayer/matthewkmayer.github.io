@@ -6,7 +6,17 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 14 Aug 2021 00:28:53 -0700</lastBuildDate><atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 22 Sep 2021 00:28:53 -0700</lastBuildDate><atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to split code changes</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/how-to-split-changes/</link>
+      <pubDate>Wed, 22 Sep 2021 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/how-to-split-changes/</guid>
+      <description>How to split code changes We&amp;rsquo;ve all been there: when writing code, we fall victim to &amp;ldquo;while I&amp;rsquo;m here, I might as well&amp;hellip;&amp;rdquo; and end up with a collection of code changes instead of a focused set of deltas. One term for this is shipwrights disease. It&amp;rsquo;s so easy to fix this typo, update this comment, change this dependency, etc&amp;hellip;
+There are ways out and methods to logically group changes made, depending on what&amp;rsquo;s most important.</description>
+    </item>
+    
     <item>
       <title>Closed loop development</title>
       <link>https://matthewkmayer.github.io/blag/public/post/closed-loop-development/</link>

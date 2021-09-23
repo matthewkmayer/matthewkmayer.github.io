@@ -51,7 +51,7 @@ In this post, we&rsquo;ll take a look at how we make the crate for an AWS servic
 <h2 id="parts-one-and-two-recap">Parts one and two recap</h2>
 <p>In the previous two posts, we followed code generation from the Simple Queue Service (SQS) botocore service definition to Rust code.
 We glossed over where the generated code went in order to concentrate on the generation itself.  As a refresher, this is how the code flows:</p>
-<pre><code>SQS botocore definition =&gt; service_crategen =&gt; rusoto_sqs crate
+<pre tabindex="0"><code>SQS botocore definition =&gt; service_crategen =&gt; rusoto_sqs crate
 </code></pre><p>Let&rsquo;s get into how we make a crate from scratch!</p>
 <h2 id="final-output-crate">Final output crate</h2>
 <p>To help us understand what we&rsquo;re making, here&rsquo;s how the <code>rusoto_sqs</code> crate is laid out at the end of code generation.</p>
@@ -320,7 +320,7 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 </span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">pub</span><span style="color:#bbb"> </span>features: <span style="color:#366">Option</span><span style="color:#555">&lt;</span>BTreeMap<span style="color:#555">&lt;</span><span style="color:#366">String</span>,<span style="color:#bbb"> </span><span style="color:#366">Vec</span><span style="color:#555">&lt;</span><span style="color:#366">String</span><span style="color:#555">&gt;&gt;&gt;</span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>}<span style="color:#bbb">
 </span></code></pre></div><p>Note the <code>BTreeMap</code> type used: as mentioned earlier, this ensure stable ordering when iterating through it.  Per the <a href="https://doc.rust-lang.org/std/collections/struct.BTreeMap.html">Rust docs</a>, calling <code>iter</code> on the <code>BTreeMap</code></p>
-<pre><code>Gets an iterator over the entries of the map, sorted by key.
+<pre tabindex="0"><code>Gets an iterator over the entries of the map, sorted by key.
 </code></pre><p>At this point the Cargo.toml file is all created and populated!  We went from this code:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#069;font-weight:bold">let</span><span style="color:#bbb"> </span>manifest<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>cargo::Manifest<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span><span style="color:#bbb">  </span>package: <span style="color:#0a8;font-weight:bold">cargo</span>::Metadata<span style="color:#bbb"> </span>{<span style="color:#bbb">
@@ -414,7 +414,7 @@ xml-rs <span style="color:#555">=</span> <span style="color:#c30">&#34;0.6&#34;<
 
         		<footer>
 			<span>
-			&copy; <time datetime="2021-08-14 19:44:01.115061 -0700 PDT m=&#43;0.155017332">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2021-09-22 22:27:35.20167 -0700 PDT m=&#43;0.152961526">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

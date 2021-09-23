@@ -51,10 +51,10 @@
 <p>The previous project&rsquo;s <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds">source code is on github</a>.  We&rsquo;ll be making a new project based off that one.  You can see the final product <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/tree/master/samples/rusoto-rds-mk2">in rusoto-rds-mk2 folder</a>.</p>
 <h3 id="cargotoml-changes-required-for-rusoto-0250">Cargo.toml changes required for Rusoto 0.25.0</h3>
 <p>Before:</p>
-<pre><code>[dependencies]
+<pre tabindex="0"><code>[dependencies]
 rusoto = {version = &quot;0.24&quot;, features = [&quot;rds&quot;]}
 </code></pre><p>After:</p>
-<pre><code>[dependencies]
+<pre tabindex="0"><code>[dependencies]
 rusoto_core = {version = &quot;0.25.0&quot;}
 rusoto_rds = {version = &quot;0.25.0&quot;}
 </code></pre><p>Note there&rsquo;s now two crates needed: <code>rusoto_core</code> and <code>rusoto_rds</code>.  This is due to Rusoto now creating a crate per AWS service.  We&rsquo;re calling this <a href="https://github.com/rusoto/rusoto/pull/628">crategen</a>.</p>
@@ -200,17 +200,17 @@ rustc 1.18.0-nightly <span style="color:#555">(</span>2b4c91158 2017-04-25<span 
 <p>To play with the Diesel and Rocket portions of this walkthrough, we can use Docker to spin up a local Postgres container.  Run this command to create a Postgres container from the Alpine Linux distro:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker run --name postgres -e <span style="color:#033">POSTGRES_PASSWORD</span><span style="color:#555">=</span>mysecretpassword -p 5432:5432 -d postgres:alpine
 </code></pre></div><p>We&rsquo;ll also need to adjust our <code>.env</code> file in <a href="https://github.com/matthewkmayer/matthewkmayer.github.io/blob/master/samples/rusoto-rocket-mk2/.env">rusoto-rocket-mk2</a>.  It should look like this:</p>
-<pre><code>DATABASE_URL=postgres://postgres:mysecretpassword@localhost/rusoto_rocket
+<pre tabindex="0"><code>DATABASE_URL=postgres://postgres:mysecretpassword@localhost/rusoto_rocket
 </code></pre><p>Note the user is now <code>postgres</code> and the password matched what we supplied the <code>docker</code> command earlier.  We&rsquo;re using <code>localhost</code> since the Postgres image is listening on <code>localhost:5432</code>.</p>
 <p>In the rusoto-rocket-mk2 directory, with the updated .env file, run <code>diesel setup</code>.  You&rsquo;ll see this success message:</p>
-<pre><code>Creating database: rusoto_rocket
+<pre tabindex="0"><code>Creating database: rusoto_rocket
 Running migration 20170503003554
 </code></pre><p>Now we can run <code>cargo run</code> to launch our Rocket site, using our local Docker image.  After it&rsquo;s running, visit <a href="http://localhost:8000/">http://localhost:8000/</a> to see the hit counter.  Refresh and see the hits go up.  This time they are being stored in the local Postgres Docker container.</p>
 <h3 id="cleanup">Cleanup</h3>
 <p><code>docker kill postgres</code> will kill the running container.  Verify it&rsquo;s no longer running by running <code>docker ps</code> and verify it&rsquo;s no longer listed.</p>
 <h3 id="diesel-homework">Diesel homework</h3>
 <p>If we start the Rocket site multiple times, we&rsquo;ll see an error like this:</p>
-<pre><code>thread 'main' panicked at 'Error saving new hit: DatabaseError(UniqueViolation, &quot;duplicate key value violates unique constraint \&quot;hits_pkey\&quot;&quot;)', src/libcore/result.rs:859
+<pre tabindex="0"><code>thread 'main' panicked at 'Error saving new hit: DatabaseError(UniqueViolation, &quot;duplicate key value violates unique constraint \&quot;hits_pkey\&quot;&quot;)', src/libcore/result.rs:859
 note: Run with `RUST_BACKTRACE=1` for a backtrace.
 </code></pre><p>This is from calling <code>create_hit(&amp;connection, 1);</code> in <code>main</code>.  In the lib.rs function, we blindly try to insert an item into the database.  Our migration file that creates the table says the <code>id</code> column in the <code>hits</code> table is a primary key, so we can&rsquo;t have duplicates and our application panics.  We can modify that to check if the entry exists and don&rsquo;t attempt an insert in that case.</p>
 <p>As a workaround, we can run <code>diesel migration redo</code> to revert the database to a state where table are created but aren&rsquo;t populated, then can run <code>cargo run</code> in the Rocket site to start up again.</p>
@@ -230,7 +230,7 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 
         		<footer>
 			<span>
-			&copy; <time datetime="2021-08-14 19:44:01.095606 -0700 PDT m=&#43;0.135563113">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2021-09-22 22:27:35.186574 -0700 PDT m=&#43;0.137866105">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

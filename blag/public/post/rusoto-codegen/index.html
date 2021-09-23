@@ -51,7 +51,7 @@
 <p>To make this post clearer, we&rsquo;ll follow the Simple Queue Service (SQS) from botocore service definition to the <a href="https://crates.io/crates/rusoto_sqs">rusoto_sqs crate</a>.</p>
 <p>Botocore definitions are JSON representations of AWS services.  They contain information such as what protocol the service uses, such as <code>rest-xml</code> or <code>json</code>, as well as all the endpoints with their input and output shapes.</p>
 <p>At a high level, the botocore definitions are fed into Rusoto codegen and it outputs Rust code.  Here&rsquo;s another way to depict the codegen flow:</p>
-<pre><code>SQS botocore definition =&gt; service_crategen =&gt; rusoto_sqs crate
+<pre tabindex="0"><code>SQS botocore definition =&gt; service_crategen =&gt; rusoto_sqs crate
 </code></pre><h2 id="botocore-definitions">botocore definitions</h2>
 <p>The botocore definitions are brought in via a <a href="https://git-scm.com/docs/git-submodule">git submodule</a>.  This lets us bring in the botocore project without vendoring files in our git project.  We can lock it to certain versions, update as needed, etc&hellip;</p>
 <p>You can see the submodule inclusion in <a href="https://github.com/rusoto/rusoto/blob/master/.gitmodules">.gitmodules</a>.  It tells git what submodules we have and where to put it:</p>
@@ -144,7 +144,7 @@
 </span></code></pre></div><p>Note how the whitespacing is corrected by moving the code to the left and the indentation levels are consistent.  This doesn&rsquo;t matter to the Rust compiler but it makes it a lot easier for humans to read.  A huge win for us!</p>
 <h2 id="what-weve-seen">What we&rsquo;ve seen</h2>
 <p>We&rsquo;ve walked through the codegen progression shown at the beginning of this post:</p>
-<pre><code>SQS botocore definition =&gt; service_crategen =&gt; rusoto_sqs crate
+<pre tabindex="0"><code>SQS botocore definition =&gt; service_crategen =&gt; rusoto_sqs crate
 </code></pre><p>From botocore definitions through crate generation to the resulting service crate, we&rsquo;ve got a high level understanding of how Rusoto code generation works.</p>
 <p>Thanks for reading!  The next blog post will cover the code generation more in depth.</p>
 
@@ -163,7 +163,7 @@
 
         		<footer>
 			<span>
-			&copy; <time datetime="2021-08-14 19:44:01.078991 -0700 PDT m=&#43;0.118948194">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2021-09-22 22:27:35.167268 -0700 PDT m=&#43;0.118561061">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

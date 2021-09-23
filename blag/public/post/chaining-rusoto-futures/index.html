@@ -111,7 +111,7 @@ tokio-core = <span style="color:#c30">&#34;0.1&#34;</span>
 </span><span style="color:#bbb">
 </span><span style="color:#bbb"></span>println<span style="color:#555">!</span>(<span style="color:#c30">&#34;item_from_dynamo is {:?}&#34;</span>,<span style="color:#bbb"> </span>item_from_dynamo);<span style="color:#bbb">
 </span></code></pre></div><p>Printing the result shows this:</p>
-<pre><code>item_from_dynamo is GetItemOutput 
+<pre tabindex="0"><code>item_from_dynamo is GetItemOutput 
 { consumed_capacity: None, item: Some({&quot;foo_name&quot;: AttributeValue 
 { b: None,..., s: Some(&quot;baz&quot;), ss: None } }) }
 </code></pre><p>We&rsquo;ve successfully run the commands asynchronously! The project can be run multiple times and will succeed despite the create table call failing due to the table already existing: we throw away the error from that call and move forward.</p>
@@ -154,14 +154,14 @@ tokio-core = <span style="color:#c30">&#34;0.1&#34;</span>
 </span><span style="color:#bbb">  </span>});<span style="color:#bbb">
 </span></code></pre></div><p><code>make_table_future_the_second</code> uses <code>map_err()</code> to map the error result to the closure, which is just code to run if an error happens. In the code block, we print a notice something went wrong then make a new <code>GetItemError</code>. We have to create a <code>GetItemError</code> because that&rsquo;s what the combined future, <code>chained</code>, requires as its type. It&rsquo;s a <code>Future&lt;Item = GetItemOutput, Error = GetItemError&gt;</code> because the last future, <code>get_item_future</code>, has that type.</p>
 <p>Since <code>.and_then()</code> will only run on successful, non-error completion of the future it&rsquo;s called on, we won&rsquo;t call <code>get_item_future</code> if we couldn&rsquo;t create the table. For example, if we run the project and local DynamoDB isn&rsquo;t running, we see this output:</p>
-<pre><code>We could do something with the table creation error here.
+<pre tabindex="0"><code>We could do something with the table creation error here.
 
 chained_with_failure_handling is Didn't get item: 
 Actually from us! Real error from attempting to making the table: 
 an error occurred trying to connect: Connection refused (os error 61)
 </code></pre><p>That&rsquo;s both our print statement and the error returned by running the <code>chained</code> future.</p>
 <p>If the table was successfully created, we see this output:</p>
-<pre><code>r is CreateTableOutput { table_description:...table_status: Some(&quot;ACTIVE&quot;) }) }
+<pre tabindex="0"><code>r is CreateTableOutput { table_description:...table_status: Some(&quot;ACTIVE&quot;) }) }
 
 chained_with_failure_handling is Got item: 
 GetItemOutput { consumed_capacity: None, item: None }
@@ -194,7 +194,7 @@ GetItemOutput { consumed_capacity: None, item: None }
 
         		<footer>
 			<span>
-			&copy; <time datetime="2021-08-14 19:44:01.0589 -0700 PDT m=&#43;0.098857414">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2021-09-22 22:27:35.146642 -0700 PDT m=&#43;0.097934956">2021</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
