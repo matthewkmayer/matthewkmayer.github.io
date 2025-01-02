@@ -4,8 +4,7 @@
     <title>About on Matthew Mayer&#39;s tech blog</title>
     <link>https://matthewkmayer.github.io/blag/public/about/</link>
     <description>Recent content in About on Matthew Mayer&#39;s tech blog</description>
-    <generator>Hugo</generator>
-    <language>en-us</language>
-    <atom:link href="https://matthewkmayer.github.io/blag/public/about/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://matthewkmayer.github.io/blag/public/about/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
