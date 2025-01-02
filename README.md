@@ -12,3 +12,15 @@ Live reload editing in the `blag` directory: `hugo server -w`. Open http://local
 ### Publishing:
 
 Generate HTML in the `blag` directory: `hugo --baseURL=https://matthewkmayer.github.io/blag/public`. Commit and push, site is updated on merge to `master` branch.
+
+### Working with old versions of hugo
+
+Download Hugo 0.88.1 from their GitHub releases.
+
+Use older version of tale theme:
+
+`git submodule update --init`
+
+Then in the theme folder:
+
+`git checkout tags/v1.1.3`
