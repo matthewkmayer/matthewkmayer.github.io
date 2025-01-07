@@ -22,7 +22,7 @@ Artificial intelligence is still "almost there" from my perspective. The biggest
 
 My personal theme for 2024 was giving back. I used my money, my time and my expertise to help groups I'm passionate about. In 2025 there will be more.
 
-I kept up with motorcycling by riding the [Trans-America Trail](https://www.transamtrail.com/): coast to coast across the United States on mostly unpaved roads. It took about a month to do, including some setbacks and unplanned aventures but was an amazing trip.
+I kept up with motorcycling by riding the [Trans-America Trail](https://www.transamtrail.com/): coast to coast across the United States on mostly unpaved roads. It took about a month to do, including some setbacks and unplanned adventures but was an amazing trip.
 
 ## 2025
 

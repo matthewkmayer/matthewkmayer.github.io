@@ -6,7 +6,16 @@
     <description>Recent content on Matthew Mayer&#39;s tech blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Sep 2021 00:28:53 -0700</lastBuildDate><atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 Jan 2025 00:28:53 -0700</lastBuildDate><atom:link href="https://matthewkmayer.github.io/blag/public/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024 year in review</title>
+      <link>https://matthewkmayer.github.io/blag/public/post/2024-in-review/</link>
+      <pubDate>Wed, 01 Jan 2025 00:28:53 -0700</pubDate>
+      
+      <guid>https://matthewkmayer.github.io/blag/public/post/2024-in-review/</guid>
+      <description>&lt;p&gt;Looking back at 2024: Technical and Personal reflections.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>How to split code changes</title>
       <link>https://matthewkmayer.github.io/blag/public/post/how-to-split-changes/</link>
@@ -67,17 +76,6 @@ Looking back: every line of Rust I&amp;rsquo;ve written has been unpaid, volunte
       <guid>https://matthewkmayer.github.io/blag/public/post/surviving-the-winter/</guid>
       <description>This is my perspective of the current state of Rusoto as a semi-retired maintainer and Amazon outsider. The post borrows the term winter from AI Winter: a time period of decreased interest and funding.
 Amazon is hiring engineers for an AWS Rust SDK Amazon has two public job openings for Senior Software Development Engineers - AWS Rust SDK. There&amp;rsquo;s now enough customer demand for Amazon to make an official SDK for Rust.</description>
-    </item>
-    
-    <item>
-      <title>Taking a break</title>
-      <link>https://matthewkmayer.github.io/blag/public/post/doot/</link>
-      <pubDate>Thu, 02 Apr 2020 00:28:53 -0700</pubDate>
-      
-      <guid>https://matthewkmayer.github.io/blag/public/post/doot/</guid>
-      <description>After three years maintaining an open source project, it&amp;rsquo;s time to take a few months of me time.
-TL;DR I&amp;rsquo;m taking a break to do things I&amp;rsquo;ve been missing. I will be back, no later than September 1st, 2018.
-Rusoto history and running an open source project Back in early 2015, Anthony DiMarco and I started Rusoto. Rust&amp;rsquo;s promises of performance and correctness looked like a perfect match for cloud computing.</description>
     </item>
     
     <item>
