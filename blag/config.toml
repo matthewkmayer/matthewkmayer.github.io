@@ -2,6 +2,7 @@ baseURL = "https://matthewkmayer.github.io/blag/public"
 languageCode = "en-us"
 title = "Matthew Mayer's tech blog"
 PygmentsCodeFences = true
+theme = "tale"
 pygmentsstyle = "manni" # https://help.farbox.com/pygments.html for a list and demo
 [params]
     author = "Matthew Mayer"
