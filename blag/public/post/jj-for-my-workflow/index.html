@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>JJ for my workflow &middot; Matthew Mayer&#39;s tech blog</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    <li><a href="/blag/public/about">About</a></li>
+    <li><a href="/blag/public/">Posts</a></li>
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2025-11-28 00:28:53 -0700 -0700">November 28, 2025</time>
+</div>
+		<h1 class="post-title">JJ for my workflow</h1>
+<div class="post-line"></div>
+
+		
+
+		<h2 id="jujutsu-jj-for-my-workflow">Jujutsu (JJ) for my workflow</h2>
+<p>This is how I use JJ.</p>
+<p>There&rsquo;s a lot one can do with source control tools; this is what I do. Terms are a bit loose, especially commits versus changes and branches versus bookmarks.</p>
+<h3 id="cloning-and-committing">Cloning and committing</h3>
+<p>JJ has a &ldquo;colocated&rdquo; repo mode, where git and JJ coexist. This can be nice for being able to drop into <code>git</code> for commands such as tagging and letting various tools operate on git such as seeing which committer last changed the line you&rsquo;re looking at.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">jj git clone --colocate git@github.com:matthewkmayer/matthewkmayer.github.io.git
+</code></pre></div><p>This will clone the repo, set it up for JJ and git and track the default branch:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj git clone --colocate git@github.com:matthewkmayer/matthewkmayer.github.io.git
+
+Fetching into new repo in <span style="color:#c30">&#34;/Users/matthewmayer/go/src/github.com/matthewkmayer/matthewkmayer.github.io&#34;</span>
+remote: Enumerating objects: 2949, <span style="color:#069;font-weight:bold">done</span>.
+remote: Total <span style="color:#f60">2949</span> <span style="color:#555">(</span>delta 81<span style="color:#555">)</span>, reused <span style="color:#f60">173</span> <span style="color:#555">(</span>delta 66<span style="color:#555">)</span>, pack-reused <span style="color:#f60">2732</span> <span style="color:#555">(</span>from 1<span style="color:#555">)</span>
+bookmark: master@origin                       <span style="color:#555">[</span>new<span style="color:#555">]</span> tracked
+</code></pre></div><p>Move into that directory and you can see the log of changes:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj
+
+@  qwyrqzwp matthew@themayers.org 2025-11-29 10:22:50 990be9b8
+│  <span style="color:#555">(</span>empty<span style="color:#555">)</span> <span style="color:#555">(</span>no description <span style="color:#366">set</span><span style="color:#555">)</span>
+◆  zyoruoll matthew@themayers.org 2025-01-06 19:36:36 master git_head<span style="color:#555">()</span> ec08563f
+│  <span style="color:#555">(</span>empty<span style="color:#555">)</span> Merge pull request <span style="color:#09f;font-style:italic">#120 from matthewkmayer/hugo-reboot</span>
+</code></pre></div><p>I&rsquo;ve created a new file for this post and can see there are changes:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj
+
+@  qwyrqzwp matthew@themayers.org 2025-11-29 10:37:39 3b2cec57
+│  <span style="color:#555">(</span>no description <span style="color:#366">set</span><span style="color:#555">)</span>
+◆  zyoruoll matthew@themayers.org 2025-01-06 19:36:36 master git_head<span style="color:#555">()</span> ec08563f
+│  <span style="color:#555">(</span>empty<span style="color:#555">)</span> Merge pull request <span style="color:#09f;font-style:italic">#120 from matthewkmayer/hugo-reboot</span>
+</code></pre></div><p>And can see what files changes:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj st
+
+Working copy changes:
+A blag/content/post/jj-for-my-workflow.md
+</code></pre></div><p>And the diff:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj diff
+
+Added regular file blag/content/post/jj-for-my-workflow.md:
+        1: +++
+        2: <span style="color:#033">date</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;2025-11-28T00:28:53-07:00&#34;</span>
+        3: <span style="color:#033">draft</span> <span style="color:#555">=</span> <span style="color:#366">false</span>
+        4: <span style="color:#033">title</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;JJ for my workflow&#34;</span>
+        5: +++
+<span style="color:#555">(</span>snipped<span style="color:#555">)</span>
+</code></pre></div><p>When I think I&rsquo;ve got enough to record what I&rsquo;ve changed I make a commit:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj commit -m <span style="color:#c30">&#34;Draft first pass.&#34;</span>
+
+Working copy  <span style="color:#555">(</span>@<span style="color:#555">)</span> now at: vwqkntqu a17ccbf5 <span style="color:#555">(</span>empty<span style="color:#555">)</span> <span style="color:#555">(</span>no description <span style="color:#366">set</span><span style="color:#555">)</span>
+Parent commit <span style="color:#555">(</span>@-<span style="color:#555">)</span>      : qwyrqzwp 831deb89 Draft first pass.
+</code></pre></div><p>JJ can show we&rsquo;ve got that commit recorded and I&rsquo;ve written more in my document, hence the top line not saying &ldquo;(empty)&rdquo; next to &ldquo;(no description set).&rdquo;</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj
+
+@  vwqkntqu matthew@themayers.org 2025-11-29 10:40:19 280f02bb
+│  <span style="color:#555">(</span>no description <span style="color:#366">set</span><span style="color:#555">)</span>
+○  qwyrqzwp matthew@themayers.org 2025-11-29 10:40:08 git_head<span style="color:#555">()</span> 831deb89
+│  Draft first pass.
+◆  zyoruoll matthew@themayers.org 2025-01-06 19:36:36 master ec08563f
+│  <span style="color:#555">(</span>empty<span style="color:#555">)</span> Merge pull request <span style="color:#09f;font-style:italic">#120 from matthewkmayer/hugo-reboot</span>
+</code></pre></div><p>Now I&rsquo;ll push my changes to GitHub, creating a new anonymous branch:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj git push -c @-
+
+Creating bookmark push-qwyrqzwpvosw <span style="color:#069;font-weight:bold">for</span> revision qwyrqzwpvosw
+Changes to push to origin:
+  Add bookmark push-qwyrqzwpvosw to 831deb89628c
+remote: Resolving deltas: 100% <span style="color:#555">(</span>3/3<span style="color:#555">)</span>, completed with <span style="color:#f60">3</span> <span style="color:#366">local</span> objects.
+remote:
+remote: Create a pull request <span style="color:#069;font-weight:bold">for</span> <span style="color:#c30">&#39;push-qwyrqzwpvosw&#39;</span> on GitHub by visiting:
+remote:      https://github.com/matthewkmayer/matthewkmayer.github.io/pull/new/push-qwyrqzwpvosw
+</code></pre></div><p><code>push -c</code> creates a new branch. <code>@-</code> says to push the parent of the working copy <code>@</code>.</p>
+<p>Now we have a bookmark for the push:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj
+
+@  vwqkntqu matthew@themayers.org 2025-11-29 10:42:23 37a83542
+│  <span style="color:#555">(</span>no description <span style="color:#366">set</span><span style="color:#555">)</span>
+○  qwyrqzwp matthew@themayers.org 2025-11-29 10:40:08 push-qwyrqzwpvosw git_head<span style="color:#555">()</span> 831deb89
+│  Draft first pass.
+</code></pre></div><p>Let&rsquo;s commit what we&rsquo;ve written so far and add that to the branch:</p>
+<p><code>jj commit -m &quot;Continuing.&quot;</code></p>
+<p><code>jj tug</code>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj
+
+@  ptzlqusl matthew@themayers.org 2025-11-29 10:44:31 650217fd
+│  <span style="color:#555">(</span>no description <span style="color:#366">set</span><span style="color:#555">)</span>
+○  vwqkntqu matthew@themayers.org 2025-11-29 10:44:09 push-qwyrqzwpvosw* git_head<span style="color:#555">()</span> 5d222383
+│  Continuing.
+○  qwyrqzwp matthew@themayers.org 2025-11-29 10:40:08 push-qwyrqzwpvosw@origin 831deb89
+│  Draft first pass.
+</code></pre></div><p><code>tug</code> is an alias to tug the closest bookmark to the parent of the working commit. In git, you&rsquo;d be on a branch and the branch will move to the latest commit on it, but it&rsquo;s not automatic in JJ. I used to find it annoying before moving to other workflows JJ enables that are more difficult to do in git.</p>
+<p>Tug defined in <code>~/.config/jj/config.toml</code>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[aliases]
+tug = [<span style="color:#c30">&#34;bookmark&#34;</span>, <span style="color:#c30">&#34;move&#34;</span>, <span style="color:#c30">&#34;--from&#34;</span>, <span style="color:#c30">&#34;heads(::@- &amp; bookmarks())&#34;</span>, <span style="color:#c30">&#34;--to&#34;</span>, <span style="color:#c30">&#34;@-&#34;</span>]
+</code></pre></div><p>A <code>jj git push</code> will push the new commit on our branch/bookmark to GitHub.</p>
+<p>If the Pull Request on GitHub looks good, it can be merged and a <code>jj git fetch</code> will get the update. To start a new change, <code>jj new master</code> will create a new working copy off the updated master branch.</p>
+<p>That&rsquo;s the most basic workflow and it&rsquo;ll work for a long time.</p>
+<h3 id="two-ways-to-squash">Two ways to squash</h3>
+<p>I regularly used <code>git rebase -i master</code> to squash commits. The same can be done with JJ.</p>
+<p>We currently have:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj
+
+@  ptzlqusl matthew@themayers.org 2025-11-29 10:50:32 4886b854
+│  <span style="color:#555">(</span>no description <span style="color:#366">set</span><span style="color:#555">)</span>
+○  vwqkntqu matthew@themayers.org 2025-11-29 10:44:09 push-qwyrqzwpvosw git_head<span style="color:#555">()</span> 5d222383
+│  Continuing.
+○  qwyrqzwp matthew@themayers.org 2025-11-29 10:40:08 831deb89
+│  Draft first pass.
+◆  zyoruoll matthew@themayers.org 2025-01-06 19:36:36 master ec08563f
+│  <span style="color:#555">(</span>empty<span style="color:#555">)</span> Merge pull request <span style="color:#09f;font-style:italic">#120 from matthewkmayer/hugo-reboot</span>
+</code></pre></div><p>Squash the two commits our branch has into one:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj squash --from q..v --to q
+</code></pre></div><p>This is using the revision ID of qwyrqzwp and vwqkntqu. Instead of using the whole change ID we use the short code for them, which is colored in the terminal.</p>
+<p>Now it&rsquo;s squashed and knows our branch is different in our repo than the remote:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ jj
+
+@  ptzlqusl matthew@themayers.org 2025-11-29 10:51:08 4d9788b8
+│  <span style="color:#555">(</span>no description <span style="color:#366">set</span><span style="color:#555">)</span>
+○  qwyrqzwp matthew@themayers.org 2025-11-29 10:51:06 push-qwyrqzwpvosw* git_head<span style="color:#555">()</span> 3fe548d0
+│  Draft first pass.
+◆  zyoruoll matthew@themayers.org 2025-01-06 19:36:36 master ec08563f
+│  <span style="color:#555">(</span>empty<span style="color:#555">)</span> Merge pull request <span style="color:#09f;font-style:italic">#120 from matthewkmayer/hugo-reboot</span>
+</code></pre></div><p>A <code>jj git push</code> will update the branch/bookmark on GitHub. This will be a force push which is fine for your branches but if others are using it, be cautious rewriting history, the same as git&rsquo;s <code>rebase</code>.</p>
+<p>The other way to squash changes is to take what&rsquo;s in your working commit and squash it into the parent. <code>jj squash</code> does that: what&rsquo;s in your working copy, what you see in the filesystem, is added to the previous commit.</p>
+<h3 id="splitting-changes">Splitting changes</h3>
+<p>I generally don&rsquo;t split changes but when it&rsquo;s time to, <code>jj commit -i</code> lets you interactively choose what to put into a commit and leaves the rest in your working copy. I&rsquo;ve most recently used this to take the actual bugfix from my working copy and leave all the debug parts littered in the code out of the fix commit.</p>
+<p>From that state I can either manually remove the no-longer-needed bits or use <code>jj restore</code> to throw away the changes in the working copy.</p>
+<h3 id="rebasing-branches">Rebasing branches</h3>
+<p>If you rebase in git this will be similar but without any &ldquo;oh no fix it now&rdquo; issues that merge conflicts and git have. As a bonus you can also rebase branches you aren&rsquo;t on to something else.</p>
+<p>For example I have an old branch whose first commit off master is <code>po</code>. I can tell JJ to rebase that branch onto the latest I have for the master bookmark without switching to it:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">jj rebase -s po -d master
+</code></pre></div><h3 id="undo">undo</h3>
+<p>It&rsquo;s possible to recover from almost any undesired state in git, but takes action before the potentially risky command, such as using a <a href="https://think-like-a-git.net/sections/testing-out-merges/the-savepoint-pattern.html">savepoint branch</a> or digging through the reflog.</p>
+<p>In JJ, it&rsquo;s easy to try those actions because they can be undone with <code>jj undo</code>. How difficult is bringing an old branch up to date? Try it! Doesn&rsquo;t work? <code>jj undo</code>. Want to squash it before rebase? Sure, and if a step fails, <code>jj undo</code> will undo one operation at a time, so run it until you&rsquo;re back at the initial state.</p>
+<p>This perk is incredible and unlike git, it doesn&rsquo;t rely on the user knowing what could go wrong and to take action beforehand or do an out-of-the-ordinary process like reflog spelunking.</p>
+<h3 id="viewing-repo-history">Viewing repo history</h3>
+<p>I&rsquo;ve been using <a href="https://stackoverflow.com/questions/1057564/pretty-git-branch-graphs"><code>git lg1</code></a> for a long time. JJ&rsquo;s default <code>log</code> command doesn&rsquo;t show the information I like, such as bookmarks I&rsquo;m not tracking. Great for keeping track of your work but if others are working in the same repo, their changes aren&rsquo;t as visible.</p>
+<p>That&rsquo;s fixed with an alias in my config file at <code>~/.config/jj/config.toml</code>:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[aliases]
+ll = [<span style="color:#c30">&#34;log&#34;</span>, <span style="color:#c30">&#34;-r&#34;</span>, <span style="color:#c30">&#34;all()&#34;</span>, <span style="color:#c30">&#34;--limit&#34;</span>, <span style="color:#c30">&#34;20&#34;</span>]
+lll = [<span style="color:#c30">&#34;log&#34;</span>, <span style="color:#c30">&#34;-r&#34;</span>, <span style="color:#c30">&#34;all()&#34;</span>]
+</code></pre></div><p><code>jj ll</code> will show one page of changes in my terminal, which lets you quickly see the most recent changes. Since it fits on the terminal the pager isn&rsquo;t called so I don&rsquo;t have to exit from it to get back to the shell.</p>
+<p>When it&rsquo;s time to see much longer branches I use <code>jj lll</code> to show as much as I need.</p>
+<h3 id="give-it-a-try">Give it a try</h3>
+<p>I&rsquo;ve been using JJ as my daily driver for the better part of a year now. It&rsquo;s been 100% worth it. I&rsquo;ve found it far more ergonomic to use than git.</p>
+<p>It&rsquo;s easy to start small. Pick one repository and test drive it for a few days or weeks. I bet you&rsquo;ll find it&rsquo;s far more rewarding to switch than you expect.</p>
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/2024-in-review/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2025-11-29 11:40:36.468257 -0800 PST m=&#43;0.074650168">2025</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
