@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>It&#39;s 2026, you don&#39;t need to deal with git &middot; Matthew Mayer&#39;s tech blog</title>
+
+		
+  		<link rel="stylesheet" href="/blag/public/css/style.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/blag/public/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/blag/public/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/blag/public/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Matthew Mayer&#39;s tech blog" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/blag/public/">
+					<h2 class="nav-title">Matthew Mayer&#39;s tech blog</h2>
+				</a>
+				<ul>
+    <li><a href="/blag/public/about">About</a></li>
+    <li><a href="/blag/public/">Posts</a></li>
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Matthew Mayer
+        <br>
+        <span>on&nbsp;</span><time datetime="2026-01-04 00:28:53 -0700 -0700">January 4, 2026</time>
+</div>
+		<h1 class="post-title">It&#39;s 2026, you don&#39;t need to deal with git</h1>
+<div class="post-line"></div>
+
+		
+
+		<p>It&rsquo;s 2026, you don&rsquo;t need to deal with git.</p>
+<p>That&rsquo;s a strong one! In my career I&rsquo;ve enjoyed seeing the produtivity gains by using the right tools. At my first professional software job, my group didn&rsquo;t use version control and bug tracking was my pen and paper notepad. I quickly introduced Subversion (SVN) and Mantis Bug Tracker, which allowed us to ensure bugs got tracked and fixed and eliminated the &ldquo;this used to work before but doesn&rsquo;t now, what changed?&rdquo;</p>
+<p>My next job used SVN for source control and we moved to git and GitHub. This was another step up: lightweight branches, no locking of files, far easier merges. We used GitFlow because it was there and multiple versions of software needed support. Think versions 4.3.1, 5.0.5, 6.0.0, etc&hellip;</p>
+<p>When we had more software running in the cloud instead of installed on customer machines, that cloud software used a more GitHub Flow style of releasing for better velocity and lower time to fix bugs.</p>
+<p>In 2026, there&rsquo;s a new step up for source control: <a href="https://github.com/jj-vcs/jj">Jujutsu</a>.</p>
+<h2 id="whats-jujutsu">What&rsquo;s Jujutsu?</h2>
+<p>Jujutsu, also known as <code>jj</code>, is a new version control system. It splits the user interface and version control parts from the storage systems, or backends. There&rsquo;s an example &ldquo;SimpleBackend&rdquo; that shows a proof of concept of how jj works completely self-contained, a closed source backend used at Google for their Piper/Clients in the Cloud backend and important for us, the git backend.</p>
+<p>Having a git backend means a jj repository can use git and git tools, including forges like GitHub, IDE integrations like GitLens for Visual Studio Code and command line tools.</p>
+<p><strong>You can use jj and keep your existing git workflows and tools.</strong></p>
+<h2 id="whats-special-about-jj">What&rsquo;s special about jj</h2>
+<p>The biggest mindset change for git users is the lack of a staging area: jj automatically tracks and commits changes when you run a jj command. For example, if you edit a file, save it and run <code>jj status</code> the change is committed. I often hear git users state they want to tell the tool when to commit, and you can do that! Having changes automatically committed doesn&rsquo;t prevent you from crafting a chain of commits like you&rsquo;d be able to make with <code>git add</code> or <code>git add -p</code>.</p>
+<p>This idea of a working copy as a commit enables <a href="https://en.wikipedia.org/wiki/Mode_(user_interface)">&ldquo;no modes&rdquo; behavior</a>. <code>jj</code> commands do the same thing all the time because there are no different modes. Compare that to git during a rebase with merge conflicts, where you&rsquo;re in a different mode and only certain commands work.</p>
+<p>Conceptually nearby is how <code>git commit</code> requires use of the staging area. You have to manage the state of the staging area to make commits. Without a staging area, jj commands operate on your working copy, but can also operate on other commits.</p>
+<p>The working copy as a commit also enables <strong>undo</strong>! I&rsquo;ve lost count the number of times a coworker tries to perform an action in git like a rebase or commit splitting and ended up in a strange spot from which they don&rsquo;t know how to recover. The fact <a href="https://ohshitgit.com/">Oh Shit, Git!?!</a> exists demonstrates this is a common issue.</p>
+<p>With jj, you can try something and <code>jj undo</code> will undo the most recent change. Keep running <code>jj undo</code> until you&rsquo;re back to where you started. Far easier than other approaches, like the <a href="https://think-like-a-git.net/sections/testing-out-merges.html">Savepoint branch pattern</a> and other techniques that require a human to remember to do something before a tricky manipulation of the commit tree or going through git&rsquo;s reflog.</p>
+<p>Another mindset change is anonymous branches. With many years of starting new work with <code>git checkout main; git pull; git checkout -b thing-im-doing</code> it&rsquo;s refreshing to not having to think about a branch name right off the bat. In jj, bookmarks are similar to git branches and can be created closer to when they&rsquo;re needed, such as pushing changes to GitHub. <code>jj git fetch; jj new main</code> is all you need to start work on the tip of the main branch.</p>
+<p>I&rsquo;ve totally embraced anonymous branches. Any fear I had about how strange and uncomfortable not having a branch name went away quickly after using jj full time.</p>
+<p>Another great point for jj is the built in visibility. I used <a href="https://stackoverflow.com/questions/1057564/pretty-git-branch-graphs"><code>git lg1</code></a> for a long, long time and jj has similar but more powerful commit graphs out of the box. The default <code>jj log</code> command shows what&rsquo;s important and you can recreate <code>git lg1</code> with arguments to it, usually put in the jj config as an alias. Example: <code>lll = [&quot;log&quot;, &quot;-r&quot;, &quot;all()&quot;]</code> makes <code>jj lll</code> show what <code>git lg1</code> shows.</p>
+<p>Merge conflicts aren&rsquo;t a &ldquo;stop the world&rdquo; event like git. They can be addressed right away or saved until later due to how jj <a href="https://docs.jj-vcs.dev/latest/conflicts/">records them</a>.</p>
+<h2 id="splitting-commits">Splitting commits</h2>
+<p><code>jj commit -i</code> lets you interactively choose which changes go into a commit and which ones get left in the working copy. You can chain these to make a commit history that didn&rsquo;t exist but makes it easier for others to review your code.</p>
+<p>Commits can be retroactively split with <code>jj split</code>, so that mega commit can be sliced into seperate commits.</p>
+<h2 id="whats-not-so-hot">What&rsquo;s not so hot</h2>
+<p>jj doesn&rsquo;t play well with some things, such as git submodules. jj can&rsquo;t create annotated git tags. Bookmarks don&rsquo;t &ldquo;float&rdquo; like git branches do, but the <a href="https://shaddy.dev/notes/jj-tug/"><code>jj tug</code> alias</a> lets you move bookmarks with ease.</p>
+<h2 id="give-jujutsu-a-try-in-2026">Give Jujutsu a try in 2026</h2>
+<p>jj is <a href="https://steveklabnik.github.io/jujutsu-tutorial/introduction/what-is-jj-and-why-should-i-care.html">simpler and more powerful than git</a>. This big claim has proven true for me.</p>
+<p>I&rsquo;ve enjoyed less friction, less mental effort, economy of mental movement and the ability to fall back to git if needed as a mental safety net for the switch.</p>
+<p>Check out <a href="https://steveklabnik.github.io/jujutsu-tutorial/introduction/what-is-jj-and-why-should-i-care.html">Steve Klabnik&rsquo;s Jujutsu Tutorial</a> and my <a href="https://matthewkmayer.github.io/blag/public/post/jj-for-my-workflow/">jj for my workflow</a>.</p>
+<p>Give it a try in one git repo. jj&rsquo;s git colocation means you can always use git for operations if you&rsquo;re stuck, but I found I quickly stopped using git. jj is that good.</p>
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/blag/public/post/2025-in-review/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2026-01-04 10:50:47.255637 -0800 PST m=&#43;0.024599334">2026</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
